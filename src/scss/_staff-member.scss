@@ -1,0 +1,25 @@
+.staff-member {
+	
+	transition: background-color 0.3s 0s ease-out;
+
+	&__avatar {
+		width: 2em;
+		height: 2em;
+		display: inline-block;
+		vertical-align: middle;
+		overflow: hidden;
+		border-radius: 50%;
+	}
+
+	&__image {
+		max-width: 100%;
+		height: auto;
+	}
+
+	&__name {
+		font-size: 1em;
+		display: inline-block;
+		vertical-align: middle;
+		margin-left: .5em;
+	}
+}
