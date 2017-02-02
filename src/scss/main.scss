@@ -1,0 +1,43 @@
+@import 'nav-header';
+@import 'staff-picker';
+@import 'staff-member';
+@import 'staff-calendar';
+@import 'staff-slots';
+@import 'staff-form';
+/* react-day-picker styles */
+@import '../../node_modules/react-day-picker/lib/style';
+
+* {
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+	-webkit-touch-callout: none;
+	-webkit-text-size-adjust: none;
+	-webkit-highlight: none;
+	outline: none;
+}
+
+body {
+	font: 16px/1 'Helvetica Neue', Helvetica, Arial, Verdana, sans-serif;
+	background-color: #f3f3f3;
+	margin: 0;
+}
+
+.ReactNavigationController {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	overflow: hidden;
+	width: 650px;
+	height: 600px;
+	transform: translate(-50%,-50%);
+	background-color: #fff;
+	box-shadow: 2px 2px 16px rgba(0,0,0,.2);
+}
+
+.ReactNavigationControllerView {
+	position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow: auto;
+}

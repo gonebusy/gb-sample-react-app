@@ -1,0 +1,38 @@
+.staff-form {
+
+	&__form {
+		padding: 1rem;
+	}
+
+	&__form-group {
+
+		label {
+			display: block;
+			margin: .5em 0;
+		}
+
+		input {
+			padding: 1em;
+			width: 100%;
+			box-sizing: border-box;
+			-webkit-appearance: none;
+			border: 1px solid rgba(0,0,0,.2);
+		}
+	}
+
+
+	&__confirm-btn {
+		-webkit-appearance: none;
+		width: 100%;
+		box-sizing: border-box;
+		border: 1px solid rgba(0,0,0,.2);
+		background-color: transparent;
+		padding: 1em;
+		margin: 1em 0;
+		font-size: 1em;
+		cursor: pointer;
+		&:hover {
+			background-color: rgba(0,0,0,.1);
+		}
+	}
+}

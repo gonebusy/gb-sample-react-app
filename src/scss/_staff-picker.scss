@@ -1,0 +1,15 @@
+.staff-picker {
+	font-size: 2em;
+
+	.staff-member {
+		padding: 1.5rem;
+		cursor: pointer;
+		&:hover {
+			background-color: rgba(0,0,0,.1);
+		}
+	}
+
+	.staff-member {
+		border-bottom: 1px solid rgba(0,0,0,.2);
+	}
+}

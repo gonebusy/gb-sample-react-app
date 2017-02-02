@@ -1,0 +1,40 @@
+.staff-calendar {
+	
+	&-picker {
+		padding: 2rem;
+	}
+	
+	.DayPicker-NavButton {
+		width: 1rem;
+		height: 1rem;
+	}
+
+	.DayPicker-Month {
+		width: 100%;
+		margin: 0;
+	}
+	
+	.DayPicker-Caption {
+		font-weight: 700;
+	}
+
+	.DayPicker-Weekday {
+		padding-top: 2rem;
+	}
+
+	.DayPicker-Day {
+		padding: 1.8rem;
+		cursor: pointer;
+		&:hover {
+			background-color: rgba(0,0,0,.1);
+		}
+	}
+
+	.DayPicker-NavButton--next {
+		right: 8rem;
+	}
+
+	.DayPicker-NavButton--prev {
+		left: 8rem;
+	}
+}
