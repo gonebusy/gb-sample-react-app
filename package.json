@@ -4,9 +4,18 @@
   "description": "Gone Busy Sample Booking React App",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint --ext .js --ext .jsx $npm_package_config_lintables",
+    "lint:fix": "npm run lint -- --fix",
+    "test": "npm run lint && npm run test:unit",
+    "test:unit": "echo pass",
+    "//": "test:unit -- env NODE_ENV=test karma start karma.conf.js",
+    "//": "test:unit:watch -- npm run test:unit -- --single-run=false",
     "start": "webpack-dev-server --progress --profile --colors",
     "build": "NODE_ENV=production webpack --progress --profile --colors",
     "static": "npm run build & node ./server"
+  },
+  "config": {
+    "lintables": "src lib webpack.config.js karma.conf.js"
   },
   "dependencies": {
     "babel-runtime": "^6.3.19",
@@ -18,12 +27,14 @@
     "react": "^15.4.2",
     "react-day-picker": "^3.1.1",
     "react-dom": "^15.4.2",
+    "react-navigation-controller": "^3.0.2",
     "react-router": "^3.0.0",
     "sass-loader": "^4.0.2",
     "transform-loader": "^0.2.3"
   },
   "devDependencies": {
     "babel-core": "^6.3.21",
+    "babel-eslint": "^7.1.1",
     "babel-loader": "^6.2.0",
     "babel-plugin-react-transform": "^2.0.0-beta1",
     "babel-plugin-transform-class-properties": "^6.16.0",
@@ -33,6 +44,11 @@
     "babel-preset-react": "^6.3.13",
     "babel-preset-stage-0": "^6.3.13",
     "css-loader": "0.25.0",
+    "eslint": "^3.15.0",
+    "eslint-config-airbnb": "^14.1.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^4.0.0",
+    "eslint-plugin-react": "^6.9.0",
     "express": "~4.13.1",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "0.9.0",
@@ -40,7 +56,6 @@
     "node-sass": "^3.7.0",
     "postcss-loader": "^1.0.0",
     "react-hot-loader": "^3.0.0-beta.6",
-    "react-navigation-controller": "^3.0.2",
     "style-loader": "0.13.1",
     "url-loader": "0.5.7",
     "webpack": "^1.13.1",

@@ -1,42 +1,47 @@
-import React, {Component} from 'react';
+import React, { Component, PropTypes } from 'react';
 import Nav from './nav';
 import StaffMember from './staff-member';
 
+class StaffForm extends Component {
+    goBack = () => {
+        this.props.navigationController.popView();
+    }
 
-export default class StaffForm extends Component {
-	constructor(props) {
-		super(props);
-	}
+    render() {
+        return (
+          <div className="staff-form">
+            <Nav leftClick={() => this.goBack()}>
+              <StaffMember imagePath={this.props.imagePath} name={this.props.name} />
+            </Nav>
 
+            <div className="staff-slots-date">{this.props.slot}</div>
 
-	goBack() {
-		this.props.navigationController.popView();
-	}
+            <div className="staff-form__form">
+              <div className="staff-form__form-group">
+                <label htmlFor="name">Name</label>
+                <input type="text" name="name" required="required" />
+              </div>
+              <div className="staff-form__form-group">
+                <label htmlFor="email">Email</label>
+                <input type="email" name="email" required="required" />
+              </div>
+              <button className="staff-form__confirm-btn">Confirm Booking</button>
+            </div>
 
-
-	render() {
-		return (
-			<div className="staff-form">
-				<Nav leftClick={()=> this.goBack()}>
-					<StaffMember imagePath={this.props.imagePath} name={this.props.name} />
-				</Nav>
-
-				<div className="staff-slots-date">{this.props.slot}</div>
-
-				<div className="staff-form__form">
-					<div className="staff-form__form-group">
-						<label>Name</label>
-						<input type="text" name="name" required="required" />
-					</div>
-					<div className="staff-form__form-group">
-						<label>Email</label>
-						<input type="email" name="email" required="required" />
-					</div>
-					<button className="staff-form__confirm-btn">Confirm Booking</button>
-				</div>
-
-			</div>
-		);
-	}
+          </div>
+        );
+    }
 }
 
+StaffForm.defaultProps = {
+    navigationController: Object()
+};
+
+StaffForm.propTypes = {
+    imagePath: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    slot: PropTypes.string.isRequired,
+    navigationController: PropTypes.object
+};
+
+export default StaffForm;
