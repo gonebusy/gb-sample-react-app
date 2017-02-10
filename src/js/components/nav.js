@@ -1,46 +1,51 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 
+class Nav extends Component {
+    leftClick(e) {
+        this.props.leftClick();
+        e.preventDefault();
+    }
 
-export default class Nav extends Component {
+    rightClick(e) {
+        this.props.rightClick();
+        e.preventDefault();
+    }
 
-	constructor(props) {
-		super(props);
-	}
+    renderLeftLink() {
+        if (this.props.leftClick)
+            return (
+              <a className="nav-header--prev" href="left" onClick={e => this.leftClick(e)} />
+            );
+    }
 
-	leftClick(e){
-		this.props.leftClick();
-		e.preventDefault();
-	}
+    renderRightLink() {
+        if (this.props.rightClick)
+            return (
+              <a className="nav-header--next" href="right" onClick={e => this.rightClick(e)} />
+            );
+    }
 
-	rightClick(e){
-		this.props.rightClick();
-		e.preventDefault();
-	}
+    render() {
+        return (
+          <div className="nav-header">
+            <div className="nav-header--link">{this.renderLeftLink()}</div>
+            <div className="nav-header--title">{this.props.children}</div>
+            <div className="nav-header--link">{this.renderRightLink()}</div>
+          </div>
+        );
+    }
+}
 
-	renderLeftLink(){
-		if(this.props.leftClick){
-			return (
-				<a className="nav-header--prev" href="#" onClick={(e)=> this.leftClick(e)}></a>
-			)
-		}
-	}
+Nav.defaultProps = {
+    leftClick: undefined,
+    rightClick: undefined,
+    children: {}
+};
 
-	renderRightLink(){
-		if(this.props.rightClick){
-			return (
-				<a className="nav-header--next" href="#" onClick={(e)=> this.rightClick(e)}></a>
-			)
-		}
-	}
+Nav.propTypes = {
+    leftClick: PropTypes.func,
+    rightClick: PropTypes.func,
+    children: PropTypes.node
+};
 
-
-	render(){
-		return (
-			<div className="nav-header">
-				<div className="nav-header--link">{this.renderLeftLink()}</div>
-				<div className="nav-header--title">{this.props.children}</div>
-				<div className="nav-header--link">{this.renderRightLink()}</div>
-			</div>
-		)
-	}
-}				
+export default Nav;

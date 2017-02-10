@@ -1,24 +1,33 @@
-import React, {Component} from 'react';
+import React, { Component, PropTypes } from 'react';
 
+class StaffMember extends Component {
+    handleClick = props => () =>
+        this.props.onStaffClick(props);
 
-export default class StaffMember extends Component {
-	constructor(props) {
-		super(props);
-	}
-
-
-	componentWillMount(){
-		
-	}
-
-	render() {
-		return (
-			<div onClick={(props) => this.props.onClick(this.props)} className="staff-member">
-				<div className="staff-member__avatar">
-					<img className="staff-member__image" src={this.props.imagePath} />
-				</div>
-				<div className="staff-member__name">{this.props.name}</div>
-			</div>
-		);
-	}
+    render() {
+        return (
+          <div onClick={this.handleClick(this.props)} className="staff-member">
+            <div className="staff-member__avatar">
+              <img
+                  className="staff-member__image"
+                  src={this.props.imagePath}
+                  alt={this.props.name}
+              />
+            </div>
+            <div className="staff-member__name">{this.props.name}</div>
+          </div>
+        );
+    }
 }
+
+StaffMember.defaultProps = {
+    onStaffClick: StaffMember.prototype.handleClick
+};
+
+StaffMember.propTypes = {
+    imagePath: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    onStaffClick: PropTypes.func
+};
+
+export default StaffMember;
