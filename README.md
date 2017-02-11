@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/gonebusy/sample-react-app.svg?branch=master)](https://travis-ci.org/gonebusy/sample-react-app)
+
 # Gone Busy Sample React App
 
 ## Getting Started
