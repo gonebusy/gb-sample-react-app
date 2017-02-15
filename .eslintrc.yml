@@ -11,6 +11,9 @@ rules:
     - 2
     - expression
     - allowArrowFunctions: true
+  import/no-extraneous-dependencies:
+    - 0
+    - devDependencies: false
   indent:
     - 2
     - 4
