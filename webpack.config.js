@@ -34,9 +34,16 @@ loaders.push({
     loader: 'json'
 });
 
+loaders.push({
+    test: /sinon\.js$/, loader: 'imports?define=>false,require=>false'
+});
+
 var config = {
     resolve: {
         root: path.resolve(__dirname),
+        alias: {
+            sinon: 'sinon/pkg/sinon'
+        },
         extensions: ['', '.js', '.jsx']
     },
 

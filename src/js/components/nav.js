@@ -39,7 +39,7 @@ class Nav extends Component {
 Nav.defaultProps = {
     leftClick: undefined,
     rightClick: undefined,
-    children: {}
+    children: undefined
 };
 
 Nav.propTypes = {
