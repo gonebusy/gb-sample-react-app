@@ -2,6 +2,8 @@ import { expect } from 'chai';
 import dateFormat from 'dateformat';
 import React from 'react';
 import renderShallow from 'render-shallow';
+import { findWithType } from 'react-shallow-testutils';
+import { spy } from 'sinon';
 import noop from '../../../lib/util/noop';
 import Nav from '../components/nav';
 import StaffForm from '../components/staff-form';
@@ -44,6 +46,30 @@ describe('<StaffForm>', () => {
                 </div>
               </div>
             );
+        });
+    });
+
+    context('when go back button is clicked', () => {
+        const props = {
+            slot: `${dateFormat(new Date('2017-02-01'), 'dddd, d mmm yyyy', true)} 11:15`,
+            imagePath: 'http://i.pravatar.cc/300?img=25',
+            name: 'Peter Pickler',
+            navigationController: {
+                popView: spy()
+            }
+        };
+
+        before(() => {
+            const component = renderShallow(
+              <StaffForm {...props} />
+            ).output;
+
+            const navElement = findWithType(component, Nav);
+            navElement.props.leftClick();
+        });
+
+        it('calls the popView function of navigationController', () => {
+            expect(props.navigationController.popView).to.have.been.calledOnce();
         });
     });
 });
