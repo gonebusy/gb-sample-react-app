@@ -5,7 +5,7 @@ import StaffMember from './staff-member';
 class StaffForm extends Component {
     goBack = () => {
         this.props.navigationController.popView();
-    }
+    };
 
     render() {
         return (

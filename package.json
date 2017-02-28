@@ -71,6 +71,7 @@
     "node-sass": "^3.7.0",
     "postcss-loader": "^1.0.0",
     "react-hot-loader": "^3.0.0-beta.6",
+    "react-shallow-testutils": "^2.0.0",
     "render-shallow": "^1.0.2",
     "sinon": "^1.17.7",
     "sinon-chai": "^2.8.0",
