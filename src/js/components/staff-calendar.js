@@ -12,7 +12,7 @@ class StaffCalendar extends Component {
 
     goBack = () => {
         this.props.navigationController.popView();
-    }
+    };
 
     render() {
         return (
