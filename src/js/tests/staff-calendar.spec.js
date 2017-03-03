@@ -54,7 +54,7 @@ describe('<StaffCalendar>', () => {
                 pushView: spy()
             }
         };
-        const day = { someDay: 1 };
+        const day = new Date();
 
         before(() => {
             const { instance: getInstance } = renderShallow(<StaffCalendar {...props} />);

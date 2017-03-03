@@ -19,28 +19,25 @@ class StaffSlots extends Component {
     }
 
     getSlots = () => {
-        const number = Math.ceil((Math.random() * 5) + 1);
         const endings = [':00', ':15', ':30', ':45'];
         const slots = [];
-        let time = 7;
-        for (let i = 0; i < number; i += 1) {
-            time += Math.ceil(Math.random() * 3);
-            const timeDisplay = time + endings[Math.floor(Math.random() * 4)];
+        const time = 7;
+        for (let i = 0; i < endings.length; i += 1) {
+            const timeDisplay = time + endings[i];
             slots.push(timeDisplay);
         }
 
         this.setState({ slots });
-    }
+    };
 
     goBack = () => {
         this.props.navigationController.popView();
-    }
+    };
 
     timeClick = time => () => {
-        console.log(time);
         this.props.navigationController
             .pushView(<StaffForm slot={`${this.state.formattedDate} ${time}`} {...this.props} />);
-    }
+    };
 
     renderSlot = (time, index) =>
         (
