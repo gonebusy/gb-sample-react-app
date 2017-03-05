@@ -10,32 +10,40 @@ This is a sample React app that demonstrates how to incorporate the [gonebusy-no
 
 * Node 5, Node 6
 * [Signup](https://beta.gonebusy.com/login) with Gonebusy and obtain your API token.
+* [yarn](https://yarnpkg.com/lang/en/docs/install)
 
 ## Getting Started
+
 
 ```
 $ git clone git@github.com:<your_fork>/sample-react-app.git
 $ cd sample-react-app
-$ npm install
+$ yarn install
 ```
 
 ## Run a local dev environment
 Start a local server running on port 8080, at **http://localhost:8080**. Bundles js and css via webpack with hot reload.
 
 ```
-$ npm start
+$ yarn start
 ```
 
 ## Build Static files for deployment to CDN/hosting
 Minifies js and css. 
 
 ```
-$ npm run build
+$ yarn run build
 ```
 
 ## Run a local server serving Static files
 Minifies js and css and starts server at **http://localhost:4000**
 
 ```
-$ npm run static
+$ yarn run static
+```
+
+## Add new dependencies
+
+```
+$ yarn add some-package-name
 ```
