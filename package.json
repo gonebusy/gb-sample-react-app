@@ -5,13 +5,13 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint --ext .js --ext .jsx $npm_package_config_lintables",
-    "lint:fix": "npm run lint -- --fix",
-    "test": "npm run lint && npm run test:unit",
+    "lint:fix": "yarn run lint -- --fix",
+    "test": "yarn run lint && yarn run test:unit",
     "test:unit": "env NODE_ENV=test karma start karma.conf.js",
-    "//": "test:unit:watch -- npm run test:unit -- --single-run=false",
+    "//": "test:unit:watch -- yarn run test:unit -- --single-run=false",
     "start": "webpack-dev-server --progress --profile --colors",
     "build": "NODE_ENV=production webpack --progress --profile --colors",
-    "static": "npm run build & node ./server"
+    "static": "yarn run build & node ./server"
   },
   "config": {
     "lintables": "src lib webpack.config.js karma.conf.js"
@@ -70,6 +70,7 @@
     "mocha": "^3.2.0",
     "node-sass": "^3.7.0",
     "postcss-loader": "^1.0.0",
+    "react-addons-test-utils": "^15.4.2",
     "react-hot-loader": "^3.0.0-beta.6",
     "react-shallow-testutils": "^2.0.0",
     "render-shallow": "^1.0.2",
