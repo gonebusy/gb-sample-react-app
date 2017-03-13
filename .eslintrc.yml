@@ -11,9 +11,11 @@ rules:
     - 2
     - expression
     - allowArrowFunctions: true
+  import/extensions: 0
   import/no-extraneous-dependencies:
     - 0
     - devDependencies: false
+  import/no-unresolved: 0
   indent:
     - 2
     - 4
@@ -27,6 +29,7 @@ rules:
   new-cap: 0
   no-console: 0
   no-confusing-arrow: 0
+  no-underscore-dangle: 0
   padded-blocks: 0
   semi:
     - 2
