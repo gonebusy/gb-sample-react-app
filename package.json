@@ -8,7 +8,8 @@
     "lint:fix": "yarn run lint -- --fix",
     "test": "yarn run lint && yarn run test:unit",
     "test:unit": "env NODE_ENV=test karma start karma.conf.js",
-    "//": "test:unit:watch -- yarn run test:unit -- --single-run=false",
+    "test:unit:watch": "yarn test:unit -- --single-run=false --reporters=mocha,notify",
+    "watch": "yarn test:unit:watch",
     "start": "webpack-dev-server --progress --profile --colors",
     "build": "NODE_ENV=production webpack --progress --profile --colors",
     "static": "yarn run build & node ./server"
@@ -27,10 +28,10 @@
     "react-day-picker": "^3.1.1",
     "react-dom": "^15.4.2",
     "react-navigation-controller": "^3.0.2",
-    "react-redux": "^5.0.3",
+    "react-redux": "^4.4.5",
     "react-router": "^3.0.0",
-    "redux": "^3.6.0",
-    "redux-thunk": "^2.2.0",
+    "redux": "^3.5.2",
+    "redux-thunk": "^2.0.1",
     "sass-loader": "^4.0.2",
     "transform-loader": "^0.2.3"
   },

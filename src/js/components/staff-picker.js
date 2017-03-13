@@ -1,51 +1,46 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
+import { selectStaff } from 'src/js/actions/staff';
 import Nav from './nav';
 import StaffMember from './staff-member';
 import StaffCalendar from './staff-calendar';
 
-class StaffPicker extends Component {
-    handleStaffClick = () =>
-        (props) => {
-            this.props.navigationController.pushView(<StaffCalendar {...props} />);
-        };
+export const StaffPicker = ({ staffMembers, navigationController, dispatch }) => {
+    const handleStaffClick = staffMember => () => {
+        dispatch(selectStaff(staffMember));
+        navigationController.pushView(<StaffCalendar {...staffMember} />);
+    };
 
-    render() {
-        return (
-          <div className="staff-picker">
-            <Nav>Choose a Staff Member</Nav>
-            <div className="staff">
-              <StaffMember
-                  onStaffClick={this.handleStaffClick()}
-                  imagePath="http://i.pravatar.cc/300?img=69"
-                  name="James Hunter"
-              />
-              <StaffMember
-                  onStaffClick={this.handleStaffClick()}
-                  imagePath="http://i.pravatar.cc/300?img=25"
-                  name="Selena Yamada"
-              />
-              <StaffMember
-                  onStaffClick={this.handleStaffClick()}
-                  imagePath="http://i.pravatar.cc/300?img=32"
-                  name="Sarah Belmoris"
-              />
-              <StaffMember
-                  onStaffClick={this.handleStaffClick()}
-                  imagePath="http://i.pravatar.cc/300?img=15"
-                  name="Phillip Fry"
-              />
-            </div>
-          </div>
-        );
-    }
-}
-
-StaffPicker.defaultProps = {
-    navigationController: Object()
+    return (
+      <div className="staff-picker">
+        <Nav>Choose a Staff Member</Nav>
+        <div className="staff">
+          {
+                staffMembers.map((staffMember) => {
+                    const { id, imagePath, name } = staffMember;
+                    return (
+                      <StaffMember
+                          key={id}
+                          onStaffClick={handleStaffClick(staffMember)}
+                          imagePath={imagePath}
+                          name={name}
+                      />
+                    );
+                })
+            }
+        </div>
+      </div>
+    );
 };
 
 StaffPicker.propTypes = {
-    navigationController: PropTypes.object
+    dispatch: PropTypes.func.isRequired,
+    navigationController: PropTypes.object.isRequired,
+    staffMembers: PropTypes.array.isRequired
 };
 
-export default StaffPicker;
+export const mapStateToProps = ({ staff: { staffMembers } }) => ({
+    staffMembers
+});
+
+export default connect(mapStateToProps)(StaffPicker);
