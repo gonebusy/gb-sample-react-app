@@ -4761,9 +4761,9 @@ rc@~1.1.6:
     fbjs "^0.8.4"
     object-assign "^4.1.0"
 
-react-day-picker@^3.1.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/react-day-picker/-/react-day-picker-3.1.1.tgz#7fa385dc7b424cee3eb09696e1918e6b18abafdb"
+react-day-picker@^5.2.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/react-day-picker/-/react-day-picker-5.2.0.tgz#984965bc7d8e880c89d5c6897249e56b93bf8bd3"
 
 react-deep-force-update@^2.0.1:
   version "2.0.1"
