@@ -1,2 +1,3 @@
 export const STAFF_SELECTED = 'STAFF_SELECTED';
+export const DATE_SELECTED = 'DATE_SELECTED';
 export default STAFF_SELECTED;

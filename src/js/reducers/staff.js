@@ -1,4 +1,4 @@
-import { STAFF_SELECTED } from 'src/js/action-types';
+import { STAFF_SELECTED, DATE_SELECTED } from 'src/js/action-types';
 
 export const initialState = {
     staffMembers: [
@@ -22,18 +22,31 @@ export const initialState = {
             imagePath: 'http://i.pravatar.cc/300?img=15',
             name: 'Phillip Fry'
         }
-    ],
-    selectedStaffMember: {}
+    ]
 };
 
 export default (state = initialState, action) => {
     const { type } = action;
     switch (type) {
         case STAFF_SELECTED: {
-            const { staffMember } = action;
+            const { staffMember, availableSlots } = action;
             return {
                 ...state,
-                selectedStaffMember: staffMember
+                selectedStaffMember: {
+                    ...staffMember,
+                    availableSlots
+                },
+            };
+        }
+        case DATE_SELECTED: {
+            const { date } = action;
+            return {
+                ...state,
+                selectedStaffMember: {
+                    ...state.selectedStaffMember,
+                    selectedDate: date,
+                    slotsForDate: state.selectedStaffMember.availableSlots[date]
+                }
             };
         }
         default: {

@@ -20,7 +20,10 @@ describe('staff action creators', () => {
             it(`dispatches with ${STAFF_SELECTED}`, () => {
                 expect(dispatch).to.have.been.calledWith({
                     type: STAFF_SELECTED,
-                    staffMember
+                    staffMember,
+                    availableSlots: {
+                        '2017-04-01': ['7:00', '8:00']
+                    }
                 });
             });
         });
