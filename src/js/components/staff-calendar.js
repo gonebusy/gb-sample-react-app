@@ -1,45 +1,53 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import DayPicker from 'react-day-picker';
+import { connect } from 'react-redux';
+import moment from 'moment';
+import { DATE_SELECTED } from 'src/js/action-types';
 import Nav from './nav';
 import StaffMember from './staff-member';
 import StaffSlots from './staff-slots';
 
-class StaffCalendar extends Component {
-    handleDayClick = () =>
-        (e, day) => {
-            this.props.navigationController.pushView(<StaffSlots date={day} {...this.props} />);
-        };
-
-    goBack = () => {
-        this.props.navigationController.popView();
+export const StaffCalendar = ({ imagePath, name, navigationController, dispatch }) => {
+    const handleDayClick = (day) => {
+        const formattedDate = moment(day).format('YYYY-MM-DD');
+        dispatch({ type: DATE_SELECTED, formattedDate });
+        navigationController.pushView(<StaffSlots
+            imagePath={imagePath}
+            name={name} date={day}
+            navigationController={navigationController}
+        />);
     };
 
-    render() {
-        return (
-          <div className="staff-calendar">
-            <Nav leftClick={() => this.goBack()}>
-              <StaffMember imagePath={this.props.imagePath} name={this.props.name} />
-            </Nav>
+    const goBack = () => {
+        navigationController.popView();
+    };
 
-            <div className="staff-calendar-picker">
-              <DayPicker
-                  onDayClick={this.handleDayClick()}
-                  weekdaysShort={['S', 'M', 'T', 'W', 'T', 'F', 'S']}
-              />
-            </div>
-          </div>
-        );
-    }
-}
+    return (
+      <div className="staff-calendar">
+        <Nav leftClick={() => goBack()}>
+          <StaffMember imagePath={imagePath} name={name} />
+        </Nav>
 
-StaffCalendar.defaultProps = {
-    navigationController: Object()
+        <div className="staff-calendar-picker">
+          <DayPicker
+              onDayClick={handleDayClick}
+              weekdaysShort={['S', 'M', 'T', 'W', 'T', 'F', 'S']}
+          />
+        </div>
+      </div>
+    );
 };
 
 StaffCalendar.propTypes = {
     imagePath: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    navigationController: PropTypes.object
+    navigationController: PropTypes.object.isRequired,
+    dispatch: PropTypes.func.isRequired
 };
 
-export default StaffCalendar;
+export const mapStateToProps = ({ staff: { selectedStaffMember: { imagePath, name } } }) => ({
+    imagePath, name
+});
+
+export default connect(mapStateToProps)(StaffCalendar);
+
