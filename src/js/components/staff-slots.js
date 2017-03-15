@@ -1,73 +1,66 @@
 import dateFormat from 'dateformat';
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import Nav from './nav';
 import StaffMember from './staff-member';
 import StaffForm from './staff-form';
 
-class StaffSlots extends Component {
-    constructor(props) {
-        super(props);
+export const StaffSlots = ({ imagePath, name, navigationController, date, slots }) => {
+    const formattedDate = dateFormat(date, 'dddd, d mmm yyyy');
 
-        this.state = {
-            formattedDate: dateFormat(props.date, 'dddd, d mmm yyyy'),
-            slots: []
-        };
-    }
-
-    componentDidMount() {
-        this.getSlots();
-    }
-
-    getSlots = () => {
-        const endings = [':00', ':15', ':30', ':45'];
-        const slots = [];
-        const time = 7;
-        for (let i = 0; i < endings.length; i += 1) {
-            const timeDisplay = time + endings[i];
-            slots.push(timeDisplay);
-        }
-
-        this.setState({ slots });
+    const goBack = () => {
+        navigationController.popView();
     };
 
-    goBack = () => {
-        this.props.navigationController.popView();
+    const timeClick = time => () => {
+        navigationController.pushView(
+          <StaffForm
+              imagePath={imagePath}
+              name={name}
+              slot={`${formattedDate} ${time}`}
+          />);
     };
+    const renderSlot = (time, index) => (
+      <li className="staff-slots-time" key={index}>
+        <button onClick={timeClick(time)}>{time}</button>
+      </li>
+    );
+    return (
+      <div className="staff-slots">
+        <Nav leftClick={() => goBack()}>
+          <StaffMember imagePath={imagePath} name={name} />
+        </Nav>
 
-    timeClick = time => () => {
-        this.props.navigationController
-            .pushView(<StaffForm slot={`${this.state.formattedDate} ${time}`} {...this.props} />);
-    };
+        <div className="staff-slots-date">{formattedDate}</div>
 
-    renderSlot = (time, index) =>
-        (
-          <li className="staff-slots-time" key={index}>
-            <button onClick={this.timeClick(time)}>{time}</button>
-          </li>
-        );
-
-    render() {
-        return (
-          <div className="staff-slots">
-            <Nav leftClick={() => this.goBack()}>
-              <StaffMember imagePath={this.props.imagePath} name={this.props.name} />
-            </Nav>
-
-            <div className="staff-slots-date">{this.state.formattedDate}</div>
-
-            <ul className="staff-slots-times">
-              {this.state.slots.map(this.renderSlot)}
-            </ul>
-          </div>
-        );
-    }
-}
+        <ul className="staff-slots-times">
+          {slots.map(renderSlot)}
+        </ul>
+      </div>
+    );
+};
 
 StaffSlots.propTypes = {
-    date: PropTypes.object.isRequired,
     imagePath: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
+    date: PropTypes.object.isRequired,
+    slots: PropTypes.array.isRequired,
     navigationController: PropTypes.object.isRequired
 };
 
-export default StaffSlots;
+
+const mapStateToProps = (
+    {
+        staff: {
+            selectedStaffMember: {
+                imagePath, name, selectedDate, slotsForDate
+            }
+        }
+    }) => ({
+        imagePath,
+        name,
+        date: selectedDate,
+        slots: slotsForDate
+    });
+
+export default connect(mapStateToProps)(StaffSlots);
