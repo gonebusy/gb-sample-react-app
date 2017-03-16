@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import { STAFF_SELECTED, DATE_SELECTED } from 'src/js/action-types';
 import { createNew } from 'src/js/store';
 import { initialState } from 'src/js/reducers/staff';
+import moment from 'moment';
 
 describe('staff reducers', () => {
 
@@ -53,7 +54,7 @@ describe('staff reducers', () => {
     });
     context(`${DATE_SELECTED} is dispatched`, () => {
         let state;
-        const date = '2017-04-01';
+        const date = moment();
         before(() => {
             const selectedStaffMember = {
                 id: 4,
@@ -61,7 +62,7 @@ describe('staff reducers', () => {
                 name: 'Phillip Fry',
                 availableSlots: [
                     {
-                        date: '2017-04-01',
+                        date,
                         slots: ['7:00', '8:00']
                     }
                 ]

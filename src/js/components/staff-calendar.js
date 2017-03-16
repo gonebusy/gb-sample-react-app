@@ -9,11 +9,11 @@ import StaffSlots from './staff-slots';
 
 export const StaffCalendar = ({ imagePath, name, navigationController, dispatch }) => {
     const handleDayClick = (day) => {
-        const formattedDate = moment(day).format('YYYY-MM-DD');
-        dispatch({ type: DATE_SELECTED, date: formattedDate });
+        const selectedDate = moment(day);
+        dispatch({ type: DATE_SELECTED, date: selectedDate });
         navigationController.pushView(<StaffSlots
             imagePath={imagePath}
-            name={name} date={day}
+            name={name} date={selectedDate}
             navigationController={navigationController}
         />);
     };

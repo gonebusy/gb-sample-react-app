@@ -40,12 +40,14 @@ export default (state = initialState, action) => {
         }
         case DATE_SELECTED: {
             const { date } = action;
+            const { availableSlots } = state.selectedStaffMember;
+            const slotsForDate = availableSlots[date.format('YYYY-MM-DD')];
             return {
                 ...state,
                 selectedStaffMember: {
                     ...state.selectedStaffMember,
                     selectedDate: date,
-                    slotsForDate: state.selectedStaffMember.availableSlots[date]
+                    slotsForDate
                 }
             };
         }
