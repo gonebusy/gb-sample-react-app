@@ -32,10 +32,14 @@ export const StaffSlots = ({ imagePath, name, navigationController, date, slots 
         </Nav>
 
         <div className="staff-slots-date">{formattedDate}</div>
-
-        <ul className="staff-slots-times">
-          {slots.map(renderSlot)}
-        </ul>
+        {
+            slots.length ?
+              <ul className="staff-slots-times">
+                { slots.map(renderSlot) }
+              </ul>
+              :
+              <p className="staff-slots-message">No slots available!</p>
+        }
       </div>
     );
 };

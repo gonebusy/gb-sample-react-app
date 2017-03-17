@@ -14,7 +14,7 @@ import StaffSlotsConnected, { StaffSlots } from '../components/staff-slots';
 import StaffForm from '../components/staff-form';
 
 describe('<StaffSlots>', () => {
-    context('when rendered with props', () => {
+    context('when rendered with slots', () => {
         let component;
 
         const currentDate = moment();
@@ -54,6 +54,38 @@ describe('<StaffSlots>', () => {
                     <button onClick={noop}>{slots[3]}</button>
                   </li>
                 </ul>
+              </div>
+            );
+        });
+    });
+
+    context('when slots are empty', () => {
+        let component;
+
+        const currentDate = moment();
+        const formattedDate = dateFormat(currentDate, 'dddd, d mmm yyyy');
+        const slots = [];
+        const props = {
+            date: currentDate,
+            imagePath: 'some/path',
+            name: 'someName',
+            navigationController: {},
+            slots
+        };
+
+        before(() => {
+            component = renderShallow(<StaffSlots {...props} />).output;
+        });
+
+        it('renders no slots available message', () => {
+            expect(component).to.eql(
+              <div className="staff-slots">
+                <Nav leftClick={() => noop}>
+                  <StaffMember imagePath={props.imagePath} name={props.name} />
+                </Nav>
+
+                <div className="staff-slots-date">{formattedDate}</div>
+                <p className="staff-slots-message">No slots available!</p>
               </div>
             );
         });
