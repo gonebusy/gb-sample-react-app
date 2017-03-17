@@ -66,7 +66,7 @@ describe('<StaffCalendar>', () => {
 
         it(`dispatches ${DATE_SELECTED}`, () => {
             expect(props.dispatch).to.have.been.calledWith(
-                { type: DATE_SELECTED, formattedDate: moment(day).format('YYYY-MM-DD') }
+                { type: DATE_SELECTED, date: moment(day) }
             );
         });
 
