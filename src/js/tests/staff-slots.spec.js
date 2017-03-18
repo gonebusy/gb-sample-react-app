@@ -117,6 +117,7 @@ describe('<StaffSlots>', () => {
                   slot={`${formattedDate} ${slots[0]}`}
                   imagePath={props.imagePath}
                   name={props.name}
+                  navigationController={props.navigationController}
               />
             );
         });

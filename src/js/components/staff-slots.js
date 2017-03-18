@@ -18,6 +18,7 @@ export const StaffSlots = ({ imagePath, name, navigationController, date, slots 
               imagePath={imagePath}
               name={name}
               slot={`${formattedDate} ${time}`}
+              navigationController={navigationController}
           />);
     };
     const renderSlot = (time, index) => (

@@ -14,7 +14,10 @@ describe('<StaffForm>', () => {
         const props = {
             slot: `${dateFormat(new Date('2017-02-01'), 'dddd, d mmm yyyy', true)} 11:15`,
             imagePath: 'http://i.pravatar.cc/300?img=25',
-            name: 'Peter Pickler'
+            name: 'Peter Pickler',
+            navigationController: {
+                popView: spy()
+            }
         };
 
         let component;
