@@ -23,9 +23,10 @@ $ yarn install
 
 ## Run a local dev environment
 Start a local server running on port 8080, at **http://localhost:8080**. Bundles js and css via webpack with hot reload.
+It starts an express server on localhost:4000 to access gonebusy-nodejs-client and all requests made on localhost:8080 proxies to localhost:4000.
 
 ```
-$ yarn start
+$ yarn dev-start
 ```
 
 ## Build Static files for deployment to CDN/hosting
@@ -39,7 +40,7 @@ $ yarn run build
 Minifies js and css and starts server at **http://localhost:4000**
 
 ```
-$ yarn run static
+$ yarn start
 ```
 
 ## Add new dependencies
