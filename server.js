@@ -15,7 +15,7 @@ const resources = Promise.promisifyAll(gonebusy.ResourcesController);
 const app = express();
 
 if (process.env.NODE_ENV === 'production') {
-    var staticPath = path.join(__dirname, '/public');
+    const staticPath = path.join(__dirname, '/public');
     app.use(express.static(staticPath));
 }
 

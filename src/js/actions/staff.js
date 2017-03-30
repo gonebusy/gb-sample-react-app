@@ -1,4 +1,12 @@
-import { STAFF_SELECTED } from 'src/js/action-types';
+import request from 'superagent-bluebird-promise';
+import { STAFF_SELECTED, STAFF_FETCHED } from 'src/js/action-types';
+
+const images = {
+    'James Hunter': 'http://i.pravatar.cc/300?img=69',
+    'Selena Yamada': 'http://i.pravatar.cc/300?img=25',
+    'Sarah Belmoris': 'http://i.pravatar.cc/300?img=32',
+    'Phillip Fry': 'http://i.pravatar.cc/300?img=15'
+};
 
 const getAvailableSlotsForStaff = () => [
     {
@@ -22,6 +30,26 @@ export const selectStaff = staffMember =>
             type: STAFF_SELECTED,
             staffMember,
             availableSlots
+        });
+    };
+
+export const fetchStaff = () =>
+    (dispatch) => {
+        request.get('/service').then((response) => {
+            const staffMembers = [];
+            const resourceIds = response.body;
+            const promises = resourceIds.map(resourceId => (
+                request.get(`/resources/${resourceId}`).then((resourcesResponse) => {
+                    const { id, name } = resourcesResponse.body;
+                    staffMembers.push({ id, name, imagePath: images[name] });
+                })
+            ));
+            Promise.all(promises).then(() => (
+                dispatch({
+                    type: STAFF_FETCHED,
+                    staffMembers
+                })
+            ));
         });
     };
 

@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { STAFF_SELECTED, DATE_SELECTED } from 'src/js/action-types';
+import { STAFF_FETCHED, STAFF_SELECTED, DATE_SELECTED } from 'src/js/action-types';
 import { createNew } from 'src/js/store';
 import { initialState } from 'src/js/reducers/staff';
 import moment from 'moment';
@@ -15,6 +15,50 @@ describe('staff reducers', () => {
         it('has the state populated with staff', () => {
             expect(state).to.eql(initialState);
         });
+    });
+
+    context(`${STAFF_FETCHED} is dispatched`, () => {
+        let state;
+        const staffMembers = [
+            {
+                id: 1,
+                imagePath: 'http://i.pravatar.cc/300?img=69',
+                name: 'James Hunter'
+            },
+            {
+                id: 2,
+                imagePath: 'http://i.pravatar.cc/300?img=25',
+                name: 'Selena Yamada'
+            },
+            {
+                id: 3,
+                imagePath: 'http://i.pravatar.cc/300?img=32',
+                name: 'Sarah Belmoris'
+            },
+            {
+                id: 4,
+                imagePath: 'http://i.pravatar.cc/300?img=15',
+                name: 'Phillip Fry'
+            }
+        ];
+        before(() => {
+            const store = createNew();
+            store.dispatch(
+                {
+                    type: STAFF_FETCHED,
+                    staffMembers,
+                }
+            );
+            state = store.getState().staff;
+        });
+
+        it('adds fetched staffMembers to the store', () => {
+            expect(state).to.eql({
+                ...initialState,
+                staffMembers
+            });
+        });
+
     });
 
     context(`${STAFF_SELECTED} is dispatched`, () => {
