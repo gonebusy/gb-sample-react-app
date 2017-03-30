@@ -10,18 +10,20 @@
     "test:unit": "env NODE_ENV=test karma start karma.conf.js",
     "test:unit:watch": "yarn test:unit -- --single-run=false --reporters=mocha,notify",
     "watch": "yarn test:unit:watch",
-    "start": "webpack-dev-server --progress --profile --colors",
+    "dev-start": "NODE_ENV=development node ./server & webpack-dev-server --progress --profile --colors",
     "build": "NODE_ENV=production webpack --progress --profile --colors",
-    "static": "yarn run build & node ./server"
+    "start": "yarn run build & NODE_ENV=production node ./server"
   },
   "config": {
     "lintables": "src lib webpack.config.js karma.conf.js"
   },
   "dependencies": {
     "babel-runtime": "^6.3.19",
+    "bluebird": "^3.5.0",
     "brfs": "^1.4.1",
     "css-raw-loader": "^0.1.1",
     "dateformat": "^2.0.0",
+    "gonebusy-nodejs-client": "^0.0.9",
     "json-loader": "^0.5.4",
     "moment": "^2.17.1",
     "react": "^15.4.2",
@@ -33,6 +35,8 @@
     "redux": "^3.5.2",
     "redux-thunk": "^2.0.1",
     "sass-loader": "^4.0.2",
+    "superagent": "^3.5.2",
+    "superagent-bluebird-promise": "^4.2.0",
     "transform-loader": "^0.2.3"
   },
   "devDependencies": {

@@ -106,7 +106,10 @@ if (process.env.NODE_ENV === 'production') {
 
         port: '8080',
         host: 'localhost',
-        stats: { colors: true }
+        stats: { colors: true },
+        proxy: {
+            '*': 'http://localhost:4000'
+        }
     };
 
     config.plugins.push(new webpack.NoErrorsPlugin());
