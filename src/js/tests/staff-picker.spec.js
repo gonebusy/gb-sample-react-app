@@ -3,7 +3,8 @@ import React from 'react';
 import { findAllWithType } from 'react-shallow-testutils';
 import renderShallow from 'render-shallow';
 import { spy, stub } from 'sinon';
-import * as staffActions from 'src/js/actions/staff';
+import { STAFF_SELECTED } from 'src/js/action-types';
+import request from 'superagent-bluebird-promise';
 import { createNew } from 'src/js/store';
 import noop from '../../../lib/util/noop';
 import StaffPickerConnected, { StaffPicker } from '../components/staff-picker';
@@ -108,24 +109,49 @@ describe('<StaffPicker>', () => {
             ],
             dispatch: spy()
         };
+        const mockSlotsResponse =
+            {
+                body: [{
+                    available_slots: [
+                        {
+                            date: '2017-03-27',
+                            slots: '2017-03-27T18:00:00Z, 2017-03-27T18:15:00Z'
+                        }
+                    ],
+                    id: 1
+                }]
+            };
 
-        before(() => {
-            stub(staffActions, 'selectStaff').withArgs(props.staffMembers[0]);
+        before((done) => {
+            stub(request, 'get').returns(Promise.resolve(mockSlotsResponse));
+
             const component = renderShallow(
               <StaffPicker {...props} />
             ).output;
 
             const firstStaffMember = findAllWithType(component, StaffMember)[0];
-            firstStaffMember.props.onStaffClick();
+            setTimeout(() => {
+                firstStaffMember.props.onStaffClick();
+                done();
+            });
         });
 
         after(() => {
-            staffActions.selectStaff.restore();
+            request.get.restore();
         });
 
         it('invokes selectStaff action', () => {
             expect(props.dispatch).to.have.been.calledWith(
-                staffActions.selectStaff(props.staffMembers[0])
+                {
+                    type: STAFF_SELECTED,
+                    staffMember: props.staffMembers[0],
+                    availableSlots:
+                    {
+                        '2017-03-27': [
+                            '6:00 PM', '6:15 PM'
+                        ]
+                    }
+                }
             );
         });
 
