@@ -22,8 +22,19 @@ describe('<StaffCalendar>', () => {
             imagePath: 'some/path',
             name: 'someName',
             navigationController: {},
-            dispatch: noop
+            dispatch: noop,
+            availableSlots: {
+                '2017-03-31': [
+                    '02:00 PM'
+                ]
+            }
         };
+
+        // push every date before 3/31 to disabledDates
+        const disabledDates = [];
+        for (let i = 1; i < 31; i += 1)
+            disabledDates.push(new Date(`2017-03-${i}`));
+
 
         before(() => {
             component = renderShallow(<StaffCalendar {...props} />).output;
@@ -40,6 +51,7 @@ describe('<StaffCalendar>', () => {
                   <DayPicker
                       onDayClick={noop}
                       weekdaysShort={['S', 'M', 'T', 'W', 'T', 'F', 'S']}
+                      disabledDays={disabledDates}
                   />
                 </div>
               </div>
@@ -54,19 +66,27 @@ describe('<StaffCalendar>', () => {
             navigationController: {
                 pushView: spy()
             },
-            dispatch: spy()
+            dispatch: spy(),
+            availableSlots: {
+                '2017-03-31': [
+                    '02:00 PM'
+                ]
+            }
         };
-        const day = moment();
+        const day = moment.utc();
 
-        before(() => {
+        before((done) => {
             const component = renderShallow(<StaffCalendar {...props} />).output;
             const dayPicker = findWithType(component, DayPicker);
-            dayPicker.props.onDayClick(day);
+            setTimeout(() => {
+                dayPicker.props.onDayClick(day);
+                done();
+            });
         });
 
         it(`dispatches ${DATE_SELECTED}`, () => {
             expect(props.dispatch).to.have.been.calledWith(
-                { type: DATE_SELECTED, date: moment(day) }
+                { type: DATE_SELECTED, date: day }
             );
         });
 
@@ -89,7 +109,12 @@ describe('<StaffCalendar>', () => {
             navigationController: {
                 popView: spy()
             },
-            dispatch: noop
+            dispatch: noop,
+            availableSlots: {
+                '2017-03-31': [
+                    '02:00 PM'
+                ]
+            }
         };
 
         before(() => {
@@ -113,12 +138,10 @@ describe('<StaffCalendar>', () => {
             id: 4,
             imagePath: 'http://i.pravatar.cc/300?img=15',
             name: 'Phillip Fry',
-            availableSlots: [
-                {
-                    date: '2017-04-01',
-                    slots: ['7:00', '8:00']
-                }
-            ]
+            availableSlots:
+            {
+                '2017-04-01': ['7:00 PM', '8:00 PM']
+            }
         };
 
         before(() => {
@@ -138,6 +161,7 @@ describe('<StaffCalendar>', () => {
                   imagePath={selectedStaffMember.imagePath}
                   name={selectedStaffMember.name}
                   navigationController={navigationController}
+                  availableSlots={selectedStaffMember.availableSlots}
               />
             );
         });
