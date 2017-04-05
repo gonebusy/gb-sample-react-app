@@ -1,10 +1,11 @@
 import { expect } from 'chai';
 import { stub } from 'sinon';
 import React from 'react';
-import { STAFF_FETCHED } from 'src/js/action-types';
+import { SLOTS_FETCHED, STAFF_FETCHED } from 'src/js/action-types';
 import request from 'superagent-bluebird-promise';
 import renderShallow from 'render-shallow';
 import store from 'src/js/store';
+import moment from 'moment';
 import App from '../components/app';
 
 describe('<App>', () => {
@@ -21,16 +22,48 @@ describe('<App>', () => {
         const staffMembers = [
             { id: 1, name: 'James Hunter', imagePath: 'http://i.pravatar.cc/300?img=69' }
         ];
+
+
+        const startDate = moment.utc();
+        const formattedStartDate = startDate.format('YYYY-MM-DD');
+        const formattedEndDate = startDate.endOf('month').format('YYYY-MM-DD');
         const serviceEndpoint = '/service';
         const resourcesEndpoint = `/resources/${staffMembers[0].id}`;
-
+        const slotsEndpoint = `/slots?startDate=${formattedStartDate}&endDate=${formattedEndDate}`;
+        const availableSlots = {
+            body: [
+                {
+                    available_slots: [
+                        {
+                            date: formattedStartDate,
+                            slots: `${formattedStartDate}T12:00:00Z`
+                        }
+                    ],
+                    id: 1
+                }
+            ]
+        };
+        const allAvailableSlots = {
+            1: {
+                [startDate.month()]: {
+                    [formattedStartDate]: ['12:00 PM']
+                }
+            }
+        };
         before((done) => {
             stub(request, 'get')
                 .withArgs(serviceEndpoint)
                 .returns(Promise.resolve(service))
                 .withArgs(resourcesEndpoint)
-                .returns(Promise.resolve(resource));
+                .returns(Promise.resolve(resource))
+                .withArgs(slotsEndpoint)
+                .returns(Promise.resolve(availableSlots));
             stub(store, 'dispatch');
+            stub(store, 'getState').returns({
+                staff: {
+                    allAvailableSlots: {}
+                }
+            });
             setTimeout(() => {
                 const { instance } = renderShallow(<App />);
                 instance().componentWillMount();
@@ -55,10 +88,23 @@ describe('<App>', () => {
             );
         });
 
+        it(`calls GET with ${slotsEndpoint}`, () => {
+            expect(request.get).to.have.been.calledWith(
+                slotsEndpoint
+            );
+        });
+
         it(`dispatches with ${STAFF_FETCHED}`, () => {
             expect(store.dispatch).to.have.been.calledWith({
                 type: STAFF_FETCHED,
                 staffMembers
+            });
+        });
+
+        it(`dispatches with ${SLOTS_FETCHED}`, () => {
+            expect(store.dispatch).to.have.been.calledWith({
+                type: SLOTS_FETCHED,
+                allAvailableSlots
             });
         });
     });

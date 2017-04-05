@@ -1,5 +1,8 @@
 import { expect } from 'chai';
-import { STAFF_FETCHED, STAFF_SELECTED, DATE_SELECTED } from 'src/js/action-types';
+import {
+    MONTH_SELECTED, SLOTS_FETCHED,
+    STAFF_FETCHED, STAFF_SELECTED, DATE_SELECTED
+} from 'src/js/action-types';
 import { createNew } from 'src/js/store';
 import { initialState } from 'src/js/reducers/staff';
 import moment from 'moment';
@@ -166,6 +169,137 @@ describe('staff reducers', () => {
                 });
             });
 
+        });
+
+    });
+
+    context(`when ${MONTH_SELECTED} is dispatched`, () => {
+        const month = moment.utc('2017-03-01').month();
+        let state;
+        const allAvailableSlots = {
+            4: {
+                2: {
+                    '2017-03-30': ['6:00 PM', '6:30 PM']
+                }
+            },
+            3: {
+                2: {
+                    '2017-03-31': ['12:00 PM', '12:30 PM']
+                }
+            }
+        };
+        before(() => {
+            const selectedStaffMember = {
+                id: 4,
+                imagePath: 'http://i.pravatar.cc/300?img=15',
+                name: 'Phillip Fry',
+            };
+
+            const store = createNew(
+                { staff: { ...initialState, selectedStaffMember, allAvailableSlots } }
+            );
+            store.dispatch(
+                {
+                    type: MONTH_SELECTED,
+                    month
+                }
+            );
+            state = store.getState().staff;
+        });
+        it('sets the staff\'s available slot to the selected month', () => {
+            expect(state).to.eql({
+                ...initialState,
+                allAvailableSlots,
+                selectedStaffMember: {
+                    ...state.selectedStaffMember,
+                    availableSlots: allAvailableSlots[4][2]
+                }
+            });
+        });
+    });
+
+    context(`when ${SLOTS_FETCHED} is dispatched`, () => {
+        let state;
+        const allAvailableSlots = {
+            4: {
+                2: {
+                    '2017-03-30': ['6:00 PM', '6:30 PM']
+                }
+            },
+            3: {
+                2: {
+                    '2017-03-31': ['12:00 PM', '12:30 PM']
+                }
+            }
+        };
+
+        const fetchedAvailableSlots = {
+            4: {
+                3: {
+                    '2017-04-30': ['6:00 PM', '6:30 PM']
+                }
+            },
+            3: {
+                3: {
+                    '2017-04-01': ['12:00 PM', '12:30 PM']
+                }
+            }
+        };
+        context('and there availableSlots do not already exist in the state', () => {
+            before(() => {
+
+                const store = createNew({ staff: { ...initialState } });
+                store.dispatch(
+                    {
+                        type: SLOTS_FETCHED,
+                        allAvailableSlots
+                    }
+                );
+                state = store.getState().staff;
+            });
+            it('sets allavailableSlots in the store', () => {
+                expect(state).to.eql({
+                    ...initialState,
+                    allAvailableSlots,
+                });
+            });
+        });
+
+        context('and there availableSlots already exist in the state', () => {
+            before(() => {
+
+                const store = createNew({ staff: { ...initialState, allAvailableSlots } });
+                store.dispatch(
+                    {
+                        type: SLOTS_FETCHED,
+                        allAvailableSlots: fetchedAvailableSlots
+                    }
+                );
+                state = store.getState().staff;
+            });
+            it('merges allAvailableSlots', () => {
+                expect(state).to.eql({
+                    ...initialState,
+                    allAvailableSlots: {
+                        4: {
+                            2: {
+                                '2017-03-30': ['6:00 PM', '6:30 PM']
+                            },
+                            3: {
+                                '2017-04-30': ['6:00 PM', '6:30 PM']
+                            }
+                        },
+                        3: {
+                            2: {
+                                '2017-03-31': ['12:00 PM', '12:30 PM']
+                            },
+                            3: {
+                                '2017-04-01': ['12:00 PM', '12:30 PM']
+                            }
+                        }
+                    },
+                });
+            });
         });
 
     });
