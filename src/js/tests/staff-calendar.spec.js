@@ -13,6 +13,7 @@ import Nav from '../components/nav';
 import StaffCalendarConnected, { StaffCalendar } from '../components/staff-calendar';
 import StaffMember from '../components/staff-member';
 import StaffSlots from '../components/staff-slots';
+import CustomCalNavBar from '../components/custom-cal-nav-bar';
 
 
 describe('<StaffCalendar>', () => {
@@ -27,7 +28,8 @@ describe('<StaffCalendar>', () => {
                 '2017-03-31': [
                     '02:00 PM'
                 ]
-            }
+            },
+            month: moment.utc()
         };
 
         // push every date before 3/31 to disabledDates
@@ -52,6 +54,13 @@ describe('<StaffCalendar>', () => {
                       onDayClick={noop}
                       weekdaysShort={['S', 'M', 'T', 'W', 'T', 'F', 'S']}
                       disabledDays={disabledDates}
+                      navbarElement={
+                        <CustomCalNavBar
+                            dispatch={props.dispatch}
+                            navigationController={props.navigationController}
+                        />
+                      }
+                      month={props.month.toDate()}
                   />
                 </div>
               </div>

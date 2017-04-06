@@ -3,9 +3,10 @@ import React from 'react';
 import { findAllWithType } from 'react-shallow-testutils';
 import renderShallow from 'render-shallow';
 import { spy, stub } from 'sinon';
-import { STAFF_SELECTED } from 'src/js/action-types';
+import { MONTH_SELECTED, STAFF_SELECTED } from 'src/js/action-types';
 import request from 'superagent-bluebird-promise';
 import { createNew } from 'src/js/store';
+import moment from 'moment';
 import noop from '../../../lib/util/noop';
 import StaffPickerConnected, { StaffPicker } from '../components/staff-picker';
 import Nav from '../components/nav';
@@ -145,12 +146,12 @@ describe('<StaffPicker>', () => {
                 {
                     type: STAFF_SELECTED,
                     staffMember: props.staffMembers[0],
-                    availableSlots:
-                    {
-                        '2017-03-27': [
-                            '6:00 PM', '6:15 PM'
-                        ]
-                    }
+                }
+            );
+            expect(props.dispatch).to.have.been.calledWith(
+                {
+                    type: MONTH_SELECTED,
+                    month: moment.utc().month()
                 }
             );
         });

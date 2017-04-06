@@ -39,8 +39,6 @@ describe('staff action creators', () => {
                 ]
             };
 
-            const slotsEndpoint = `/slots?startDate=${startDate}&endDate=${endDate}`;
-
             before((done) => {
                 stub(request, 'get').returns(Promise.resolve(availableSlots));
 
@@ -54,19 +52,10 @@ describe('staff action creators', () => {
                 request.get.restore();
             });
 
-            it(`calls GET with ${slotsEndpoint}`, () => {
-                expect(request.get).to.have.been.calledWith(
-                    slotsEndpoint
-                );
-            });
-
             it(`dispatches with ${STAFF_SELECTED}`, () => {
                 expect(dispatch).to.have.been.calledWith({
                     type: STAFF_SELECTED,
-                    staffMember,
-                    availableSlots: {
-                        '2017-03-30': ['6:00 PM', '6:30 PM']
-                    }
+                    staffMember
                 });
             });
         });
