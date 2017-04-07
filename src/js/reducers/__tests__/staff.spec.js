@@ -1,5 +1,8 @@
 import { expect } from 'chai';
-import { STAFF_FETCHED, STAFF_SELECTED, DATE_SELECTED } from 'src/js/action-types';
+import {
+    MONTH_SELECTED, SLOTS_FETCHED,
+    STAFF_FETCHED, STAFF_SELECTED, DATE_SELECTED
+} from 'src/js/action-types';
 import { createNew } from 'src/js/store';
 import { initialState } from 'src/js/reducers/staff';
 import moment from 'moment';
@@ -21,22 +24,22 @@ describe('staff reducers', () => {
         let state;
         const staffMembers = [
             {
-                id: 1,
+                id: 100001, // resourceId
                 imagePath: 'http://i.pravatar.cc/300?img=69',
                 name: 'James Hunter'
             },
             {
-                id: 2,
+                id: 100002,
                 imagePath: 'http://i.pravatar.cc/300?img=25',
                 name: 'Selena Yamada'
             },
             {
-                id: 3,
+                id: 100003,
                 imagePath: 'http://i.pravatar.cc/300?img=32',
                 name: 'Sarah Belmoris'
             },
             {
-                id: 4,
+                id: 100004,
                 imagePath: 'http://i.pravatar.cc/300?img=15',
                 name: 'Phillip Fry'
             }
@@ -70,7 +73,7 @@ describe('staff reducers', () => {
             }
         ];
         const selectedStaffMember = {
-            id: 4,
+            id: 100004, // resourceId
             imagePath: 'http://i.pravatar.cc/300?img=15',
             name: 'Phillip Fry',
             availableSlots
@@ -102,7 +105,7 @@ describe('staff reducers', () => {
             const formattedDate = '2017-04-01';
             const date = moment(formattedDate);
             const selectedStaffMember = {
-                id: 4,
+                id: 100004, // resourceId
                 imagePath: 'http://i.pravatar.cc/300?img=15',
                 name: 'Phillip Fry',
                 availableSlots: {
@@ -138,7 +141,7 @@ describe('staff reducers', () => {
             const oldDate = moment('1970-10-15');
             before(() => {
                 const selectedStaffMember = {
-                    id: 4,
+                    id: 100004, // resourceId
                     imagePath: 'http://i.pravatar.cc/300?img=15',
                     name: 'Phillip Fry',
                     availableSlots: {
@@ -166,6 +169,137 @@ describe('staff reducers', () => {
                 });
             });
 
+        });
+
+    });
+
+    context(`when ${MONTH_SELECTED} is dispatched`, () => {
+        const month = moment.utc('2017-03-01').month();
+        let state;
+        const allAvailableSlots = {
+            100004: { // resourceId
+                2: { // month index
+                    '2017-03-30': ['6:00 PM', '6:30 PM']
+                }
+            },
+            100003: {
+                2: {
+                    '2017-03-31': ['12:00 PM', '12:30 PM']
+                }
+            }
+        };
+        before(() => {
+            const selectedStaffMember = {
+                id: 100004, // resourceId
+                imagePath: 'http://i.pravatar.cc/300?img=15',
+                name: 'Phillip Fry',
+            };
+
+            const store = createNew(
+                { staff: { ...initialState, selectedStaffMember, allAvailableSlots } }
+            );
+            store.dispatch(
+                {
+                    type: MONTH_SELECTED,
+                    month
+                }
+            );
+            state = store.getState().staff;
+        });
+        it('sets the staff\'s available slot to the selected month', () => {
+            expect(state).to.eql({
+                ...initialState,
+                allAvailableSlots,
+                selectedStaffMember: {
+                    ...state.selectedStaffMember,
+                    availableSlots: allAvailableSlots[100004][2]
+                }
+            });
+        });
+    });
+
+    context(`when ${SLOTS_FETCHED} is dispatched`, () => {
+        let state;
+        const allAvailableSlots = {
+            100004: { // resourceId
+                2: { // month index
+                    '2017-03-30': ['6:00 PM', '6:30 PM']
+                }
+            },
+            100003: {
+                2: {
+                    '2017-03-31': ['12:00 PM', '12:30 PM']
+                }
+            }
+        };
+
+        const fetchedAvailableSlots = {
+            100004: { // resourceId
+                3: { // month index
+                    '2017-04-30': ['6:00 PM', '6:30 PM']
+                }
+            },
+            100003: {
+                3: {
+                    '2017-04-01': ['12:00 PM', '12:30 PM']
+                }
+            }
+        };
+        context('and there availableSlots do not already exist in the state', () => {
+            before(() => {
+
+                const store = createNew({ staff: { ...initialState } });
+                store.dispatch(
+                    {
+                        type: SLOTS_FETCHED,
+                        allAvailableSlots
+                    }
+                );
+                state = store.getState().staff;
+            });
+            it('sets allavailableSlots in the store', () => {
+                expect(state).to.eql({
+                    ...initialState,
+                    allAvailableSlots,
+                });
+            });
+        });
+
+        context('and there availableSlots already exist in the state', () => {
+            before(() => {
+
+                const store = createNew({ staff: { ...initialState, allAvailableSlots } });
+                store.dispatch(
+                    {
+                        type: SLOTS_FETCHED,
+                        allAvailableSlots: fetchedAvailableSlots
+                    }
+                );
+                state = store.getState().staff;
+            });
+            it('merges allAvailableSlots', () => {
+                expect(state).to.eql({
+                    ...initialState,
+                    allAvailableSlots: {
+                        100004: { // resourceId
+                            2: { // month index
+                                '2017-03-30': ['6:00 PM', '6:30 PM']
+                            },
+                            3: {
+                                '2017-04-30': ['6:00 PM', '6:30 PM']
+                            }
+                        },
+                        100003: {
+                            2: {
+                                '2017-03-31': ['12:00 PM', '12:30 PM']
+                            },
+                            3: {
+                                '2017-04-01': ['12:00 PM', '12:30 PM']
+                            }
+                        }
+                    },
+                });
+            });
         });
 
     });
