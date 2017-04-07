@@ -6,10 +6,12 @@ import { selectDate } from 'src/js/actions/staff';
 import Nav from './nav';
 import StaffMember from './staff-member';
 import StaffSlots from './staff-slots';
+import CustomCalNavBar from './custom-cal-nav-bar';
 
 export const StaffCalendar = (
-        { imagePath, name, availableSlots, navigationController, dispatch }
+        { imagePath, name, availableSlots, navigationController, dispatch, month }
     ) => {
+    const targetMonth = availableSlots ? moment.utc(Object.keys(availableSlots)[0]) : moment.utc();
     const handleDayClick = (day) => {
         const selectedDate = moment.utc(day);
         selectDate(selectedDate)(dispatch).then(() => {
@@ -26,15 +28,17 @@ export const StaffCalendar = (
     };
 
     const getDisabledDates = () => {
-        let daysInMonth = moment.utc().daysInMonth();
-        let currentDate = moment.utc().endOf('month');
         const disabledDates = [];
-        while (daysInMonth) {
-            if (!availableSlots[currentDate.format('YYYY-MM-DD')])
-                disabledDates.push(currentDate.toDate());
-            currentDate = currentDate.subtract(1, 'days');
-            daysInMonth -= 1;
-        }
+        let daysInMonth = targetMonth.daysInMonth();
+        let currentDate = targetMonth.endOf('month');
+        if (availableSlots)
+            while (daysInMonth) {
+                if (!availableSlots[currentDate.format('YYYY-MM-DD')])
+                    disabledDates.push(currentDate.toDate());
+                currentDate = currentDate.subtract(1, 'days');
+                daysInMonth -= 1;
+            }
+
         return disabledDates;
     };
 
@@ -48,11 +52,22 @@ export const StaffCalendar = (
           <DayPicker
               onDayClick={handleDayClick}
               weekdaysShort={['S', 'M', 'T', 'W', 'T', 'F', 'S']}
+              month={month.toDate()}
               disabledDays={getDisabledDates()}
+              navbarElement={
+                <CustomCalNavBar
+                    dispatch={dispatch}
+                    navigationController={navigationController}
+                />
+              }
           />
         </div>
       </div>
     );
+};
+
+StaffCalendar.defaultProps = {
+    month: moment.utc()
 };
 
 StaffCalendar.propTypes = {
@@ -60,7 +75,8 @@ StaffCalendar.propTypes = {
     name: PropTypes.string.isRequired,
     navigationController: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
-    availableSlots: PropTypes.object.isRequired
+    availableSlots: PropTypes.object.isRequired,
+    month: PropTypes.object
 };
 
 export const mapStateToProps = (

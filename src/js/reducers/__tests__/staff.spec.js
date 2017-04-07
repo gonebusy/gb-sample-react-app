@@ -66,17 +66,10 @@ describe('staff reducers', () => {
 
     context(`${STAFF_SELECTED} is dispatched`, () => {
         let state;
-        const availableSlots = [
-            {
-                date: '2017-04-01',
-                slots: ['7:00', '8:00']
-            }
-        ];
         const selectedStaffMember = {
             id: 100004, // resourceId
             imagePath: 'http://i.pravatar.cc/300?img=15',
             name: 'Phillip Fry',
-            availableSlots
         };
 
         before(() => {
@@ -84,8 +77,7 @@ describe('staff reducers', () => {
             store.dispatch(
                 {
                     type: STAFF_SELECTED,
-                    staffMember: selectedStaffMember,
-                    availableSlots
+                    staffMember: selectedStaffMember
                 }
             );
             state = store.getState().staff;

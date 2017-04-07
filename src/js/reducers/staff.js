@@ -44,13 +44,10 @@ export default (state = initialState, action) => {
             };
         }
         case STAFF_SELECTED: {
-            const { staffMember, availableSlots } = action;
+            const { staffMember } = action;
             return {
                 ...state,
-                selectedStaffMember: {
-                    ...staffMember,
-                    availableSlots
-                },
+                selectedStaffMember: staffMember
             };
         }
         case DATE_SELECTED: {

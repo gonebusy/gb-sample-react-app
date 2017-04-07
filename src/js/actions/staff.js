@@ -55,20 +55,18 @@ export const fetchSlots = startDate =>
 
     };
 
-export const selectStaff = (staffMember, startDate, endDate) =>
+export const selectStaff = staffMember =>
     dispatch => (
-        request.get(`/slots?startDate=${startDate}&endDate=${endDate}`).then((response) => {
-            let availableSlots = {};
-            const resources = response.body;
-            resources.forEach((resource) => {
-                if (parseInt(resource.id, 10) === parseInt(staffMember.id, 10))
-                    availableSlots = keyOffDate(resource.available_slots);
-            });
+        new Promise((resolve) => {
             dispatch({
                 type: STAFF_SELECTED,
-                staffMember,
-                availableSlots
+                staffMember
             });
+            dispatch({
+                type: MONTH_SELECTED,
+                month: moment.utc().month()
+            });
+            resolve();
         })
     );
 
