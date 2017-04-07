@@ -27,7 +27,7 @@ const keyOffDate = (availableSlots) => {
 export const fetchSlots = startDate =>
     (dispatch, getState) => {
         const month = startDate.month();
-        const anyResourceId = Object.keys(getState().staff.allAvailableSlots)[0];
+        const anyResourceId = Object.keys(getState().staff.allAvailableSlots).shift();
         if (anyResourceId && getState().staff.allAvailableSlots[anyResourceId][month])
             return new Promise((resolve) => {
                 resolve();

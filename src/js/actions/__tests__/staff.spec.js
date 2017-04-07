@@ -20,7 +20,7 @@ describe('staff action creators', () => {
             const startDate = '2017-03-01';
             const endDate = '2017-03-31';
             const staffMember = {
-                id: 4,
+                id: 100004, // resourceId
                 imagePath: 'http://i.pravatar.cc/300?img=15',
                 name: 'Phillip Fry'
             };
@@ -34,7 +34,7 @@ describe('staff action creators', () => {
                                 slots: '2017-03-30T18:00:00Z,2017-03-30T18:30:00Z'
                             }
                         ],
-                        id: 4
+                        id: 100004 // resourceId
                     }
                 ]
             };
@@ -74,16 +74,16 @@ describe('staff action creators', () => {
     describe('fetchStaff', () => {
         context('when invoked', () => {
             const service = {
-                body: [1]
+                body: [100001] // resourceId returned from the service
             };
             const resource = {
                 body: {
-                    id: 1,
+                    id: 100001, // resourceId returned from resources
                     name: 'James Hunter'
                 }
             };
             const staffMembers = [
-                { id: 1, name: 'James Hunter', imagePath: 'http://i.pravatar.cc/300?img=69' }
+                { id: 100001, name: 'James Hunter', imagePath: 'http://i.pravatar.cc/300?img=69' }
             ];
             const serviceEndpoint = '/service';
             const resourcesEndpoint = `/resources/${staffMembers[0].id}`;
@@ -157,7 +157,7 @@ describe('staff action creators', () => {
                             slots: '2017-03-30T18:00:00Z,2017-03-30T18:30:00Z'
                         }
                     ],
-                    id: 4
+                    id: 100004 // resourceId from availableSlots
                 },
                 {
                     available_slots: [
@@ -166,19 +166,19 @@ describe('staff action creators', () => {
                             slots: '2017-03-31T12:00:00Z,2017-03-31T12:30:00Z'
                         }
                     ],
-                    id: 3
+                    id: 100003 // resourceId from availableSlots
                 }
             ]
         };
 
         const allAvailableSlots = {
-            4: {
-                2: {
+            100004: { // resourceId
+                2: { // month index
                     '2017-03-30': ['6:00 PM', '6:30 PM']
                 }
             },
-            3: {
-                2: {
+            100003: { // resourceId
+                2: { // month index
                     '2017-03-31': ['12:00 PM', '12:30 PM']
                 }
             }

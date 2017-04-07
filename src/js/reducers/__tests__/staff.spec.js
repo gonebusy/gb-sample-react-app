@@ -24,22 +24,22 @@ describe('staff reducers', () => {
         let state;
         const staffMembers = [
             {
-                id: 1,
+                id: 100001, // resourceId
                 imagePath: 'http://i.pravatar.cc/300?img=69',
                 name: 'James Hunter'
             },
             {
-                id: 2,
+                id: 100002,
                 imagePath: 'http://i.pravatar.cc/300?img=25',
                 name: 'Selena Yamada'
             },
             {
-                id: 3,
+                id: 100003,
                 imagePath: 'http://i.pravatar.cc/300?img=32',
                 name: 'Sarah Belmoris'
             },
             {
-                id: 4,
+                id: 100004,
                 imagePath: 'http://i.pravatar.cc/300?img=15',
                 name: 'Phillip Fry'
             }
@@ -73,7 +73,7 @@ describe('staff reducers', () => {
             }
         ];
         const selectedStaffMember = {
-            id: 4,
+            id: 100004, // resourceId
             imagePath: 'http://i.pravatar.cc/300?img=15',
             name: 'Phillip Fry',
             availableSlots
@@ -105,7 +105,7 @@ describe('staff reducers', () => {
             const formattedDate = '2017-04-01';
             const date = moment(formattedDate);
             const selectedStaffMember = {
-                id: 4,
+                id: 100004, // resourceId
                 imagePath: 'http://i.pravatar.cc/300?img=15',
                 name: 'Phillip Fry',
                 availableSlots: {
@@ -141,7 +141,7 @@ describe('staff reducers', () => {
             const oldDate = moment('1970-10-15');
             before(() => {
                 const selectedStaffMember = {
-                    id: 4,
+                    id: 100004, // resourceId
                     imagePath: 'http://i.pravatar.cc/300?img=15',
                     name: 'Phillip Fry',
                     availableSlots: {
@@ -177,12 +177,12 @@ describe('staff reducers', () => {
         const month = moment.utc('2017-03-01').month();
         let state;
         const allAvailableSlots = {
-            4: {
-                2: {
+            100004: { // resourceId
+                2: { // month index
                     '2017-03-30': ['6:00 PM', '6:30 PM']
                 }
             },
-            3: {
+            100003: {
                 2: {
                     '2017-03-31': ['12:00 PM', '12:30 PM']
                 }
@@ -190,7 +190,7 @@ describe('staff reducers', () => {
         };
         before(() => {
             const selectedStaffMember = {
-                id: 4,
+                id: 100004, // resourceId
                 imagePath: 'http://i.pravatar.cc/300?img=15',
                 name: 'Phillip Fry',
             };
@@ -212,7 +212,7 @@ describe('staff reducers', () => {
                 allAvailableSlots,
                 selectedStaffMember: {
                     ...state.selectedStaffMember,
-                    availableSlots: allAvailableSlots[4][2]
+                    availableSlots: allAvailableSlots[100004][2]
                 }
             });
         });
@@ -221,12 +221,12 @@ describe('staff reducers', () => {
     context(`when ${SLOTS_FETCHED} is dispatched`, () => {
         let state;
         const allAvailableSlots = {
-            4: {
-                2: {
+            100004: { // resourceId
+                2: { // month index
                     '2017-03-30': ['6:00 PM', '6:30 PM']
                 }
             },
-            3: {
+            100003: {
                 2: {
                     '2017-03-31': ['12:00 PM', '12:30 PM']
                 }
@@ -234,12 +234,12 @@ describe('staff reducers', () => {
         };
 
         const fetchedAvailableSlots = {
-            4: {
-                3: {
+            100004: { // resourceId
+                3: { // month index
                     '2017-04-30': ['6:00 PM', '6:30 PM']
                 }
             },
-            3: {
+            100003: {
                 3: {
                     '2017-04-01': ['12:00 PM', '12:30 PM']
                 }
@@ -281,15 +281,15 @@ describe('staff reducers', () => {
                 expect(state).to.eql({
                     ...initialState,
                     allAvailableSlots: {
-                        4: {
-                            2: {
+                        100004: { // resourceId
+                            2: { // month index
                                 '2017-03-30': ['6:00 PM', '6:30 PM']
                             },
                             3: {
                                 '2017-04-30': ['6:00 PM', '6:30 PM']
                             }
                         },
-                        3: {
+                        100003: {
                             2: {
                                 '2017-03-31': ['12:00 PM', '12:30 PM']
                             },
