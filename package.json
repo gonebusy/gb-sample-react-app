@@ -20,6 +20,7 @@
   "dependencies": {
     "babel-runtime": "^6.3.19",
     "bluebird": "^3.5.0",
+    "body-parser": "^1.17.1",
     "brfs": "^1.4.1",
     "css-raw-loader": "^0.1.1",
     "dateformat": "^2.0.0",
