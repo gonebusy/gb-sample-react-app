@@ -37,10 +37,11 @@ export default (state = initialState, action) => {
             };
         }
         case STAFF_FETCHED: {
-            const { staffMembers } = action;
+            const { staffMembers, duration } = action;
             return {
                 ...state,
-                staffMembers
+                staffMembers,
+                duration
             };
         }
         case STAFF_SELECTED: {

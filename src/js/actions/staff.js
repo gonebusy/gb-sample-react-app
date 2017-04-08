@@ -90,7 +90,8 @@ export const fetchStaff = () =>
     (dispatch) => {
         request.get('/service').then((response) => {
             const staffMembers = [];
-            const resourceIds = response.body;
+            const resourceIds = response.body.resources;
+            const duration = response.body.duration;
             const promises = resourceIds.map(resourceId => (
                 request.get(`/resources/${resourceId}`).then((resourcesResponse) => {
                     const { id, name } = resourcesResponse.body;
@@ -100,7 +101,8 @@ export const fetchStaff = () =>
             Promise.all(promises).then(() => (
                 dispatch({
                     type: STAFF_FETCHED,
-                    staffMembers
+                    staffMembers,
+                    duration
                 })
             ));
         });
