@@ -19,7 +19,7 @@ describe('<StaffSlots>', () => {
 
         const currentDate = moment();
         const formattedDate = dateFormat(currentDate, 'dddd, d mmm yyyy');
-        const slots = ['7:00', '7:15', '7:30', '7:45'];
+        const slots = ['7:00 AM', '7:15 AM', '7:30 AM', '7:45 AM'];
         const props = {
             date: currentDate,
             imagePath: 'some/path',
@@ -40,20 +40,23 @@ describe('<StaffSlots>', () => {
                 </Nav>
 
                 <div className="staff-slots-date">{formattedDate}</div>
-                <ul className="staff-slots-times">
-                  <li className="staff-slots-time" key={0}>
-                    <button onClick={noop}>{slots[0]}</button>
-                  </li>
-                  <li className="staff-slots-time" key={1}>
-                    <button onClick={noop}>{slots[1]}</button>
-                  </li>
-                  <li className="staff-slots-time" key={2}>
-                    <button onClick={noop}>{slots[2]}</button>
-                  </li>
-                  <li className="staff-slots-time" key={3}>
-                    <button onClick={noop}>{slots[3]}</button>
-                  </li>
-                </ul>
+                <div>
+                  <p className="staff-slots-message">Choose your start time</p>
+                  <ul className="staff-slots-times">
+                    <li className="staff-slots-time" key={0}>
+                      <button onClick={noop}>{slots[0]}</button>
+                    </li>
+                    <li className="staff-slots-time" key={1}>
+                      <button onClick={noop}>{slots[1]}</button>
+                    </li>
+                    <li className="staff-slots-time" key={2}>
+                      <button onClick={noop}>{slots[2]}</button>
+                    </li>
+                    <li className="staff-slots-time" key={3}>
+                      <button onClick={noop}>{slots[3]}</button>
+                    </li>
+                  </ul>
+                </div>
               </div>
             );
         });
@@ -91,10 +94,9 @@ describe('<StaffSlots>', () => {
         });
     });
 
-    context('when time is clicked', () => {
+    context('when time is clicked and start time is not set', () => {
         const currentDate = moment();
-        const formattedDate = dateFormat(currentDate, 'dddd, d mmm yyyy');
-        const slots = ['7:00', '7:15', '7:30', '7:45'];
+        const slots = ['7:00 AM', '7:15 AM', '7:30 AM', '7:45 AM'];
         const props = {
             date: currentDate,
             imagePath: 'some/path',
@@ -102,7 +104,8 @@ describe('<StaffSlots>', () => {
             navigationController: {
                 pushView: spy()
             },
-            slots
+            slots,
+            duration: 60
         };
 
         before(() => {
@@ -113,17 +116,19 @@ describe('<StaffSlots>', () => {
 
         it('calls navigationController.pushView with StaffForm', () => {
             expect(props.navigationController.pushView).to.have.been.calledWith(
-              <StaffForm
-                  slot={`${formattedDate} ${slots[0]}`}
+              <StaffSlots
                   imagePath={props.imagePath}
-                  name={props.name}
+                  name={props.name} date={props.date}
+                  navigationController={props.navigationController}
+                  startTime={slots[0]}
+                  slots={['8:00 AM', '8:15 AM', '8:30 AM', '8:45 AM']}
               />
             );
         });
     });
 
     context('when go back is clicked', () => {
-        const slots = ['7:00', '7:15', '7:30', '7:45'];
+        const slots = ['7:00 AM', '7:15 AM', '7:30 AM', '7:45 AM'];
         const props = {
             date: moment(),
             imagePath: 'some/path',
@@ -145,14 +150,98 @@ describe('<StaffSlots>', () => {
         });
     });
 
+    context('when start time is set', () => {
+        let component;
+
+        const currentDate = moment();
+        const formattedDate = dateFormat(currentDate, 'dddd, d mmm yyyy');
+        const slots = ['8:00 AM', '8:15 AM', '8:30 AM', '8:45 AM'];
+        const props = {
+            date: currentDate,
+            imagePath: 'some/path',
+            name: 'someName',
+            navigationController: {},
+            slots,
+            startTime: '7:00 AM'
+        };
+
+        before(() => {
+            component = renderShallow(<StaffSlots {...props} />).output;
+        });
+
+        it('renders staff slots with end times', () => {
+            expect(component).to.eql(
+              <div className="staff-slots">
+                <Nav leftClick={() => noop}>
+                  <StaffMember imagePath={props.imagePath} name={props.name} />
+                </Nav>
+
+                <div className="staff-slots-date">{formattedDate}</div>
+                <div>
+                  <p className="staff-slots-message">Choose your end time</p>
+                  <ul className="staff-slots-times">
+                    <li className="staff-slots-time" key={0}>
+                      <button onClick={noop}>{slots[0]}</button>
+                    </li>
+                    <li className="staff-slots-time" key={1}>
+                      <button onClick={noop}>{slots[1]}</button>
+                    </li>
+                    <li className="staff-slots-time" key={2}>
+                      <button onClick={noop}>{slots[2]}</button>
+                    </li>
+                    <li className="staff-slots-time" key={3}>
+                      <button onClick={noop}>{slots[3]}</button>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            );
+        });
+    });
+    context('when time is clicked and start time is set', () => {
+        const currentDate = moment();
+        const formattedDate = dateFormat(currentDate, 'dddd, d mmm yyyy');
+        const slots = ['8:00 AM', '8:15 AM', '8:30 AM', '8:45 AM'];
+        const props = {
+            date: currentDate,
+            imagePath: 'some/path',
+            name: 'someName',
+            navigationController: {
+                pushView: spy()
+            },
+            slots,
+            duration: 60,
+            startTime: '7:00 AM'
+        };
+
+        before(() => {
+            const component = renderShallow(<StaffSlots {...props} />).output;
+            const firstButton = findAllWithType(component, 'button')[0];
+            firstButton.props.onClick(slots[0]);
+        });
+
+        it('calls navigationController.pushView with StaffForm', () => {
+            expect(props.navigationController.pushView).to.have.been.calledWith(
+              <StaffForm
+                  imagePath={props.imagePath}
+                  name={props.name}
+                  date={`${formattedDate}`}
+                  startTime={props.startTime}
+                  endTime={'8:00 AM'}
+              />
+            );
+        });
+    });
+
     context('when it is connected', () => {
         let store;
         let component;
         const navigationController = {
             pushView: noop
         };
-        const slots = ['7:00', '7:15', '7:30', '7:45'];
+        const slots = ['7:00 AM', '7:15 AM', '7:30 AM', '7:45 AM'];
         const currentDate = moment();
+        const duration = 60;
         const selectedStaffMember = {
             id: 4,
             imagePath: 'http://i.pravatar.cc/300?img=15',
@@ -168,7 +257,7 @@ describe('<StaffSlots>', () => {
         };
 
         before(() => {
-            store = createNew({ staff: { ...initialState, selectedStaffMember } });
+            store = createNew({ staff: { ...initialState, duration, selectedStaffMember } });
             component = renderShallow(
               <StaffSlotsConnected
                   store={store}
@@ -186,6 +275,7 @@ describe('<StaffSlots>', () => {
                   navigationController={navigationController}
                   slots={slots}
                   date={currentDate}
+                  duration={duration}
               />
             );
         });
