@@ -24,7 +24,7 @@ app.get('/service', (req, res) => {
         if(error) {
            console.log(error.errorMessage);
         } else {
-            res.send(success.service.resources);
+            res.send(success.service);
         }
     });
 });

@@ -62,8 +62,12 @@ describe('staff action creators', () => {
     });
     describe('fetchStaff', () => {
         context('when invoked', () => {
+            const duration = 60;
             const service = {
-                body: [100001] // resourceId returned from the service
+                body: {
+                    resources: [100001], // resourceId returned from the service
+                    duration
+                }
             };
             const resource = {
                 body: {
@@ -110,7 +114,8 @@ describe('staff action creators', () => {
             it(`dispatches with ${STAFF_FETCHED}`, () => {
                 expect(store.dispatch).to.have.been.calledWith({
                     type: STAFF_FETCHED,
-                    staffMembers
+                    staffMembers,
+                    duration
                 });
             });
         });

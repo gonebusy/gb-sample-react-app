@@ -22,6 +22,7 @@ describe('staff reducers', () => {
 
     context(`${STAFF_FETCHED} is dispatched`, () => {
         let state;
+        const duration = 60;
         const staffMembers = [
             {
                 id: 100001, // resourceId
@@ -50,6 +51,7 @@ describe('staff reducers', () => {
                 {
                     type: STAFF_FETCHED,
                     staffMembers,
+                    duration
                 }
             );
             state = store.getState().staff;
@@ -58,7 +60,8 @@ describe('staff reducers', () => {
         it('adds fetched staffMembers to the store', () => {
             expect(state).to.eql({
                 ...initialState,
-                staffMembers
+                staffMembers,
+                duration
             });
         });
 

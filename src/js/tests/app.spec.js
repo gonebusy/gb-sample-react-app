@@ -10,17 +10,22 @@ import App from '../components/app';
 
 describe('<App>', () => {
     context('when component mounts', () => {
+        const duration = 60;
+        const resourceId = 100001;
         const service = {
-            body: [1]
+            body: {
+                resources: [resourceId], // resourceId returned from the service
+                duration
+            }
         };
         const resource = {
             body: {
-                id: 1,
+                id: resourceId,
                 name: 'James Hunter'
             }
         };
         const staffMembers = [
-            { id: 1, name: 'James Hunter', imagePath: 'http://i.pravatar.cc/300?img=69' }
+            { id: resourceId, name: 'James Hunter', imagePath: 'http://i.pravatar.cc/300?img=69' }
         ];
 
 
@@ -39,12 +44,12 @@ describe('<App>', () => {
                             slots: `${formattedStartDate}T12:00:00Z`
                         }
                     ],
-                    id: 1
+                    id: resourceId
                 }
             ]
         };
         const allAvailableSlots = {
-            1: {
+            [resourceId]: {
                 [startDate.month()]: {
                     [formattedStartDate]: ['12:00 PM']
                 }
@@ -97,7 +102,8 @@ describe('<App>', () => {
         it(`dispatches with ${STAFF_FETCHED}`, () => {
             expect(store.dispatch).to.have.been.calledWith({
                 type: STAFF_FETCHED,
-                staffMembers
+                staffMembers,
+                duration
             });
         });
 
