@@ -1,0 +1,11 @@
+.booking-confirmation {
+  p {
+    text-align: center;
+    font-size: 2em;
+  }
+  &__image {
+    display: block;
+    margin: auto;
+    width: 40%;
+  }
+}
