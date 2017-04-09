@@ -14,7 +14,9 @@ class StaffForm extends Component {
               <StaffMember imagePath={this.props.imagePath} name={this.props.name} />
             </Nav>
 
-            <div className="staff-slots-date">{this.props.slot}</div>
+            <div className="staff-slots-date">
+              {this.props.date} {this.props.startTime} - {this.props.endTime}
+            </div>
 
             <div className="staff-form__form">
               <div className="staff-form__form-group">
@@ -34,14 +36,20 @@ class StaffForm extends Component {
 }
 
 StaffForm.defaultProps = {
-    navigationController: Object()
+    navigationController: Object(),
+    startTime: '',
+    endTime: '',
+    date: ''
 };
 
 StaffForm.propTypes = {
     imagePath: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    slot: PropTypes.string.isRequired,
-    navigationController: PropTypes.object
+    navigationController: PropTypes.object,
+    date: PropTypes.string,
+    startTime: PropTypes.string,
+    endTime: PropTypes.string
+
 };
 
 export default StaffForm;

@@ -12,9 +12,11 @@ import StaffMember from '../components/staff-member';
 describe('<StaffForm>', () => {
     context('when rendered with required props for StaffForm', () => {
         const props = {
-            slot: `${dateFormat(new Date('2017-02-01'), 'dddd, d mmm yyyy', true)} 11:15`,
+            date: `${dateFormat(new Date('2017-02-01'), 'dddd, d mmm yyyy', true)}`,
             imagePath: 'http://i.pravatar.cc/300?img=25',
-            name: 'Peter Pickler'
+            name: 'Peter Pickler',
+            startTime: '10:15 AM',
+            endTime: '11:15 AM'
         };
 
         let component;
@@ -31,7 +33,7 @@ describe('<StaffForm>', () => {
                   <StaffMember imagePath="http://i.pravatar.cc/300?img=25" name="Peter Pickler" />
                 </Nav>
 
-                <div className="staff-slots-date">Wednesday, 1 Feb 2017 11:15</div>
+                <div className="staff-slots-date">Wednesday, 1 Feb 2017 10:15 AM - 11:15 AM</div>
 
                 <div className="staff-form__form">
                   <div className="staff-form__form-group">
@@ -51,9 +53,11 @@ describe('<StaffForm>', () => {
 
     context('when go back button is clicked', () => {
         const props = {
-            slot: `${dateFormat(new Date('2017-02-01'), 'dddd, d mmm yyyy', true)} 11:15`,
+            date: `${dateFormat(new Date('2017-02-01'), 'dddd, d mmm yyyy', true)}`,
             imagePath: 'http://i.pravatar.cc/300?img=25',
             name: 'Peter Pickler',
+            startTime: '10:15 AM',
+            endTime: '11:15 AM',
             navigationController: {
                 popView: spy()
             }
