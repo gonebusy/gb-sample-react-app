@@ -31,7 +31,7 @@ describe('staff action creators', () => {
                         available_slots: [
                             {
                                 date: '2017-03-30',
-                                slots: '2017-03-30T18:00:00Z,2017-03-30T18:30:00Z'
+                                slots: ['2017-03-30T18:00:00Z', '2017-03-30T18:30:00Z']
                             }
                         ],
                         id: 100004 // resourceId
@@ -148,7 +148,7 @@ describe('staff action creators', () => {
                     available_slots: [
                         {
                             date: '2017-03-30',
-                            slots: '2017-03-30T18:00:00Z,2017-03-30T18:30:00Z'
+                            slots: ['2017-03-30T18:00:00Z', '2017-03-30T18:30:00Z']
                         }
                     ],
                     id: 100004 // resourceId from availableSlots
@@ -157,7 +157,7 @@ describe('staff action creators', () => {
                     available_slots: [
                         {
                             date: '2017-03-31',
-                            slots: '2017-03-31T12:00:00Z,2017-03-31T12:30:00Z'
+                            slots: ['2017-03-31T12:00:00Z', '2017-03-31T12:30:00Z']
                         }
                     ],
                     id: 100003 // resourceId from availableSlots

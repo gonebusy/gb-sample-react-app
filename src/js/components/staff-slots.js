@@ -46,7 +46,7 @@ export const StaffSlots = (
               <StaffForm
                   imagePath={imagePath}
                   name={name}
-                  date={`${formattedDate}`}
+                  date={date}
                   startTime={startTime}
                   endTime={time}
               />);
