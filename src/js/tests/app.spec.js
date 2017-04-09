@@ -41,7 +41,7 @@ describe('<App>', () => {
                     available_slots: [
                         {
                             date: formattedStartDate,
-                            slots: `${formattedStartDate}T12:00:00Z`
+                            slots: [`${formattedStartDate}T12:00:00Z`]
                         }
                     ],
                     id: resourceId

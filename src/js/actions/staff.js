@@ -16,7 +16,7 @@ const keyOffDate = (availableSlots) => {
     const formattedSlots = {};
     availableSlots.forEach(({ date, slots }) => {
         const formattedDate = moment.utc(date).format('YYYY-MM-DD');
-        formattedSlots[formattedDate] = slots.split(',').map(slot => (
+        formattedSlots[formattedDate] = slots.map(slot => (
             moment.utc(slot).format('h:mm A')
         ));
 

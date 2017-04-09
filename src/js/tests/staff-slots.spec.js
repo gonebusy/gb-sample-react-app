@@ -200,7 +200,6 @@ describe('<StaffSlots>', () => {
     });
     context('when time is clicked and start time is set', () => {
         const currentDate = moment();
-        const formattedDate = dateFormat(currentDate, 'dddd, d mmm yyyy');
         const slots = ['8:00 AM', '8:15 AM', '8:30 AM', '8:45 AM'];
         const props = {
             date: currentDate,
@@ -225,7 +224,7 @@ describe('<StaffSlots>', () => {
               <StaffForm
                   imagePath={props.imagePath}
                   name={props.name}
-                  date={`${formattedDate}`}
+                  date={currentDate}
                   startTime={props.startTime}
                   endTime={'8:00 AM'}
               />
