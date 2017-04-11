@@ -7,12 +7,14 @@ import StaffCalendar from './staff-calendar';
 const CustomCalNavBar = (
         { nextMonth, previousMonth, className, dispatch, navigationController }
     ) => {
+    const PUSH_LEFT = 1;
+    const PUSH_RIGHT = 2;
     const monthNavHandler = (startOfMonth, navType) => () => {
         const startDate = moment(startOfMonth);
         dispatch(fetchSlots(startDate)).then(() => {
             dispatch(selectMonth(startDate.month())).then(() => {
                 navigationController.pushView(<StaffCalendar month={startDate} />, {
-                    transition: navType === 'next' ? 1 : 2
+                    transition: navType === 'next' ? PUSH_LEFT : PUSH_RIGHT
                 });
             });
         });
