@@ -7,23 +7,29 @@ import StaffCalendar from './staff-calendar';
 const CustomCalNavBar = (
         { nextMonth, previousMonth, className, dispatch, navigationController }
     ) => {
-    const monthNavHandler = startOfMonth => () => {
+    const monthNavHandler = (startOfMonth, navType) => () => {
         const startDate = moment(startOfMonth);
         dispatch(fetchSlots(startDate)).then(() => {
             dispatch(selectMonth(startDate.month())).then(() => {
-                navigationController.pushView(<StaffCalendar month={startDate} />);
+                navigationController.pushView(<StaffCalendar month={startDate} />, {
+                    transition: navType === 'next' ? 1 : 2
+                });
             });
         });
     };
+    // only enable previous button for months that are after current month
+    const enablePrevious = moment(previousMonth).isAfter(moment.utc().subtract(1, 'months'));
     return (
       <div className={className} style={{ fontSize: '.75em' }}>
+        { enablePrevious &&
         <span
             className="DayPicker-NavButton DayPicker-NavButton--prev"
-            onClick={monthNavHandler(previousMonth)}
+            onClick={monthNavHandler(previousMonth, 'previous')}
         />
+        }
         <span
             className="DayPicker-NavButton DayPicker-NavButton--next"
-            onClick={monthNavHandler(nextMonth)}
+            onClick={monthNavHandler(nextMonth, 'next')}
         />
       </div>
     );
