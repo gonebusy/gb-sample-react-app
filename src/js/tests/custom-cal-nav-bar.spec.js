@@ -5,6 +5,7 @@ import { spy, stub } from 'sinon';
 import { findAllWithType } from 'react-shallow-testutils';
 import * as staffActions from 'src/js/actions/staff';
 import moment from 'moment';
+import { TRANSITIONS } from 'src/js/constants';
 import noop from '../../../lib/util/noop';
 import CustomCalNavBar from '../components/custom-cal-nav-bar';
 import StaffCalendar from '../components/staff-calendar';
@@ -94,7 +95,7 @@ describe('<CustomCalNavBar>', () => {
 
         it('pushes the view to <StaffCalendar>', () => {
             expect(navigationController.pushView).to.have.been.calledWith(
-              <StaffCalendar month={nextMonth} />, { transition: 1 }
+              <StaffCalendar month={nextMonth} />, { transition: TRANSITIONS.PUSH_LEFT }
             );
         });
     });
@@ -132,7 +133,7 @@ describe('<CustomCalNavBar>', () => {
 
         it('pushes the view to <StaffCalendar>', () => {
             expect(navigationController.pushView).to.have.been.calledWith(
-              <StaffCalendar month={nextMonth} />, { transition: 2 }
+              <StaffCalendar month={nextMonth} />, { transition: TRANSITIONS.PUSH_RIGHT }
             );
         });
     });

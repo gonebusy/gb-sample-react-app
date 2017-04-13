@@ -2,19 +2,18 @@ import React from 'react';
 import { NavbarPropTypes } from 'react-day-picker';
 import moment from 'moment';
 import { fetchSlots, selectMonth } from 'src/js/actions/staff';
+import { TRANSITIONS } from 'src/js/constants';
 import StaffCalendar from './staff-calendar';
 
 const CustomCalNavBar = (
         { nextMonth, previousMonth, className, dispatch, navigationController }
     ) => {
-    const PUSH_LEFT = 1;
-    const PUSH_RIGHT = 2;
     const monthNavHandler = (startOfMonth, navType) => () => {
         const startDate = moment(startOfMonth);
         dispatch(fetchSlots(startDate)).then(() => {
             dispatch(selectMonth(startDate.month())).then(() => {
                 navigationController.pushView(<StaffCalendar month={startDate} />, {
-                    transition: navType === 'next' ? PUSH_LEFT : PUSH_RIGHT
+                    transition: navType === 'next' ? TRANSITIONS.PUSH_LEFT : TRANSITIONS.PUSH_RIGHT
                 });
             });
         });
