@@ -4,11 +4,16 @@ const gonebusy = require('gonebusy-nodejs-client');
 const Promise = require('bluebird').Promise;
 const url = require('url');
 const bodyParser = require('body-parser');
+const dotenv = require('dotenv');
 
-gonebusy.configuration.BASEURI = 'https://sandbox.gonebusy.com/api/v1';
-const authorization = 'Token ad86866858ea7c256390f96f58c520df';
-const serviceId = 2010395226;
-const userId = 9309567258;
+/* Loads variables from .env */
+dotenv.load();
+const { BASEURI, API_KEY, SERVICE_ID, USER_ID, PORT } = process.env;
+
+gonebusy.configuration.BASEURI = BASEURI;
+const authorization = `Token ${API_KEY}`;
+const serviceId = SERVICE_ID;
+const userId = USER_ID;
 
 const services = Promise.promisifyAll(gonebusy.ServicesController);
 const resources = Promise.promisifyAll(gonebusy.ResourcesController);
@@ -77,6 +82,6 @@ app.post('/bookings/new', (req, res) => {
     });
 });
 
-app.listen(4000, () => {
-    console.log('listening on port 4000');
+app.listen(PORT, () => {
+    console.log(`listening on port ${PORT}`);
 });
