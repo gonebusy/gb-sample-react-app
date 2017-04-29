@@ -10,10 +10,8 @@ const resources = Promise.promisifyAll(gonebusy.ResourcesController);
 const schedules = Promise.promisifyAll(gonebusy.SchedulesController);
 
 const AUTH_TOKEN = process.argv[2];
-if (!AUTH_TOKEN) {
-    console.log('please provide your API token');
-    return;
-}
+const TEAR_DOWN = process.argv[3];
+
 
 const createResources = () => {
     const staffMembers = [
@@ -42,6 +40,17 @@ const createResources = () => {
     return promises;
 };
 
+const deleteResources = (resourceIds) => {
+    resourceIds.forEach((resourceId) => {
+        resources.deleteResourceById({id: resourceId, authorization: AUTH_TOKEN}, (error) => {
+            if (error) {
+                console.log(error.errorMessage);
+                console.log(`Error in deleting resource: ${resourceId}`);
+            }
+        });
+    });
+};
+
 const createService = (resourceIds) => {
     const createServiceBody = {
         name: 'LSAT Tutoring',
@@ -65,6 +74,15 @@ const createService = (resourceIds) => {
                 resolve({scheduleIds: schedules, userId: ownerId, serviceId: id});
             }
         });
+    });
+};
+
+const deleteService = (serviceId) => {
+    services.deleteServiceById({id: serviceId, authorization: AUTH_TOKEN}, (error) => {
+        if(error) {
+            console.log(error.errorMessage);
+            console.log(`error in deleting service: ${serviceId}`);
+       }
     });
 };
 
@@ -120,6 +138,43 @@ const createSchedules = (scheduleIds) => {
     }
     return promises;
 };
+
+const deleteSchedules = (scheduleIds) => {
+    scheduleIds.forEach(scheduleId => {
+        schedules.deleteScheduleById({id: scheduleId, authorization: AUTH_TOKEN}, (error) => {
+           if (error) {
+               console.log(error.errorMessage);
+               console.log(`error in deleting schedule: ${scheduleId}`);
+           }
+        });
+    });
+};
+
+if (!AUTH_TOKEN) {
+    console.log('please provide your API token');
+    return;
+}
+
+if (TEAR_DOWN === 'teardown') {
+    services.getServices({authorization: AUTH_TOKEN}, (error, success) => {
+        if (error) {
+            console.log('error in retrieving services');
+        } else {
+            const services = success.services;
+            console.log(success);
+            services.forEach(({ resources, schedules, id}) => {
+                console.log(`deleting service: ${id}`);
+                console.log(`deleting schedules: ${schedules} for service ${id}`);
+                deleteSchedules(schedules);
+                console.log(`deleting resources: ${resources} for service ${id}`);
+                deleteResources(resources);
+                deleteService(id);
+                console.log(`deleted service: ${id}`)
+            });
+        }
+    });
+    return;
+}
 
 
 console.log('creating resources...');

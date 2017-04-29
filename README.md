@@ -24,8 +24,13 @@ $ yarn install
 ## Setup sample resources, service, and time windows
 
 [How to obtain API KEY](https://gonebusy.github.io/api#/quick_start#step_1)
+ 
 ```
+# To create new resources, service, and time windows
 yarn setup -- API_KEY
+
+# To teardown all resources, service, and time windows
+yarn setup -- API_KEY teardown
 ```
 
 ## Run a local dev environment
