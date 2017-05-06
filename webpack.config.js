@@ -108,7 +108,7 @@ if (process.env.NODE_ENV === 'production') {
         host: 'localhost',
         stats: { colors: true },
         proxy: {
-            '*': 'http://localhost:4000'
+            '/api/**': { target: 'http://localhost:4000', secure: false }
         }
     };
 

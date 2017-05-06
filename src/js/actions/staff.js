@@ -36,7 +36,7 @@ export const fetchSlots = startDate =>
         const formattedStartDate = startDate.format('YYYY-MM-DD');
         const formattedEndDate = startDate.endOf('month').format('YYYY-MM-DD');
         return request.get(
-                `/slots?startDate=${formattedStartDate}&endDate=${formattedEndDate}`
+                `/api/slots?startDate=${formattedStartDate}&endDate=${formattedEndDate}`
             ).then((response) => {
                 let availableSlots = {};
                 const resources = response.body;
@@ -88,12 +88,12 @@ export const selectMonth = month =>
 
 export const fetchStaff = () =>
     (dispatch) => {
-        request.get('/service').then((response) => {
+        request.get('/api/service').then((response) => {
             const staffMembers = [];
             const resourceIds = response.body.resources;
             const duration = response.body.duration;
             const promises = resourceIds.map(resourceId => (
-                request.get(`/resources/${resourceId}`).then((resourcesResponse) => {
+                request.get(`/api/resources/${resourceId}`).then((resourcesResponse) => {
                     const { id, name } = resourcesResponse.body;
                     staffMembers.push({ id, name, imagePath: images[name] });
                 })
