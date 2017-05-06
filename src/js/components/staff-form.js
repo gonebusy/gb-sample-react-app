@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import request from 'superagent-bluebird-promise';
 import Nav from './nav';
-import StaffMember from './staff-member';
 import BookingConfirmation from './booking-confirmation';
 
 export class StaffForm extends Component {
@@ -12,7 +11,7 @@ export class StaffForm extends Component {
     }
     confirmBooking() {
         return () => {
-            const { startTime, endTime, date, id, imagePath, name } = this.props;
+            const { startTime, endTime, date, id } = this.props;
             const formattedDate = date.format('YYYY-MM-DD');
             const duration = moment(`${formattedDate} ${endTime}`, ['YYYY-MM-DD h:mm A']).diff(
                 moment(`${formattedDate} ${startTime}`, ['YYYY-MM-DD h:mm A']), 'minutes');
@@ -22,11 +21,11 @@ export class StaffForm extends Component {
                 time: startTime,
                 duration
             };
-            request.post('/bookings/new', body).then(() => {
+            request.post('/api/bookings/new', body).then(() => {
                 this.props.navigationController.pushView(
                   <BookingConfirmation
-                      imagePath={imagePath} name={name}
-                      startTime={startTime} endTime={endTime}
+                      startTime={startTime}
+                      endTime={endTime}
                       date={formattedDate}
                   />, { transition: 0 });
             });
@@ -36,9 +35,7 @@ export class StaffForm extends Component {
     render() {
         return (
           <div className="staff-form">
-            <Nav leftClick={() => this.goBack()}>
-              <StaffMember imagePath={this.props.imagePath} name={this.props.name} />
-            </Nav>
+            <Nav leftClick={() => this.goBack()} />
             <div className="staff-slots-date">
               <p>{this.props.date.format('dddd, do MMM YYYY')}</p>
               <p>{this.props.startTime} - {this.props.endTime}</p>
@@ -69,8 +66,6 @@ StaffForm.defaultProps = {
 
 StaffForm.propTypes = {
     id: PropTypes.number.isRequired,
-    imagePath: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
     navigationController: PropTypes.object,
     date: PropTypes.object.isRequired,
     startTime: PropTypes.string.isRequired,
@@ -81,15 +76,11 @@ const mapStateToProps = (
     {
         staff: {
             selectedStaffMember: {
-                id,
-                name,
-                imagePath
+                id
             }
         }
     }) => ({
-        id,
-        name,
-        imagePath
+        id
     });
 
 export default connect(mapStateToProps)(StaffForm);

@@ -11,7 +11,6 @@ import { DATE_SELECTED } from 'src/js/action-types';
 import { initialState } from 'src/js/reducers/staff';
 import Nav from '../components/nav';
 import StaffCalendarConnected, { StaffCalendar } from '../components/staff-calendar';
-import StaffMember from '../components/staff-member';
 import StaffSlots from '../components/staff-slots';
 import CustomCalNavBar from '../components/custom-cal-nav-bar';
 
@@ -20,8 +19,6 @@ describe('<StaffCalendar>', () => {
     context('when rendered with props', () => {
         let component;
         const props = {
-            imagePath: 'some/path',
-            name: 'someName',
             navigationController: {},
             dispatch: noop,
             availableSlots: {
@@ -45,9 +42,7 @@ describe('<StaffCalendar>', () => {
         it('renders a staff calendar', () => {
             expect(component).to.eql(
               <div className="staff-calendar">
-                <Nav leftClick={() => noop()}>
-                  <StaffMember imagePath={props.imagePath} name={props.name} />
-                </Nav>
+                <Nav leftClick={() => noop()} />
 
                 <div className="staff-calendar-picker">
                   <DayPicker
@@ -70,8 +65,6 @@ describe('<StaffCalendar>', () => {
 
     context('when a calendar day is clicked', () => {
         const props = {
-            imagePath: 'some/path',
-            name: 'someName',
             navigationController: {
                 pushView: spy()
             },
@@ -103,8 +96,6 @@ describe('<StaffCalendar>', () => {
             expect(props.navigationController.pushView).to.have.been.calledWith(
               <StaffSlots
                   date={day}
-                  imagePath={props.imagePath}
-                  name={props.name}
                   navigationController={props.navigationController}
               />
             );
@@ -113,8 +104,6 @@ describe('<StaffCalendar>', () => {
 
     context('when go back is clicked', () => {
         const props = {
-            imagePath: 'some/path',
-            name: 'someName',
             navigationController: {
                 popView: spy()
             },
@@ -167,8 +156,6 @@ describe('<StaffCalendar>', () => {
               <StaffCalendar
                   dispatch={noop}
                   store={store}
-                  imagePath={selectedStaffMember.imagePath}
-                  name={selectedStaffMember.name}
                   navigationController={navigationController}
                   availableSlots={selectedStaffMember.availableSlots}
               />

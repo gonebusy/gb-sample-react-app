@@ -53,7 +53,7 @@ describe('<StaffPicker>', () => {
         it('renders with staff members', () => {
             expect(component).to.eql(
               <div className="staff-picker">
-                <Nav>Choose a Staff Member</Nav>
+                <Nav />
                 <div className="staff">
                   <StaffMember
                       onStaffClick={noop}

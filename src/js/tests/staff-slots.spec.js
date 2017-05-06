@@ -9,7 +9,6 @@ import { createNew } from 'src/js/store';
 import { initialState } from 'src/js/reducers/staff';
 import { findWithType, findAllWithType } from 'react-shallow-testutils';
 import Nav from '../components/nav';
-import StaffMember from '../components/staff-member';
 import StaffSlotsConnected, { StaffSlots } from '../components/staff-slots';
 import StaffForm from '../components/staff-form';
 
@@ -22,8 +21,6 @@ describe('<StaffSlots>', () => {
         const slots = ['7:00 AM', '7:15 AM', '7:30 AM', '7:45 AM'];
         const props = {
             date: currentDate,
-            imagePath: 'some/path',
-            name: 'someName',
             navigationController: {},
             slots
         };
@@ -35,9 +32,7 @@ describe('<StaffSlots>', () => {
         it('renders staff slots', () => {
             expect(component).to.eql(
               <div className="staff-slots">
-                <Nav leftClick={() => noop}>
-                  <StaffMember imagePath={props.imagePath} name={props.name} />
-                </Nav>
+                <Nav leftClick={() => noop} />
 
                 <div className="staff-slots-date">{formattedDate}</div>
                 <div>
@@ -70,8 +65,6 @@ describe('<StaffSlots>', () => {
         const slots = [];
         const props = {
             date: currentDate,
-            imagePath: 'some/path',
-            name: 'someName',
             navigationController: {},
             slots
         };
@@ -83,10 +76,7 @@ describe('<StaffSlots>', () => {
         it('renders no slots available message', () => {
             expect(component).to.eql(
               <div className="staff-slots">
-                <Nav leftClick={() => noop}>
-                  <StaffMember imagePath={props.imagePath} name={props.name} />
-                </Nav>
-
+                <Nav leftClick={() => noop} />
                 <div className="staff-slots-date">{formattedDate}</div>
                 <p className="staff-slots-message">No slots available!</p>
               </div>
@@ -99,8 +89,6 @@ describe('<StaffSlots>', () => {
         const slots = ['7:00 AM', '7:15 AM', '7:30 AM', '7:45 AM'];
         const props = {
             date: currentDate,
-            imagePath: 'some/path',
-            name: 'someName',
             navigationController: {
                 pushView: spy()
             },
@@ -117,8 +105,7 @@ describe('<StaffSlots>', () => {
         it('calls navigationController.pushView with StaffForm', () => {
             expect(props.navigationController.pushView).to.have.been.calledWith(
               <StaffSlots
-                  imagePath={props.imagePath}
-                  name={props.name} date={props.date}
+                  date={props.date}
                   navigationController={props.navigationController}
                   startTime={slots[0]}
                   slots={['8:00 AM', '8:15 AM', '8:30 AM', '8:45 AM']}
@@ -131,8 +118,6 @@ describe('<StaffSlots>', () => {
         const slots = ['7:00 AM', '7:15 AM', '7:30 AM', '7:45 AM'];
         const props = {
             date: moment(),
-            imagePath: 'some/path',
-            name: 'someName',
             navigationController: {
                 popView: spy()
             },
@@ -158,8 +143,6 @@ describe('<StaffSlots>', () => {
         const slots = ['8:00 AM', '8:15 AM', '8:30 AM', '8:45 AM'];
         const props = {
             date: currentDate,
-            imagePath: 'some/path',
-            name: 'someName',
             navigationController: {},
             slots,
             startTime: '7:00 AM'
@@ -172,9 +155,7 @@ describe('<StaffSlots>', () => {
         it('renders staff slots with end times', () => {
             expect(component).to.eql(
               <div className="staff-slots">
-                <Nav leftClick={() => noop}>
-                  <StaffMember imagePath={props.imagePath} name={props.name} />
-                </Nav>
+                <Nav leftClick={() => noop} />
 
                 <div className="staff-slots-date">{formattedDate}</div>
                 <div>
@@ -203,8 +184,6 @@ describe('<StaffSlots>', () => {
         const slots = ['8:00 AM', '8:15 AM', '8:30 AM', '8:45 AM'];
         const props = {
             date: currentDate,
-            imagePath: 'some/path',
-            name: 'someName',
             navigationController: {
                 pushView: spy()
             },
@@ -222,8 +201,6 @@ describe('<StaffSlots>', () => {
         it('calls navigationController.pushView with StaffForm', () => {
             expect(props.navigationController.pushView).to.have.been.calledWith(
               <StaffForm
-                  imagePath={props.imagePath}
-                  name={props.name}
                   date={currentDate}
                   startTime={props.startTime}
                   endTime={'8:00 AM'}
@@ -269,8 +246,6 @@ describe('<StaffSlots>', () => {
               <StaffSlots
                   dispatch={noop}
                   store={store}
-                  imagePath={selectedStaffMember.imagePath}
-                  name={selectedStaffMember.name}
                   navigationController={navigationController}
                   slots={slots}
                   date={currentDate}

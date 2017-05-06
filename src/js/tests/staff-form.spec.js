@@ -10,7 +10,6 @@ import { initialState } from 'src/js/reducers/staff';
 import noop from '../../../lib/util/noop';
 import Nav from '../components/nav';
 import StaffFormConnected, { StaffForm } from '../components/staff-form';
-import StaffMember from '../components/staff-member';
 import BookingConfirmation from '../components/booking-confirmation';
 
 describe('<StaffForm>', () => {
@@ -19,8 +18,6 @@ describe('<StaffForm>', () => {
         const props = {
             id: 10001,
             date: today,
-            imagePath: 'http://i.pravatar.cc/300?img=25',
-            name: 'Peter Pickler',
             startTime: '10:15 AM',
             endTime: '11:15 AM'
         };
@@ -35,9 +32,7 @@ describe('<StaffForm>', () => {
         it('renders report form with default values', () => {
             expect(component).to.eql(
               <div className="staff-form">
-                <Nav leftClick={noop}>
-                  <StaffMember imagePath="http://i.pravatar.cc/300?img=25" name="Peter Pickler" />
-                </Nav>
+                <Nav leftClick={noop} />
 
                 <div className="staff-slots-date">
                   <p>{today.format('dddd, do MMM YYYY')}</p>
@@ -64,8 +59,6 @@ describe('<StaffForm>', () => {
         const props = {
             id: 10001,
             date: moment.utc('2017-02-01'),
-            imagePath: 'http://i.pravatar.cc/300?img=25',
-            name: 'Peter Pickler',
             startTime: '10:15 AM',
             endTime: '11:15 AM',
             navigationController: {
@@ -92,8 +85,6 @@ describe('<StaffForm>', () => {
         const props = {
             id: 10001,
             date: today,
-            imagePath: 'http://i.pravatar.cc/300?img=25',
-            name: 'Peter Pickler',
             startTime: '10:15 AM',
             endTime: '11:15 AM',
             navigationController: {
@@ -122,14 +113,13 @@ describe('<StaffForm>', () => {
 
         it('calls bookings endpoint', () => {
             expect(request.post).to.have.been.calledWith(
-                '/bookings/new', body
+                '/api/bookings/new', body
             );
         });
 
         it('calls the pushView function of navigationController', () => {
             expect(props.navigationController.pushView).to.have.been.calledWith(
               <BookingConfirmation
-                  imagePath={props.imagePath} name={props.name}
                   startTime={props.startTime} endTime={props.endTime}
                   date={formattedDate}
               />, { transition: 0 }
@@ -168,8 +158,6 @@ describe('<StaffForm>', () => {
               <StaffForm
                   dispatch={noop}
                   store={store}
-                  imagePath={selectedStaffMember.imagePath}
-                  name={selectedStaffMember.name}
                   navigationController={navigationController}
                   date={currentDate}
                   startTime={startTime}

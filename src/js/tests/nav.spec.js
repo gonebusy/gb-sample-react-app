@@ -2,23 +2,32 @@ import { expect } from 'chai';
 import React from 'react';
 import renderShallow from 'render-shallow';
 import { spy } from 'sinon';
+import { findWithClass } from 'react-shallow-testutils';
+import { initialState } from 'src/js/reducers/staff';
+import { createNew } from 'src/js/store';
 import noop from '../../../lib/util/noop';
-import mockEvent from '../../../lib/util/mock-event';
-import Nav from '../components/nav';
+import NavConnected, { Nav } from '../components/nav';
+import StaffMember from '../components/staff-member';
 
 describe('<Nav>', () => {
-    context('when rendered without any props', () => {
+    context('when rendered without staff member and link props', () => {
         let component;
+        const props = {
+            imagePath: '',
+            name: '',
+        };
         before(() => {
             component = renderShallow(
-              <Nav />).output;
+              <Nav {...props} />).output;
         });
 
         it('renders without left and right navigation', () => {
             expect(component).to.eql(
               <div className="nav-header">
                 <div className="nav-header--link" />
-                <div className="nav-header--title" />
+                <div className="nav-header--title">
+                  <p>Choose a staff member</p>
+                </div>
                 <div className="nav-header--link" />
               </div>
             );
@@ -29,7 +38,9 @@ describe('<Nav>', () => {
         let component;
         const props = {
             leftClick: noop,
-            rightClick: noop
+            rightClick: noop,
+            imagePath: 'some/path',
+            name: 'Steve Smith'
         };
 
         before(() => {
@@ -41,11 +52,13 @@ describe('<Nav>', () => {
             expect(component).to.eql(
               <div className="nav-header">
                 <div className="nav-header--link">
-                  <a className="nav-header--prev" href="left" onClick={e => props.leftClick(e)} />
+                  <a className="nav-header--prev" onClick={e => props.leftClick(e)} />
                 </div>
-                <div className="nav-header--title" />
+                <div className="nav-header--title">
+                  <StaffMember imagePath={props.imagePath} name={props.name} />
+                </div>
                 <div className="nav-header--link">
-                  <a className="nav-header--next" href="right" onClick={e => props.rightClick(e)} />
+                  <a className="nav-header--next" onClick={e => props.rightClick(e)} />
                 </div>
               </div>
             );
@@ -55,14 +68,17 @@ describe('<Nav>', () => {
     context('when navigation links are clicked', () => {
         const props = {
             leftClick: spy(),
-            rightClick: spy()
+            rightClick: spy(),
+            imagePath: 'some/path',
+            name: 'Steve Smith'
         };
 
         before(() => {
-            const { instance: getInstance } = renderShallow(<Nav {...props} />);
-            const instance = getInstance();
-            instance.rightClick(mockEvent);
-            instance.leftClick(mockEvent);
+            const component = renderShallow(<Nav {...props} />).output;
+            const previousLink = findWithClass(component, 'nav-header--prev');
+            const nextLink = findWithClass(component, 'nav-header--next');
+            previousLink.props.onClick();
+            nextLink.props.onClick();
         });
 
         it('calls the click functions', () => {
@@ -71,4 +87,32 @@ describe('<Nav>', () => {
         });
     });
 
+    context('when it is connected', () => {
+        let store;
+        let component;
+        const selectedStaffMember = {
+            id: 10004,
+            imagePath: 'http://i.pravatar.cc/300?img=15',
+            name: 'Phillip Fry'
+        };
+
+        before(() => {
+            store = createNew({ staff: { ...initialState, selectedStaffMember } });
+            component = renderShallow(
+              <NavConnected
+                  store={store}
+              />
+            ).output;
+        });
+        it('renders Nav with staff information', () => {
+            expect(component).to.eql(
+              <Nav
+                  dispatch={noop}
+                  imagePath={selectedStaffMember.imagePath}
+                  name={selectedStaffMember.name}
+                  store={store}
+              />
+            );
+        });
+    });
 });

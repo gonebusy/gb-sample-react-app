@@ -3,11 +3,10 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import Nav from './nav';
-import StaffMember from './staff-member';
 import StaffForm from './staff-form';
 
 export const StaffSlots = (
-        { imagePath, name, navigationController, date, slots, startTime, duration }
+        { navigationController, date, slots, startTime, duration }
     ) => {
     const formattedDate = dateFormat(date, 'dddd, d mmm yyyy');
 
@@ -34,8 +33,7 @@ export const StaffSlots = (
             }
             navigationController.pushView(
               <StaffSlots
-                  imagePath={imagePath}
-                  name={name} date={date}
+                  date={date}
                   navigationController={navigationController}
                   startTime={time}
                   slots={endTimes}
@@ -44,8 +42,6 @@ export const StaffSlots = (
         } else
             navigationController.pushView(
               <StaffForm
-                  imagePath={imagePath}
-                  name={name}
                   date={date}
                   startTime={startTime}
                   endTime={time}
@@ -59,9 +55,7 @@ export const StaffSlots = (
     const timeType = startTime ? 'end' : 'start';
     return (
       <div className="staff-slots">
-        <Nav leftClick={() => goBack()}>
-          <StaffMember imagePath={imagePath} name={name} />
-        </Nav>
+        <Nav leftClick={() => goBack()} />
 
         <div className="staff-slots-date">{formattedDate}</div>
         {
@@ -85,8 +79,6 @@ StaffSlots.defaultProps = {
 };
 
 StaffSlots.propTypes = {
-    imagePath: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
     date: PropTypes.object.isRequired,
     slots: PropTypes.array.isRequired,
     navigationController: PropTypes.object.isRequired,
@@ -99,13 +91,11 @@ const mapStateToProps = (
     {
         staff: {
             selectedStaffMember: {
-                imagePath, name, selectedDate, slotsForDate
+                selectedDate, slotsForDate
             },
             duration
         }
     }) => ({
-        imagePath,
-        name,
         date: selectedDate,
         slots: slotsForDate,
         duration

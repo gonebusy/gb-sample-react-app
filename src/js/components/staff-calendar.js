@@ -3,27 +3,27 @@ import DayPicker from 'react-day-picker';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { selectDate } from 'src/js/actions/staff';
+import { CLEAR_SELECTED_STAFF_MEMBER } from 'src/js/action-types';
 import Nav from './nav';
-import StaffMember from './staff-member';
 import StaffSlots from './staff-slots';
 import CustomCalNavBar from './custom-cal-nav-bar';
 
 export const StaffCalendar = (
-        { imagePath, name, availableSlots, navigationController, dispatch, month }
+        { availableSlots, navigationController, dispatch, month }
     ) => {
     const targetMonth = availableSlots ? moment.utc(Object.keys(availableSlots)[0]) : moment.utc();
     const handleDayClick = (day) => {
         const selectedDate = moment.utc(day);
         selectDate(selectedDate)(dispatch).then(() => {
             navigationController.pushView(<StaffSlots
-                imagePath={imagePath}
-                name={name} date={selectedDate}
+                date={selectedDate}
                 navigationController={navigationController}
             />);
         });
     };
 
     const goBack = () => {
+        dispatch({ type: CLEAR_SELECTED_STAFF_MEMBER });
         navigationController.popView();
     };
 
@@ -44,9 +44,7 @@ export const StaffCalendar = (
 
     return (
       <div className="staff-calendar">
-        <Nav leftClick={() => goBack()}>
-          <StaffMember imagePath={imagePath} name={name} />
-        </Nav>
+        <Nav leftClick={() => goBack()} />
 
         <div className="staff-calendar-picker">
           <DayPicker
@@ -71,8 +69,6 @@ StaffCalendar.defaultProps = {
 };
 
 StaffCalendar.propTypes = {
-    imagePath: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
     navigationController: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
     availableSlots: PropTypes.object.isRequired,
@@ -80,9 +76,9 @@ StaffCalendar.propTypes = {
 };
 
 export const mapStateToProps = (
-        { staff: { selectedStaffMember: { imagePath, name, availableSlots } } }
+        { staff: { selectedStaffMember: { availableSlots } } }
     ) => ({
-        imagePath, name, availableSlots
+        availableSlots
     });
 
 export default connect(mapStateToProps)(StaffCalendar);
