@@ -2,20 +2,17 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { fetchSlotsForResource } from 'src/js/actions/staff';
 import moment from 'moment';
-import Nav from './nav';
 import StaffMember from './staff-member';
-import StaffCalendar from './staff-calendar';
 
-export const StaffPicker = ({ staffMembers, navigationController, dispatch }) => {
+export const StaffPicker = ({ staffMembers, dispatch, router }) => {
     const handleStaffClick = staffMember => () => {
         dispatch(fetchSlotsForResource(moment.utc(), staffMember.id)).then(() => {
-            navigationController.pushView(<StaffCalendar {...staffMember} />);
+            router.push('/calendar');
         });
     };
 
     return (
       <div className="staff-picker">
-        <Nav />
         <div className="staff">
           {
                 staffMembers.map((staffMember) => {
@@ -37,8 +34,8 @@ export const StaffPicker = ({ staffMembers, navigationController, dispatch }) =>
 
 StaffPicker.propTypes = {
     dispatch: PropTypes.func.isRequired,
-    navigationController: PropTypes.object.isRequired,
-    staffMembers: PropTypes.array.isRequired
+    staffMembers: PropTypes.array.isRequired,
+    router: PropTypes.object.isRequired
 };
 
 export const mapStateToProps = ({ staff: { staffMembers } }) => ({

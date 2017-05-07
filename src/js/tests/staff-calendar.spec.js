@@ -19,7 +19,7 @@ describe('<StaffCalendar>', () => {
     context('when rendered with props', () => {
         let component;
         const props = {
-            navigationController: {},
+            router: {},
             dispatch: noop,
             availableSlots: {
                 '2017-03-31': [
@@ -43,8 +43,6 @@ describe('<StaffCalendar>', () => {
         it('renders a staff calendar', () => {
             expect(component).to.eql(
               <div className="staff-calendar">
-                <Nav leftClick={() => noop()} />
-
                 <div className="staff-calendar-picker">
                   <DayPicker
                       onDayClick={noop}
@@ -53,8 +51,6 @@ describe('<StaffCalendar>', () => {
                       navbarElement={
                         <CustomCalNavBar
                             dispatch={props.dispatch}
-                            navigationController={props.navigationController}
-                            id={props.id}
                         />
                       }
                       month={props.month.toDate()}
@@ -67,9 +63,7 @@ describe('<StaffCalendar>', () => {
 
     context('when a calendar day is clicked', () => {
         const props = {
-            navigationController: {
-                pushView: spy()
-            },
+            router: {},
             dispatch: spy(),
             availableSlots: {
                 '2017-03-31': [

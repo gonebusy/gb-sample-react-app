@@ -1,13 +1,21 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { CLEAR_SELECTED_STAFF_MEMBER } from 'src/js/action-types';
 import StaffMember from './staff-member';
 
-export const Nav = ({ leftClick, rightClick, imagePath, name }) => {
-    const renderLink = (arrowOrientation, click) => {
-        if (click)
+export const Nav = ({ imagePath, name, children, router, dispatch}) => {
+    const { pathname } = router.location;
+    const goBack = () => {
+        if (pathname === '/calendar')
+            dispatch({type: CLEAR_SELECTED_STAFF_MEMBER});
+        router.goBack();
+    };
+    const renderLink = (arrowOrientation) => {
+        if (pathname !== '/'){
             return (
-              <a className={`nav-header--${arrowOrientation}`} onClick={click} />
+                <a className={`nav-header--${arrowOrientation}`} onClick={ goBack } />
             );
+        }
         return null;
     };
 
@@ -19,10 +27,13 @@ export const Nav = ({ leftClick, rightClick, imagePath, name }) => {
 
 
     return (
-      <div className="nav-header">
-        <div className="nav-header--link">{renderLink('prev', leftClick)}</div>
-        <div className="nav-header--title">{renderStaffMember()}</div>
-        <div className="nav-header--link">{renderLink('next', rightClick)}</div>
+      <div>
+        <div className="nav-header">
+          <div className="nav-header--link">{renderLink('prev')}</div>
+          <div className="nav-header--title">{renderStaffMember()}</div>
+          <div className="nav-header--link"></div>
+        </div>
+        { children }
       </div>
     );
 };
@@ -30,20 +41,21 @@ export const Nav = ({ leftClick, rightClick, imagePath, name }) => {
 Nav.defaultProps = {
     leftClick: undefined,
     rightClick: undefined,
-    children: undefined
+    children: undefined,
 };
 
 Nav.propTypes = {
     imagePath: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     leftClick: PropTypes.func,
-    rightClick: PropTypes.func
+    rightClick: PropTypes.func,
+    children: PropTypes.node
 };
 
 export const mapStateToProps = (
-    { staff: { selectedStaffMember: { imagePath, name } } }
+    { staff: { selectedStaffMember: { imagePath, name }, views } }
 ) => ({
-    imagePath, name
+    imagePath, name, views
 });
 
 export default connect(mapStateToProps)(Nav);

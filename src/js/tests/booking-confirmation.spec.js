@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-import dateFormat from 'dateformat';
 import React from 'react';
 import renderShallow from 'render-shallow';
 import { initialState } from 'src/js/reducers/staff';
@@ -9,11 +8,12 @@ import
     BookingConfirmationConnected,
     { BookingConfirmation }
 from '../components/booking-confirmation';
+import moment from 'moment';
 
 describe('<BookingConfirmation>', () => {
     context('when rendered with required props for BookingConfirmation', () => {
         const props = {
-            date: `${dateFormat(new Date('2017-02-01'), 'dddd, d mmm yyyy', true)}`,
+            date: moment.utc(),
             imagePath: 'http://i.pravatar.cc/300?img=25',
             name: 'Peter Pickler',
             startTime: '10:15 AM',
@@ -31,7 +31,7 @@ describe('<BookingConfirmation>', () => {
             expect(component).to.eql(
               <div className="booking-confirmation">
                 <p>Booking Confirmed!</p>
-                <p>{props.date}</p>
+                <p>{props.date.format('YYYY-MM-DD')}</p>
                 <p>{props.startTime} - {props.endTime}</p>
                 <div>
                   <img
@@ -52,12 +52,10 @@ describe('<BookingConfirmation>', () => {
         const selectedStaffMember = {
             id: 10004,
             imagePath: 'http://i.pravatar.cc/300?img=15',
-            name: 'Phillip Fry'
-        };
-        const props = {
-            date: `${dateFormat(new Date('2017-02-01'), 'dddd, d mmm yyyy', true)}`,
+            name: 'Phillip Fry',
             startTime: '10:15 AM',
-            endTime: '11:15 AM'
+            endTime: '11:15 AM',
+            selectedDate: moment.utc()
         };
 
         before(() => {
@@ -65,7 +63,6 @@ describe('<BookingConfirmation>', () => {
             component = renderShallow(
               <BookingConfirmationConnected
                   store={store}
-                  {...props}
               />
             ).output;
         });
@@ -74,10 +71,12 @@ describe('<BookingConfirmation>', () => {
             expect(component).to.eql(
               <BookingConfirmation
                   dispatch={noop}
-                  imagePath={selectedStaffMember.imagePath}
-                  name={selectedStaffMember.name}
                   store={store}
-                  {...props}
+                  date={selectedStaffMember.selectedDate}
+                  imagePath={selectedStaffMember.imagePath}
+                  startTime={selectedStaffMember.startTime}
+                  endTime={selectedStaffMember.endTime}
+                  name={selectedStaffMember.name}
               />
             );
         });
