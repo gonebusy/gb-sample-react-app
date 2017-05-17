@@ -21,6 +21,13 @@ $ cd sample-react-app
 $ yarn install
 ```
 
+## Setup sample resources, service, and time windows
+
+[How to obtain API KEY](https://gonebusy.github.io/api#/quick_start#step_1)
+```
+yarn setup -- API_KEY
+```
+
 ## Run a local dev environment
 Start a local server running on port 8080, at **http://localhost:8080**. Bundles js and css via webpack with hot reload.
 It starts an express server on localhost:4000 to access gonebusy-nodejs-client and all requests made on localhost:8080 proxies to localhost:4000.
