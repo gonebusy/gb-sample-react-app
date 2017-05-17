@@ -18,7 +18,7 @@ export const StaffPicker = ({ staffMembers, navigationController, dispatch }) =>
 
     return (
       <div className="staff-picker">
-        <Nav>Choose a Staff Member</Nav>
+        <Nav />
         <div className="staff">
           {
                 staffMembers.map((staffMember) => {
