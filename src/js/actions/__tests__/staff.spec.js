@@ -78,8 +78,8 @@ describe('staff action creators', () => {
             const staffMembers = [
                 { id: 100001, name: 'James Hunter', imagePath: 'http://i.pravatar.cc/300?img=69' }
             ];
-            const serviceEndpoint = '/service';
-            const resourcesEndpoint = `/resources/${staffMembers[0].id}`;
+            const serviceEndpoint = '/api/service';
+            const resourcesEndpoint = `/api/resources/${staffMembers[0].id}`;
 
             before((done) => {
                 stub(request, 'get')
@@ -177,7 +177,7 @@ describe('staff action creators', () => {
                 }
             }
         };
-        const slotsEndpoint = `/slots?startDate=${startDateFormatted}&endDate=${endDateFormatted}`;
+        const slotsUrl = `/api/slots?startDate=${startDateFormatted}&endDate=${endDateFormatted}`;
         context('when invoked and slots for that month have not been already fetched', () => {
             const dispatch = spy();
 
@@ -198,9 +198,9 @@ describe('staff action creators', () => {
                 request.get.restore();
             });
 
-            it(`calls GET with ${slotsEndpoint}`, () => {
+            it(`calls GET with ${slotsUrl}`, () => {
                 expect(request.get).to.have.been.calledWith(
-                    slotsEndpoint
+                    slotsUrl
                 );
             });
 
@@ -232,7 +232,7 @@ describe('staff action creators', () => {
                 request.get.restore();
             });
 
-            it(`does not call GET with ${slotsEndpoint}`, () => {
+            it(`does not call GET with ${slotsUrl}`, () => {
                 expect(request.get).to.not.have.been.called();
             });
 

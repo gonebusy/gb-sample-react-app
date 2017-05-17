@@ -5,6 +5,7 @@ const Promise = require('bluebird').Promise;
 const url = require('url');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
+const router = express.Router();
 
 /* Loads variables from .env */
 dotenv.load();
@@ -22,13 +23,14 @@ const bookings = Promise.promisifyAll(gonebusy.BookingsController);
 
 const app = express();
 app.use(bodyParser.json());
+app.use('/api', router);
 
 if (process.env.NODE_ENV === 'production') {
     const staticPath = path.join(__dirname, '/public');
     app.use(express.static(staticPath));
 }
 
-app.get('/service', (req, res) => {
+router.get('/service', (req, res) => {
     services.getServiceById({id: serviceId, authorization}, (error, success) => {
         if(error) {
             console.log(error.errorMessage);
@@ -38,7 +40,7 @@ app.get('/service', (req, res) => {
     });
 });
 
-app.get('/resources/:id', (req, res) => {
+router.get('/resources/:id', (req, res) => {
     const id = req.params.id;
     resources.getResourceById({id, authorization}, (error, success) => {
         if(error) {
@@ -49,7 +51,7 @@ app.get('/resources/:id', (req, res) => {
     })
 });
 
-app.get('/slots', (req, res) => {
+router.get('/slots', (req, res) => {
     const url_parts = url.parse(req.url, true);
     const query = url_parts.query;
     const startDate = query.startDate;
@@ -63,7 +65,7 @@ app.get('/slots', (req, res) => {
     });
 });
 
-app.post('/bookings/new', (req, res) => {
+router.post('/bookings/new', (req, res) => {
     const { date, time, duration, resourceId} = req.body;
     const createBookingBody = {
         date,

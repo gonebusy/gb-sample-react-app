@@ -32,9 +32,9 @@ describe('<App>', () => {
         const startDate = moment.utc();
         const formattedStartDate = startDate.format('YYYY-MM-DD');
         const formattedEndDate = startDate.endOf('month').format('YYYY-MM-DD');
-        const serviceEndpoint = '/service';
-        const resourcesEndpoint = `/resources/${staffMembers[0].id}`;
-        const slotsEndpoint = `/slots?startDate=${formattedStartDate}&endDate=${formattedEndDate}`;
+        const serviceEndpoint = '/api/service';
+        const resourcesEndpoint = `/api/resources/${staffMembers[0].id}`;
+        const slotsUrl = `/api/slots?startDate=${formattedStartDate}&endDate=${formattedEndDate}`;
         const availableSlots = {
             body: [
                 {
@@ -61,7 +61,7 @@ describe('<App>', () => {
                 .returns(Promise.resolve(service))
                 .withArgs(resourcesEndpoint)
                 .returns(Promise.resolve(resource))
-                .withArgs(slotsEndpoint)
+                .withArgs(slotsUrl)
                 .returns(Promise.resolve(availableSlots));
             stub(store, 'dispatch');
             stub(store, 'getState').returns({
@@ -93,9 +93,9 @@ describe('<App>', () => {
             );
         });
 
-        it(`calls GET with ${slotsEndpoint}`, () => {
+        it(`calls GET with ${slotsUrl}`, () => {
             expect(request.get).to.have.been.calledWith(
-                slotsEndpoint
+                slotsUrl
             );
         });
 
