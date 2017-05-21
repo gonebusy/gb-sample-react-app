@@ -63,7 +63,9 @@ describe('<StaffCalendar>', () => {
 
     context('when a calendar day is clicked', () => {
         const props = {
-            router: {},
+            router: {
+                push: spy()
+            },
             dispatch: spy(),
             availableSlots: {
                 '2017-03-31': [
@@ -89,48 +91,15 @@ describe('<StaffCalendar>', () => {
             );
         });
 
-        it('calls navigationController.pushView with StaffSlots', () => {
-            expect(props.navigationController.pushView).to.have.been.calledWith(
-              <StaffSlots
-                  date={day}
-                  navigationController={props.navigationController}
-              />
-            );
-        });
-    });
-
-    context('when go back is clicked', () => {
-        const props = {
-            navigationController: {
-                popView: spy()
-            },
-            dispatch: noop,
-            availableSlots: {
-                '2017-03-31': [
-                    '02:00 PM'
-                ]
-            },
-            id: 10001
-        };
-
-        before(() => {
-            const component = renderShallow(<StaffCalendar {...props} />).output;
-            const nav = findWithType(component, Nav);
-            nav.props.leftClick();
-        });
-
-        it('calls navigationController.popView', () => {
-            expect(props.navigationController.popView).to.have.been.calledOnce();
+        it('calls router to push to /available_slots', () => {
+            expect(props.router.push).to.have.been.calledWith('/available_slots');
         });
     });
 
     context('when it is connected', () => {
         let store;
         let component;
-        const navigationController = {
-            pushView: noop
-        };
-        const id = 10001;
+        const router= {};
         const selectedStaffMember = {
             id,
             imagePath: 'http://i.pravatar.cc/300?img=15',
@@ -146,7 +115,7 @@ describe('<StaffCalendar>', () => {
             component = renderShallow(
               <StaffCalendarConnected
                   store={store}
-                  navigationController={navigationController}
+                  router={router}
               />
            ).output;
         });
@@ -157,6 +126,7 @@ describe('<StaffCalendar>', () => {
                   store={store}
                   navigationController={navigationController}
                   availableSlots={selectedStaffMember.availableSlots}
+                  router={router}
                   id={id}
               />
             );

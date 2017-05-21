@@ -6,7 +6,7 @@ import { selectDate } from 'src/js/actions/staff';
 import CustomCalNavBar from './custom-cal-nav-bar';
 
 export const StaffCalendar = (
-        { availableSlots, dispatch, month, router }
+        { availableSlots, dispatch, dayPickerMonth, router }
     ) => {
     const targetMonth = availableSlots ? moment.utc(Object.keys(availableSlots)[0]) : moment.utc();
     const handleDayClick = (day) => {
@@ -37,7 +37,7 @@ export const StaffCalendar = (
           <DayPicker
               onDayClick={handleDayClick}
               weekdaysShort={['S', 'M', 'T', 'W', 'T', 'F', 'S']}
-              month={month}
+              month={dayPickerMonth}
               disabledDays={getDisabledDates()}
               navbarElement={
                 <CustomCalNavBar
@@ -53,17 +53,15 @@ export const StaffCalendar = (
 StaffCalendar.propTypes = {
     dispatch: PropTypes.func.isRequired,
     availableSlots: PropTypes.object.isRequired,
-    router: PropTypes.object.isRequired,
-    month: PropTypes.object,
-    id: PropTypes.number.isRequired
+    dayPickerMonth: PropTypes.object.isRequired,
+    router: PropTypes.object.isRequired
 };
 
 export const mapStateToProps = (
-        { staff: { selectedStaffMember: { id, availableSlots, selectedMonth } } }
+        { staff: { selectedStaffMember: { id, availableSlots, dayPickerMonth } } }
     ) => ({
         availableSlots,
-        month: selectedMonth
-        id
+        dayPickerMonth
     });
 
 export default connect(mapStateToProps)(StaffCalendar);

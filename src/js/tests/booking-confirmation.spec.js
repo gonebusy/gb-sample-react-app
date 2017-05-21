@@ -3,12 +3,12 @@ import React from 'react';
 import renderShallow from 'render-shallow';
 import { initialState } from 'src/js/reducers/staff';
 import { createNew } from 'src/js/store';
+import moment from 'moment';
 import noop from '../../../lib/util/noop';
 import
     BookingConfirmationConnected,
     { BookingConfirmation }
 from '../components/booking-confirmation';
-import moment from 'moment';
 
 describe('<BookingConfirmation>', () => {
     context('when rendered with required props for BookingConfirmation', () => {

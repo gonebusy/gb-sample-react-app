@@ -12,18 +12,21 @@ import Nav from '../components/nav';
 import StaffSlotsConnected, { StaffSlots } from '../components/staff-slots';
 import StaffForm from '../components/staff-form';
 import Slot from '../components/slot';
+import { TIME_SLOT_SELECTED } from 'src/js/action-types';
 
 describe('<StaffSlots>', () => {
     context('when rendered with slots', () => {
         let component;
-        const timeClick = () => noop;
+
         const currentDate = moment();
         const formattedDate = dateFormat(currentDate, 'dddd, d mmm yyyy');
         const slots = ['7:00 AM', '7:15 AM', '7:30 AM', '7:45 AM'];
         const props = {
             date: currentDate,
-            navigationController: {},
-            slots
+            router: {},
+            slots,
+            dispatch: noop,
+            slotForm: 'start'
         };
 
         before(() => {
@@ -33,7 +36,6 @@ describe('<StaffSlots>', () => {
         it('renders staff slots', () => {
             expect(component).to.eql(
               <div className="staff-slots">
-                <Nav leftClick={() => noop} />
 
                 <div className="staff-slots-date">{formattedDate}</div>
                 <div>
@@ -64,8 +66,10 @@ describe('<StaffSlots>', () => {
         const slots = [];
         const props = {
             date: currentDate,
-            navigationController: {},
-            slots
+            router: {},
+            slots,
+            slotForm: 'start',
+            dispatch: noop
         };
 
         before(() => {
@@ -75,7 +79,6 @@ describe('<StaffSlots>', () => {
         it('renders no slots available message', () => {
             expect(component).to.eql(
               <div className="staff-slots">
-                <Nav leftClick={() => noop} />
                 <div className="staff-slots-date">{formattedDate}</div>
                 <p className="staff-slots-message">No slots available!</p>
               </div>
@@ -135,6 +138,7 @@ describe('<StaffSlots>', () => {
     });
 
     context('when start time is set', () => {
+    context('when slotForm is type start', () => {
         let component;
 
         const currentDate = moment();
@@ -142,9 +146,10 @@ describe('<StaffSlots>', () => {
         const slots = ['8:00 AM', '8:15 AM', '8:30 AM', '8:45 AM'];
         const props = {
             date: currentDate,
-            navigationController: {},
+            router: {},
             slots,
-            startTime: '7:00 AM'
+            slotForm: 'start',
+            dispatch: noop
         };
         const timeClick = () => noop;
 
@@ -152,14 +157,12 @@ describe('<StaffSlots>', () => {
             component = renderShallow(<StaffSlots {...props} />).output;
         });
 
-        it('renders staff slots with end times', () => {
+        it('renders staff slots with start times', () => {
             expect(component).to.eql(
               <div className="staff-slots">
-                <Nav leftClick={() => noop} />
-
                 <div className="staff-slots-date">{formattedDate}</div>
                 <div>
-                  <p className="staff-slots-message">Choose your end time</p>
+                  <p className="staff-slots-message">Choose your start time</p>
                   <ul className="staff-slots-times">
                     {
                           slots.map((time, index) => (
@@ -177,17 +180,18 @@ describe('<StaffSlots>', () => {
             );
         });
     });
-    context('when time is clicked and start time is set', () => {
+    context('when time is clicked and start time is chosen', () => {
         const currentDate = moment();
         const slots = ['8:00 AM', '8:15 AM', '8:30 AM', '8:45 AM'];
         const props = {
             date: currentDate,
-            navigationController: {
-                pushView: spy()
+            router: {
+                push: noop
             },
+            dispatch: spy(),
             slots,
             duration: 60,
-            startTime: '7:00 AM'
+            slotForm: 'start'
         };
 
         before(() => {
@@ -196,13 +200,50 @@ describe('<StaffSlots>', () => {
             firstButton.props.timeClick(slots[0], 0)();
         });
 
-        it('calls navigationController.pushView with StaffForm', () => {
-            expect(props.navigationController.pushView).to.have.been.calledWith(
-              <StaffForm
-                  date={currentDate}
-                  startTime={props.startTime}
-                  endTime={'8:00 AM'}
-              />
+        it(`dispatches ${TIME_SLOT_SELECTED}`, () => {
+            expect(props.dispatch).to.have.been.calledWith(
+                {
+                    type: TIME_SLOT_SELECTED,
+                    slotTime: slots[0],
+                    slotType: 'startTime'
+                }
+            );
+        });
+    });
+
+    context('when time is clicked and end time is chosen', () => {
+        const currentDate = moment();
+        const slots = ['8:00 AM', '8:15 AM', '8:30 AM', '8:45 AM'];
+        const props = {
+            date: currentDate,
+            router: {
+                push: spy()
+            },
+            dispatch: spy(),
+            slots,
+            duration: 60,
+            slotForm: 'end'
+        };
+
+        before(() => {
+            const component = renderShallow(<StaffSlots {...props} />).output;
+            const firstButton = findAllWithType(component, 'button')[0];
+            firstButton.props.onClick(slots[0]);
+        });
+
+        it(`dispatches ${TIME_SLOT_SELECTED}`, () => {
+            expect(props.dispatch).to.have.been.calledWith(
+                {
+                    type: TIME_SLOT_SELECTED,
+                    slotTime: slots[0],
+                    slotType: 'endTime'
+                }
+            );
+        });
+
+        it('calls router to push to /book', () => {
+            expect(props.router.push).to.have.been.calledWith(
+                '/book'
             );
         });
     });
@@ -210,12 +251,13 @@ describe('<StaffSlots>', () => {
     context('when it is connected', () => {
         let store;
         let component;
-        const navigationController = {
-            pushView: noop
+        const router = {
+            push: noop
         };
         const slots = ['7:00 AM', '7:15 AM', '7:30 AM', '7:45 AM'];
         const currentDate = moment();
         const duration = 60;
+        const slotForm = 'start';
         const selectedStaffMember = {
             id: 4,
             imagePath: 'http://i.pravatar.cc/300?img=15',
@@ -227,7 +269,8 @@ describe('<StaffSlots>', () => {
                 }
             ],
             selectedDate: currentDate,
-            slotsForDate: slots
+            slotsForDate: slots,
+            slotForm
         };
 
         before(() => {
@@ -235,7 +278,7 @@ describe('<StaffSlots>', () => {
             component = renderShallow(
               <StaffSlotsConnected
                   store={store}
-                  navigationController={navigationController}
+                  router={router}
               />
             ).output;
         });
@@ -244,8 +287,9 @@ describe('<StaffSlots>', () => {
               <StaffSlots
                   dispatch={noop}
                   store={store}
-                  navigationController={navigationController}
+                  router={router}
                   slots={slots}
+                  slotForm={slotForm}
                   date={currentDate}
                   duration={duration}
               />

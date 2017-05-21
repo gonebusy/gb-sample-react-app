@@ -14,8 +14,8 @@ describe('<StaffPicker>', () => {
     context('when rendered', () => {
         let component;
         const props = {
-            navigationController: {
-                pushView: spy()
+            router: {
+                push: noop
             },
             staffMembers: [
                 {
@@ -81,8 +81,8 @@ describe('<StaffPicker>', () => {
     context('when staff member is clicked', () => {
         const id = 1;
         const props = {
-            navigationController: {
-                pushView: spy()
+            router: {
+                push: spy()
             },
             staffMembers: [
                 {
@@ -121,9 +121,9 @@ describe('<StaffPicker>', () => {
             });
         });
 
-        it('navigates to <StaffCalendar> through navigationController', () => {
-            expect(props.navigationController.pushView).to.have.been.calledWith(
-              <StaffCalendar {...props.staffMembers[0]} />
+        it(`router pushes to /staff/${id}`, () => {
+            expect(props.router.push).to.have.been.calledWith(
+                `/staff/${id}`
             );
         });
     });
@@ -131,8 +131,8 @@ describe('<StaffPicker>', () => {
     context(('when it is connected'), () => {
         let store;
         let component;
-        const navigationController = {
-            pushView: noop
+        const router = {
+            push: noop
         };
         const staffMembers = [
             {
@@ -162,7 +162,7 @@ describe('<StaffPicker>', () => {
             component = renderShallow(
               <StaffPickerConnected
                   store={store}
-                  navigationController={navigationController}
+                  router={router}
               />).output;
         });
         it('renders StaffPicker with store and its dispatch', () => {
@@ -171,7 +171,7 @@ describe('<StaffPicker>', () => {
                   dispatch={noop}
                   store={store}
                   staffMembers={staffMembers}
-                  navigationController={navigationController}
+                  router={router}
               />
             );
         });

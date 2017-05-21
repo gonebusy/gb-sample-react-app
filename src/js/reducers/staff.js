@@ -6,6 +6,7 @@ import {
 } from 'src/js/action-types';
 import find from 'lodash.find';
 import lodashGet from 'lodash.get';
+import find from 'lodash.find';
 
 export const initialState = {
     staffMembers: [],
@@ -56,7 +57,11 @@ export default (state = initialState, action) => {
             };
         }
         case STAFF_SELECTED: {
-            const { staffMember } = action;
+            const { id } = action;
+            const staffMember = find(
+                state.staffMembers,
+                (staffMember) => (staffMember.id === id)
+            );
             return {
                 ...state,
                 selectedStaffMember: staffMember,

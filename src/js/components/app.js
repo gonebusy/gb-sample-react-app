@@ -16,7 +16,7 @@ class App extends Component {
         return (
           <Provider store={store}>
             <div className="ReactNavigationController">
-              <Routes />
+              <Routes dispatch={store.dispatch} getState={store.getState} />
             </div>
           </Provider>
         );

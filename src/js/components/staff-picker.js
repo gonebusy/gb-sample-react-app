@@ -1,13 +1,12 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { fetchSlotsForResource } from 'src/js/actions/staff';
-import moment from 'moment';
 import StaffMember from './staff-member';
 
 export const StaffPicker = ({ staffMembers, dispatch, router }) => {
     const handleStaffClick = staffMember => () => {
         dispatch(fetchSlotsForResource(moment.utc(), staffMember.id)).then(() => {
-            router.push('/calendar');
+            router.push(`/staff/${id}`);
         });
     };
 
@@ -20,7 +19,7 @@ export const StaffPicker = ({ staffMembers, dispatch, router }) => {
                     return (
                       <StaffMember
                           key={id}
-                          onStaffClick={handleStaffClick(staffMember)}
+                          onStaffClick={handleStaffClick(id)}
                           imagePath={imagePath}
                           name={name}
                       />

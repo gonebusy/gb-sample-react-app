@@ -3,19 +3,19 @@ import { connect } from 'react-redux';
 import { CLEAR_SELECTED_STAFF_MEMBER } from 'src/js/action-types';
 import StaffMember from './staff-member';
 
-export const Nav = ({ imagePath, name, children, router, dispatch}) => {
+export const Nav = ({ imagePath, name, children, router, dispatch }) => {
     const { pathname } = router.location;
     const goBack = () => {
         if (pathname === '/calendar')
-            dispatch({type: CLEAR_SELECTED_STAFF_MEMBER});
+            dispatch({ type: CLEAR_SELECTED_STAFF_MEMBER });
         router.goBack();
     };
     const renderLink = (arrowOrientation) => {
-        if (pathname !== '/'){
+        if (pathname !== '/')
             return (
-                <a className={`nav-header--${arrowOrientation}`} onClick={ goBack } />
+              <a className={`nav-header--${arrowOrientation}`} onClick={goBack} />
             );
-        }
+
         return null;
     };
 
@@ -31,7 +31,7 @@ export const Nav = ({ imagePath, name, children, router, dispatch}) => {
         <div className="nav-header">
           <div className="nav-header--link">{renderLink('prev')}</div>
           <div className="nav-header--title">{renderStaffMember()}</div>
-          <div className="nav-header--link"></div>
+          <div className="nav-header--link" />
         </div>
         { children }
       </div>
@@ -39,17 +39,15 @@ export const Nav = ({ imagePath, name, children, router, dispatch}) => {
 };
 
 Nav.defaultProps = {
-    leftClick: undefined,
-    rightClick: undefined,
-    children: undefined,
+    children: undefined
 };
 
 Nav.propTypes = {
     imagePath: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    leftClick: PropTypes.func,
-    rightClick: PropTypes.func,
-    children: PropTypes.node
+    children: PropTypes.node,
+    router: PropTypes.object.isRequired,
+    dispatch: PropTypes.func.isRequired
 };
 
 export const mapStateToProps = (

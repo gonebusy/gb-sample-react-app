@@ -23,15 +23,15 @@ describe('<Nav>', () => {
 
         it('renders without left and right navigation', () => {
             expect(component).to.eql(
-                <div>
-                  <div className="nav-header">
-                    <div className="nav-header--link" />
-                    <div className="nav-header--title">
-                      <p>Choose a staff member</p>
-                    </div>
-                    <div className="nav-header--link" />
+              <div>
+                <div className="nav-header">
+                  <div className="nav-header--link" />
+                  <div className="nav-header--title">
+                    <p>Choose a staff member</p>
                   </div>
+                  <div className="nav-header--link" />
                 </div>
+              </div>
             );
         });
     });
@@ -52,19 +52,19 @@ describe('<Nav>', () => {
 
         it('renders with left and right navigation links', () => {
             expect(component).to.eql(
-                <div>
-                  <div className="nav-header">
-                    <div className="nav-header--link">
-                      <a className="nav-header--prev" onClick={e => props.leftClick(e)} />
-                    </div>
-                    <div className="nav-header--title">
-                      <StaffMember imagePath={props.imagePath} name={props.name} />
-                    </div>
-                    <div className="nav-header--link">
-                      <a className="nav-header--next" onClick={e => props.rightClick(e)} />
-                    </div>
+              <div>
+                <div className="nav-header">
+                  <div className="nav-header--link">
+                    <a className="nav-header--prev" onClick={e => props.leftClick(e)} />
+                  </div>
+                  <div className="nav-header--title">
+                    <StaffMember imagePath={props.imagePath} name={props.name} />
+                  </div>
+                  <div className="nav-header--link">
+                    <a className="nav-header--next" onClick={e => props.rightClick(e)} />
                   </div>
                 </div>
+              </div>
             );
         });
     });
