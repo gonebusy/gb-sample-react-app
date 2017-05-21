@@ -2,15 +2,13 @@ const gonebusy = require('gonebusy-nodejs-client');
 const request = require("request");
 const Promise = require('bluebird').Promise;
 const fs = require('fs');
-const BASEURI = 'https://sandbox.gonebusy.com/api/v1';
-gonebusy.configuration.BASEURI = BASEURI;
+gonebusy.Configuration.currentEnvironment = 'sandbox';
 
-const services = Promise.promisifyAll(gonebusy.ServicesController);
-const resources = Promise.promisifyAll(gonebusy.ResourcesController);
-const schedules = Promise.promisifyAll(gonebusy.SchedulesController);
+const { ServicesController, ResourcesController, SchedulesController } = gonebusy;
 
 const AUTH_TOKEN = process.argv[2];
 const TEAR_DOWN = process.argv[3];
+const authorization = `Token ${AUTH_TOKEN}`;
 
 
 const createResources = () => {
@@ -23,17 +21,12 @@ const createResources = () => {
 
     const promises = [];
     staffMembers.forEach(staffMember => {
-        const input = {
-            authorization: AUTH_TOKEN,
-            createResourceBody: staffMember
-        };
         promises.push(new Promise((resolve, reject) => {
-            resources.createResource(input, (error, success) => {
-                if (error) {
-                    console.log(`error in creating resource ${staffMember}: ${error.errorMessage}`);
-                } else {
-                    resolve(success.resource.id);
-                }
+            ResourcesController.createResource(authorization, staffMember).then((success) => {
+                resolve(success.resource.id);
+            }).catch((error) => {
+                console.log(`error in creating resource ${staffMember}: ${error.errorMessage}`);
+                reject();
             });
         }));
     });
@@ -42,11 +35,9 @@ const createResources = () => {
 
 const deleteResources = (resourceIds) => {
     resourceIds.forEach((resourceId) => {
-        resources.deleteResourceById({id: resourceId, authorization: AUTH_TOKEN}, (error) => {
-            if (error) {
+        ResourcesController.deleteResourceById(authorization, resourceId).catch((error) => {
                 console.log(error.errorMessage);
                 console.log(`Error in deleting resource: ${resourceId}`);
-            }
         });
     });
 };
@@ -58,31 +49,23 @@ const createService = (resourceIds) => {
         duration: 60,
         resources: resourceIds.join(',')
     };
-    const input = {
-        createServiceBody,
-        authorization: AUTH_TOKEN
-    };
     return new Promise((resolve, reject) => {
-        services.createService(input, (error, success) => {
-            if (error) {
-                console.log(`error in creating service: ${error.errorMessage}`);
-                reject();
-            } else {
-                const { id, ownerId, schedules } = success.service;
-                console.log(`service id: ${id}`);
-                console.log(`user id: ${ownerId}`);
-                resolve({scheduleIds: schedules, userId: ownerId, serviceId: id});
-            }
+        ServicesController.createService(authorization, createServiceBody).then((success) => {
+            const { id, ownerId, schedules } = success.service;
+            console.log(`service id: ${id}`);
+            console.log(`user id: ${ownerId}`);
+            resolve({scheduleIds: schedules, userId: ownerId, serviceId: id});
+        }).catch((error) => {
+            console.log(`error in creating service: ${error.errorMessage}`);
+            reject();
         });
     });
 };
 
 const deleteService = (serviceId) => {
-    services.deleteServiceById({id: serviceId, authorization: AUTH_TOKEN}, (error) => {
-        if(error) {
-            console.log(error.errorMessage);
-            console.log(`error in deleting service: ${serviceId}`);
-       }
+    ServicesController.deleteServiceById(authorization,serviceId).catch((error) => {
+        console.log(error.errorMessage);
+        console.log(`error in deleting service: ${serviceId}`);
     });
 };
 
@@ -119,21 +102,16 @@ const createSchedules = (scheduleIds) => {
     ];
     const promises = [];
     for (let i = 0; i < scheduleIds.length; i++) {
-        const input = {
-            id: scheduleIds[i],
-            createScheduleTimeWindowBody: resourceSchedules[i],
-            authorization: AUTH_TOKEN
-        };
+        const id = scheduleIds[i];
+        const createScheduleTimeWindowBody = resourceSchedules[i];
         promises.push(new Promise((resolve, reject) => {
-            schedules.createScheduleTimeWindow(input, (error) => {
-                if (error) {
+            SchedulesController.createScheduleTimeWindow(authorization, id, createScheduleTimeWindowBody)
+                .then((success) => (resolve()))
+                .catch((error) => {
                     console.log(error.errorMessage);
                     console.log(`error in creating schedule for ${scheduleIds[i]}`);
                     reject();
-                } else {
-                    resolve();
-                }
-            });
+                });
         }));
     }
     return promises;
@@ -141,11 +119,9 @@ const createSchedules = (scheduleIds) => {
 
 const deleteSchedules = (scheduleIds) => {
     scheduleIds.forEach(scheduleId => {
-        schedules.deleteScheduleById({id: scheduleId, authorization: AUTH_TOKEN}, (error) => {
-           if (error) {
-               console.log(error.errorMessage);
-               console.log(`error in deleting schedule: ${scheduleId}`);
-           }
+        SchedulesController.deleteScheduleById(authorization, scheduleId).catch((error) => {
+           console.log(error.errorMessage);
+           console.log(`error in deleting schedule: ${scheduleId}`);
         });
     });
 };
@@ -156,22 +132,19 @@ if (!AUTH_TOKEN) {
 }
 
 if (TEAR_DOWN === 'teardown') {
-    services.getServices({authorization: AUTH_TOKEN}, (error, success) => {
-        if (error) {
-            console.log('error in retrieving services');
-        } else {
-            const services = success.services;
-            console.log(success);
-            services.forEach(({ resources, schedules, id}) => {
-                console.log(`deleting service: ${id}`);
-                console.log(`deleting schedules: ${schedules} for service ${id}`);
-                deleteSchedules(schedules);
-                console.log(`deleting resources: ${resources} for service ${id}`);
-                deleteResources(resources);
-                deleteService(id);
-                console.log(`deleted service: ${id}`)
-            });
-        }
+    ServicesController.getServices(authorization).then((success) => {
+        const services = success.services;
+        services.forEach(({ resources, schedules, id}) => {
+            console.log(`deleting service: ${id}`);
+            console.log(`deleting schedules: ${schedules} for service ${id}`);
+            deleteSchedules(schedules);
+            console.log(`deleting resources: ${resources} for service ${id}`);
+            deleteResources(resources);
+            deleteService(id);
+            console.log(`deleted service: ${id}`)
+        });
+    }).catch((error) => {
+        console.log('error in retrieving services');
     });
     return;
 }
@@ -191,7 +164,7 @@ Promise.all(resourcePromises).then((resourceIds) => {
                     console.log('writing .env file');
                     fs.writeFile(
                     '.env',
-                    `BASEURI=${BASEURI}\nAPI_KEY=${AUTH_TOKEN}\nSERVICE_ID=${serviceId}\nUSER_ID=${userId}\nPORT=4000`,
+                    `API_KEY=${AUTH_TOKEN}\nSERVICE_ID=${serviceId}\nUSER_ID=${userId}\nPORT=4000`,
                     (error) => {
                         if (error) {
                             console.log('failed to write to .env file');
