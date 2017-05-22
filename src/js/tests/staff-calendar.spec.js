@@ -26,7 +26,8 @@ describe('<StaffCalendar>', () => {
                     '02:00 PM'
                 ]
             },
-            month: moment.utc()
+            month: moment.utc(),
+            id: 10001
         };
 
         // push every date before 3/31 to disabledDates
@@ -53,6 +54,7 @@ describe('<StaffCalendar>', () => {
                         <CustomCalNavBar
                             dispatch={props.dispatch}
                             navigationController={props.navigationController}
+                            id={props.id}
                         />
                       }
                       month={props.month.toDate()}
@@ -73,7 +75,8 @@ describe('<StaffCalendar>', () => {
                 '2017-03-31': [
                     '02:00 PM'
                 ]
-            }
+            },
+            id: 10001
         };
         const day = moment.utc();
 
@@ -112,7 +115,8 @@ describe('<StaffCalendar>', () => {
                 '2017-03-31': [
                     '02:00 PM'
                 ]
-            }
+            },
+            id: 10001
         };
 
         before(() => {
@@ -132,8 +136,9 @@ describe('<StaffCalendar>', () => {
         const navigationController = {
             pushView: noop
         };
+        const id = 10001;
         const selectedStaffMember = {
-            id: 4,
+            id,
             imagePath: 'http://i.pravatar.cc/300?img=15',
             name: 'Phillip Fry',
             availableSlots:
@@ -158,6 +163,7 @@ describe('<StaffCalendar>', () => {
                   store={store}
                   navigationController={navigationController}
                   availableSlots={selectedStaffMember.availableSlots}
+                  id={id}
               />
             );
         });

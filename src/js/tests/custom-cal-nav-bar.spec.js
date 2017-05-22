@@ -3,7 +3,6 @@ import React from 'react';
 import renderShallow from 'render-shallow';
 import { spy, stub } from 'sinon';
 import { findAllWithType } from 'react-shallow-testutils';
-import * as staffActions from 'src/js/actions/staff';
 import moment from 'moment';
 import { TRANSITIONS } from 'src/js/constants';
 import noop from '../../../lib/util/noop';
@@ -75,8 +74,6 @@ describe('<CustomCalNavBar>', () => {
         };
 
         before((done) => {
-            stub(staffActions, 'fetchSlots').returns(() => (Promise.resolve({})));
-            stub(staffActions, 'selectMonth').returns(() => (Promise.resolve({})));
             const component = renderShallow(
               <CustomCalNavBar
                   {...props}
@@ -86,11 +83,6 @@ describe('<CustomCalNavBar>', () => {
                 nextMonthButton.props.onClick();
                 done();
             });
-        });
-
-        after(() => {
-            staffActions.fetchSlots.restore();
-            staffActions.selectMonth.restore();
         });
 
         it('pushes the view to <StaffCalendar>', () => {
@@ -113,8 +105,6 @@ describe('<CustomCalNavBar>', () => {
         };
 
         before((done) => {
-            stub(staffActions, 'fetchSlots').returns(() => (Promise.resolve({})));
-            stub(staffActions, 'selectMonth').returns(() => (Promise.resolve({})));
             const component = renderShallow(
               <CustomCalNavBar
                   {...props}
@@ -124,11 +114,6 @@ describe('<CustomCalNavBar>', () => {
                 previousMonthButton.props.onClick();
                 done();
             });
-        });
-
-        after(() => {
-            staffActions.fetchSlots.restore();
-            staffActions.selectMonth.restore();
         });
 
         it('pushes the view to <StaffCalendar>', () => {

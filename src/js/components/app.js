@@ -1,24 +1,21 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import NavigationController from 'react-navigation-controller';
-import { fetchSlots, fetchStaff } from 'src/js/actions/staff';
-import moment from 'moment';
+import { fetchStaff } from 'src/js/actions/staff';
 import StaffPicker from './staff-picker';
 import store from '../store';
 import '../../scss/main.scss';
 
 class App extends Component {
     componentWillMount() {
-        const today = moment.utc();
-        fetchStaff()(store.dispatch);
-        fetchSlots(today)(store.dispatch, store.getState);
+        store.dispatch(fetchStaff());
     }
 
     render() {
         return (
           <Provider store={store}>
             <NavigationController
-                views={[<StaffPicker />]}
+                views={[<StaffPicker dispatch={store.dispatch} getState={store.getState} />]}
                 preserveState
                 transitionTension={10}
                 transitionFriction={6}

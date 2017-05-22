@@ -1,65 +1,19 @@
 import { expect } from 'chai';
 import { spy, stub } from 'sinon';
 import {
-    fetchStaff, fetchSlots,
-    selectMonth, selectStaff,
+    fetchStaff, fetchSlotsForResource,
     selectDate
 } from 'src/js/actions/staff';
 import request from 'superagent-bluebird-promise';
 import {
-    DATE_SELECTED, MONTH_SELECTED,
-    SLOTS_FETCHED, STAFF_SELECTED, STAFF_FETCHED
+    DATE_SELECTED,
+    SLOTS_FETCHED, STAFF_FETCHED
 } from 'src/js/action-types';
 import store from 'src/js/store';
 import moment from 'moment';
+import * as urls from 'src/js/urls';
 
 describe('staff action creators', () => {
-    describe('selectStaff', () => {
-        context('when invoked', () => {
-            const dispatch = spy();
-            const startDate = '2017-03-01';
-            const endDate = '2017-03-31';
-            const staffMember = {
-                id: 100004, // resourceId
-                imagePath: 'http://i.pravatar.cc/300?img=15',
-                name: 'Phillip Fry'
-            };
-
-            const availableSlots = {
-                body: [
-                    {
-                        available_slots: [
-                            {
-                                date: '2017-03-30',
-                                slots: ['2017-03-30T18:00:00Z', '2017-03-30T18:30:00Z']
-                            }
-                        ],
-                        id: 100004 // resourceId
-                    }
-                ]
-            };
-
-            before((done) => {
-                stub(request, 'get').returns(Promise.resolve(availableSlots));
-
-                setTimeout(() => {
-                    selectStaff(staffMember, startDate, endDate)(dispatch);
-                    done();
-                });
-            });
-
-            after(() => {
-                request.get.restore();
-            });
-
-            it(`dispatches with ${STAFF_SELECTED}`, () => {
-                expect(dispatch).to.have.been.calledWith({
-                    type: STAFF_SELECTED,
-                    staffMember
-                });
-            });
-        });
-    });
     describe('fetchStaff', () => {
         context('when invoked', () => {
             const duration = 60;
@@ -137,47 +91,36 @@ describe('staff action creators', () => {
         });
     });
 
-    describe('fetchSlots', () => {
-        const startDateFormatted = '2017-03-01';
-        const startDate = moment.utc(startDateFormatted);
-        const endDateFormatted = '2017-03-31';
-
+    describe('fetchSlotsForResource', () => {
+        const startFormatted = '2017-03-01';
+        const startDate = moment.utc(startFormatted);
+        const endFormatted = '2017-03-31';
+        const resourceId = 100004;
+        const slots = ['6:00 PM', '6:30 PM'];
         const availableSlots = {
             body: [
                 {
                     available_slots: [
                         {
-                            date: '2017-03-30',
-                            slots: ['2017-03-30T18:00:00Z', '2017-03-30T18:30:00Z']
+                            date: startFormatted,
+                            slots: ['2017-03-01T18:00:00Z', '2017-03-01T18:30:00Z']
                         }
                     ],
-                    id: 100004 // resourceId from availableSlots
-                },
-                {
-                    available_slots: [
-                        {
-                            date: '2017-03-31',
-                            slots: ['2017-03-31T12:00:00Z', '2017-03-31T12:30:00Z']
-                        }
-                    ],
-                    id: 100003 // resourceId from availableSlots
+                    id: resourceId // resourceId from availableSlots
                 }
             ]
         };
 
         const allAvailableSlots = {
-            100004: { // resourceId
+            [resourceId]: { // resourceId
                 2: { // month index
-                    '2017-03-30': ['6:00 PM', '6:30 PM']
-                }
-            },
-            100003: { // resourceId
-                2: { // month index
-                    '2017-03-31': ['12:00 PM', '12:30 PM']
+                    [startFormatted]: slots
                 }
             }
         };
-        const slotsUrl = `/api/slots?startDate=${startDateFormatted}&endDate=${endDateFormatted}`;
+        const slotsUrl = (start, end, id) => (
+            `/api/slots?startDate=${start}&endDate=${end}&resourceId=${id}`
+        );
         context('when invoked and slots for that month have not been already fetched', () => {
             const dispatch = spy();
 
@@ -189,7 +132,7 @@ describe('staff action creators', () => {
                     }
                 });
                 setTimeout(() => {
-                    fetchSlots(startDate)(dispatch, getState);
+                    fetchSlotsForResource(startDate, resourceId)(dispatch, getState);
                     done();
                 });
             });
@@ -200,14 +143,18 @@ describe('staff action creators', () => {
 
             it(`calls GET with ${slotsUrl}`, () => {
                 expect(request.get).to.have.been.calledWith(
-                    slotsUrl
+                    urls.slots(startFormatted, endFormatted, resourceId)
                 );
             });
 
-            it(`dispatches with ${STAFF_SELECTED}`, () => {
+            it(`dispatches with ${SLOTS_FETCHED}`, () => {
                 expect(dispatch).to.have.been.calledWith({
                     type: SLOTS_FETCHED,
-                    allAvailableSlots
+                    id: resourceId,
+                    month: startDate.month(),
+                    availableSlots: {
+                        [startFormatted]: slots
+                    }
                 });
             });
         });
@@ -223,7 +170,7 @@ describe('staff action creators', () => {
                     }
                 });
                 setTimeout(() => {
-                    fetchSlots(startDate)(dispatch, getState);
+                    fetchSlotsForResource(startDate, resourceId)(dispatch, getState);
                     done();
                 });
             });
@@ -236,25 +183,8 @@ describe('staff action creators', () => {
                 expect(request.get).to.not.have.been.called();
             });
 
-            it(`dispatches with ${STAFF_SELECTED}`, () => {
+            it(`dispatches with ${SLOTS_FETCHED}`, () => {
                 expect(dispatch).to.not.have.been.called();
-            });
-        });
-    });
-
-    describe('selectMonth', () => {
-        context('when invoked', () => {
-            const dispatch = spy();
-            const selectedMonth = moment.utc().month();
-            before(() => {
-                selectMonth(selectedMonth)(dispatch);
-            });
-
-            it(`dispatches with ${MONTH_SELECTED}`, () => {
-                expect(dispatch).to.have.been.calledWith({
-                    type: MONTH_SELECTED,
-                    month: selectedMonth
-                });
             });
         });
     });
