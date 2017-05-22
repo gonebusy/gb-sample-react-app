@@ -48,7 +48,8 @@ router.get('/slots', (req, res) => {
     const query = url_parts.query;
     const startDate = query.startDate;
     const endDate = query.endDate;
-    ServicesController.getServiceAvailableSlotsById(authorization, serviceId, null, endDate, null, startDate)
+    const resourceId = query.resourceId;
+    ServicesController.getServiceAvailableSlotsById(authorization, serviceId, null, endDate, resourceId, startDate)
         .then((success) =>
             res.send(success.service.resources)
         )

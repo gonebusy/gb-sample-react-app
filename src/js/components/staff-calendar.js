@@ -9,7 +9,7 @@ import StaffSlots from './staff-slots';
 import CustomCalNavBar from './custom-cal-nav-bar';
 
 export const StaffCalendar = (
-        { availableSlots, navigationController, dispatch, month }
+        { availableSlots, navigationController, dispatch, month, id }
     ) => {
     const targetMonth = availableSlots ? moment.utc(Object.keys(availableSlots)[0]) : moment.utc();
     const handleDayClick = (day) => {
@@ -56,6 +56,7 @@ export const StaffCalendar = (
                 <CustomCalNavBar
                     dispatch={dispatch}
                     navigationController={navigationController}
+                    id={id}
                 />
               }
           />
@@ -72,13 +73,15 @@ StaffCalendar.propTypes = {
     navigationController: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
     availableSlots: PropTypes.object.isRequired,
-    month: PropTypes.object
+    month: PropTypes.object,
+    id: PropTypes.number.isRequired
 };
 
 export const mapStateToProps = (
-        { staff: { selectedStaffMember: { availableSlots } } }
+        { staff: { selectedStaffMember: { id, availableSlots } } }
     ) => ({
-        availableSlots
+        availableSlots,
+        id
     });
 
 export default connect(mapStateToProps)(StaffCalendar);

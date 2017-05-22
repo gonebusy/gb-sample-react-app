@@ -3,10 +3,7 @@ import React from 'react';
 import { findAllWithType } from 'react-shallow-testutils';
 import renderShallow from 'render-shallow';
 import { spy, stub } from 'sinon';
-import { MONTH_SELECTED, STAFF_SELECTED } from 'src/js/action-types';
-import request from 'superagent-bluebird-promise';
 import { createNew } from 'src/js/store';
-import moment from 'moment';
 import noop from '../../../lib/util/noop';
 import StaffPickerConnected, { StaffPicker } from '../components/staff-picker';
 import Nav from '../components/nav';
@@ -82,13 +79,14 @@ describe('<StaffPicker>', () => {
     });
 
     context('when staff member is clicked', () => {
+        const id = 1;
         const props = {
             navigationController: {
                 pushView: spy()
             },
             staffMembers: [
                 {
-                    id: 1,
+                    id,
                     imagePath: 'http://i.pravatar.cc/300?img=69',
                     name: 'James Hunter'
                 },
@@ -108,24 +106,10 @@ describe('<StaffPicker>', () => {
                     name: 'Phillip Fry'
                 }
             ],
-            dispatch: spy()
+            dispatch: stub().returns(Promise.resolve({}))
         };
-        const mockSlotsResponse =
-            {
-                body: [{
-                    available_slots: [
-                        {
-                            date: '2017-03-27',
-                            slots: '2017-03-27T18:00:00Z, 2017-03-27T18:15:00Z'
-                        }
-                    ],
-                    id: 1
-                }]
-            };
 
         before((done) => {
-            stub(request, 'get').returns(Promise.resolve(mockSlotsResponse));
-
             const component = renderShallow(
               <StaffPicker {...props} />
             ).output;
@@ -135,25 +119,6 @@ describe('<StaffPicker>', () => {
                 firstStaffMember.props.onStaffClick();
                 done();
             });
-        });
-
-        after(() => {
-            request.get.restore();
-        });
-
-        it('invokes selectStaff action', () => {
-            expect(props.dispatch).to.have.been.calledWith(
-                {
-                    type: STAFF_SELECTED,
-                    staffMember: props.staffMembers[0],
-                }
-            );
-            expect(props.dispatch).to.have.been.calledWith(
-                {
-                    type: MONTH_SELECTED,
-                    month: moment.utc().month()
-                }
-            );
         });
 
         it('navigates to <StaffCalendar> through navigationController', () => {

@@ -1,9 +1,10 @@
 import request from 'superagent-bluebird-promise';
 import moment from 'moment';
 import {
-    DATE_SELECTED, MONTH_SELECTED, SLOTS_FETCHED,
-    STAFF_SELECTED, STAFF_FETCHED
+    DATE_SELECTED, SLOTS_FETCHED,
+    STAFF_FETCHED
 } from 'src/js/action-types';
+import * as urls from 'src/js/urls';
 
 const images = {
     'James Hunter': 'http://i.pravatar.cc/300?img=69',
@@ -24,64 +25,40 @@ const keyOffDate = (availableSlots) => {
     return formattedSlots;
 };
 
-export const fetchSlots = startDate =>
-    (dispatch, getState) => {
-        const month = startDate.month();
-        const anyResourceId = Object.keys(getState().staff.allAvailableSlots).shift();
-        if (anyResourceId && getState().staff.allAvailableSlots[anyResourceId][month])
-            return new Promise((resolve) => {
-                resolve();
-            });
+export const alreadyFetched = (allAvailableSlots, resourceId, month) => {
+    const resourceSlots = allAvailableSlots[resourceId];
+    return resourceSlots && resourceSlots[month];
+};
 
-        const formattedStartDate = startDate.format('YYYY-MM-DD');
-        const formattedEndDate = startDate.endOf('month').format('YYYY-MM-DD');
-        return request.get(
-                `/api/slots?startDate=${formattedStartDate}&endDate=${formattedEndDate}`
+export const fetchSlotsForResource = (startDate, resourceId) => (dispatch, getState) => (
+    new Promise((resolve) => {
+        const { allAvailableSlots } = getState().staff;
+        const month = startDate.month();
+        if (!alreadyFetched(allAvailableSlots, resourceId, month)) {
+            const formattedStartDate = startDate.format('YYYY-MM-DD');
+            const formattedEndDate = startDate.endOf('month').format('YYYY-MM-DD');
+            request.get(
+                urls.slots(formattedStartDate, formattedEndDate, resourceId)
             ).then((response) => {
-                let availableSlots = {};
-                const resources = response.body;
-                const allAvailableSlots = {};
-                resources.forEach((resource) => {
-                    availableSlots = keyOffDate(resource.available_slots);
-                    allAvailableSlots[resource.id] = {
-                        [month]: availableSlots
-                    };
-                });
+                const resource = response.body;
+                const slots = keyOffDate(resource[0].available_slots);
                 dispatch({
                     type: SLOTS_FETCHED,
-                    allAvailableSlots
+                    id: resourceId,
+                    month,
+                    availableSlots: slots
                 });
+                resolve();
             });
-
-    };
-
-export const selectStaff = staffMember =>
-    dispatch => (
-        new Promise((resolve) => {
-            dispatch({
-                type: STAFF_SELECTED,
-                staffMember
-            });
-            dispatch({
-                type: MONTH_SELECTED,
-                month: moment.utc().month()
-            });
-            resolve();
-        })
-    );
+        }
+        resolve();
+    })
+);
 
 export const selectDate = selectedDate =>
     dispatch => (
         new Promise((resolve) => {
             dispatch({ type: DATE_SELECTED, date: selectedDate });
-            resolve();
-        })
-    );
-
-export const selectMonth = month =>
-    dispatch => (
-        new Promise((resolve) => {
-            dispatch({ type: MONTH_SELECTED, month });
             resolve();
         })
     );
@@ -108,4 +85,4 @@ export const fetchStaff = () =>
         });
     };
 
-export default selectStaff;
+export default fetchStaff;

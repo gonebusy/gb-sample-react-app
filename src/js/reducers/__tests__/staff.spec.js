@@ -1,11 +1,13 @@
 import { expect } from 'chai';
 import {
-    MONTH_SELECTED, SLOTS_FETCHED,
-    STAFF_FETCHED, STAFF_SELECTED, DATE_SELECTED
+    SLOTS_FETCHED,
+    STAFF_FETCHED,
+    DATE_SELECTED
 } from 'src/js/action-types';
 import { createNew } from 'src/js/store';
 import { initialState } from 'src/js/reducers/staff';
 import moment from 'moment';
+import find from 'lodash.find';
 
 describe('staff reducers', () => {
 
@@ -67,33 +69,6 @@ describe('staff reducers', () => {
 
     });
 
-    context(`${STAFF_SELECTED} is dispatched`, () => {
-        let state;
-        const selectedStaffMember = {
-            id: 100004, // resourceId
-            imagePath: 'http://i.pravatar.cc/300?img=15',
-            name: 'Phillip Fry',
-        };
-
-        before(() => {
-            const store = createNew();
-            store.dispatch(
-                {
-                    type: STAFF_SELECTED,
-                    staffMember: selectedStaffMember
-                }
-            );
-            state = store.getState().staff;
-        });
-
-        it('adds the selected staff member to selectedStaffMember', () => {
-            expect(state).to.eql({
-                ...initialState,
-                selectedStaffMember
-            });
-        });
-
-    });
     context(`${DATE_SELECTED} is dispatched`, () => {
         context('and there are available slots for that date', () => {
             let state;
@@ -168,56 +143,37 @@ describe('staff reducers', () => {
 
     });
 
-    context(`when ${MONTH_SELECTED} is dispatched`, () => {
-        const month = moment.utc('2017-03-01').month();
-        let state;
-        const allAvailableSlots = {
-            100004: { // resourceId
-                2: { // month index
-                    '2017-03-30': ['6:00 PM', '6:30 PM']
-                }
-            },
-            100003: {
-                2: {
-                    '2017-03-31': ['12:00 PM', '12:30 PM']
-                }
-            }
-        };
-        before(() => {
-            const selectedStaffMember = {
-                id: 100004, // resourceId
-                imagePath: 'http://i.pravatar.cc/300?img=15',
-                name: 'Phillip Fry',
-            };
-
-            const store = createNew(
-                { staff: { ...initialState, selectedStaffMember, allAvailableSlots } }
-            );
-            store.dispatch(
-                {
-                    type: MONTH_SELECTED,
-                    month
-                }
-            );
-            state = store.getState().staff;
-        });
-        it('sets the staff\'s available slot to the selected month', () => {
-            expect(state).to.eql({
-                ...initialState,
-                allAvailableSlots,
-                selectedStaffMember: {
-                    ...state.selectedStaffMember,
-                    availableSlots: allAvailableSlots[100004][2]
-                }
-            });
-        });
-    });
-
     context(`when ${SLOTS_FETCHED} is dispatched`, () => {
         let state;
+        const resourceId = 100004;
+        const month = 2;
+        const nextMonth = month + 1;
+        const staffMembers = [
+            {
+                id: 100001, // resourceId
+                imagePath: 'http://i.pravatar.cc/300?img=69',
+                name: 'James Hunter'
+            },
+            {
+                id: 100002,
+                imagePath: 'http://i.pravatar.cc/300?img=25',
+                name: 'Selena Yamada'
+            },
+            {
+                id: 100003,
+                imagePath: 'http://i.pravatar.cc/300?img=32',
+                name: 'Sarah Belmoris'
+            },
+            {
+                id: resourceId,
+                imagePath: 'http://i.pravatar.cc/300?img=15',
+                name: 'Phillip Fry'
+            }
+        ];
+        const staffMember = find(staffMembers, staff => (staff.id === resourceId));
         const allAvailableSlots = {
-            100004: { // resourceId
-                2: { // month index
+            [resourceId]: { // resourceId
+                [month]: { // month index
                     '2017-03-30': ['6:00 PM', '6:30 PM']
                 }
             },
@@ -229,33 +185,36 @@ describe('staff reducers', () => {
         };
 
         const fetchedAvailableSlots = {
-            100004: { // resourceId
-                3: { // month index
+            [resourceId]: { // resourceId
+                [nextMonth]: { // month index
                     '2017-04-30': ['6:00 PM', '6:30 PM']
-                }
-            },
-            100003: {
-                3: {
-                    '2017-04-01': ['12:00 PM', '12:30 PM']
                 }
             }
         };
+        const availableSlots = allAvailableSlots[resourceId][month];
         context('and there availableSlots do not already exist in the state', () => {
             before(() => {
 
-                const store = createNew({ staff: { ...initialState } });
+                const store = createNew({ staff: { ...initialState, staffMembers } });
                 store.dispatch(
                     {
                         type: SLOTS_FETCHED,
-                        allAvailableSlots
+                        availableSlots: allAvailableSlots[resourceId][month],
+                        id: resourceId,
+                        month
                     }
                 );
                 state = store.getState().staff;
             });
-            it('sets allavailableSlots in the store', () => {
+            it('sets allavailableSlots and selected staff in the store', () => {
                 expect(state).to.eql({
                     ...initialState,
-                    allAvailableSlots,
+                    staffMembers,
+                    allAvailableSlots: { [resourceId]: { [month]: availableSlots } },
+                    selectedStaffMember: {
+                        ...staffMember,
+                        availableSlots: allAvailableSlots[resourceId][month]
+                    }
                 });
             });
         });
@@ -263,11 +222,15 @@ describe('staff reducers', () => {
         context('and there availableSlots already exist in the state', () => {
             before(() => {
 
-                const store = createNew({ staff: { ...initialState, allAvailableSlots } });
+                const store = createNew(
+                    { staff: { ...initialState, allAvailableSlots, staffMembers } }
+                );
                 store.dispatch(
                     {
                         type: SLOTS_FETCHED,
-                        allAvailableSlots: fetchedAvailableSlots
+                        availableSlots: fetchedAvailableSlots[resourceId][nextMonth],
+                        id: resourceId,
+                        month: nextMonth
                     }
                 );
                 state = store.getState().staff;
@@ -275,24 +238,18 @@ describe('staff reducers', () => {
             it('merges allAvailableSlots', () => {
                 expect(state).to.eql({
                     ...initialState,
-                    allAvailableSlots: {
-                        100004: { // resourceId
-                            2: { // month index
-                                '2017-03-30': ['6:00 PM', '6:30 PM']
-                            },
-                            3: {
-                                '2017-04-30': ['6:00 PM', '6:30 PM']
-                            }
-                        },
-                        100003: {
-                            2: {
-                                '2017-03-31': ['12:00 PM', '12:30 PM']
-                            },
-                            3: {
-                                '2017-04-01': ['12:00 PM', '12:30 PM']
-                            }
-                        }
+                    staffMembers,
+                    selectedStaffMember: {
+                        ...staffMember,
+                        availableSlots: fetchedAvailableSlots[resourceId][nextMonth]
                     },
+                    allAvailableSlots: {
+                        ...allAvailableSlots,
+                        [resourceId]: {
+                            ...allAvailableSlots[resourceId],
+                            ...fetchedAvailableSlots[resourceId]
+                        }
+                    }
                 });
             });
         });

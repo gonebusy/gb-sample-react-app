@@ -1,7 +1,8 @@
 import {
-    MONTH_SELECTED, SLOTS_FETCHED,
-    STAFF_SELECTED, STAFF_FETCHED, DATE_SELECTED
+    SLOTS_FETCHED,
+    STAFF_FETCHED, DATE_SELECTED
 } from 'src/js/action-types';
+import find from 'lodash.find';
 
 export const initialState = {
     staffMembers: [],
@@ -14,30 +15,26 @@ export const initialState = {
 export default (state = initialState, action) => {
     const { type } = action;
     switch (type) {
-        case MONTH_SELECTED: {
-            const { month } = action;
-            const { id } = state.selectedStaffMember;
+        case SLOTS_FETCHED: {
+            const {
+                availableSlots,
+                id,
+                month
+            } = action;
+            const staffMember = find(state.staffMembers, staff => (staff.id === id));
             return {
                 ...state,
                 selectedStaffMember: {
-                    ...state.selectedStaffMember,
-                    availableSlots: state.allAvailableSlots[id][month]
+                    ...staffMember,
+                    availableSlots
+                },
+                allAvailableSlots: {
+                    ...state.allAvailableSlots,
+                    [id]: {
+                        ...state.allAvailableSlots[id],
+                        [month]: availableSlots
+                    }
                 }
-            };
-        }
-        case SLOTS_FETCHED: {
-            const { allAvailableSlots } = action;
-            const updatedAvailableSlots = {};
-            Object.keys(allAvailableSlots).forEach((key) => {
-                updatedAvailableSlots[key] = {
-                    ...state.allAvailableSlots[key],
-                    ...allAvailableSlots[key]
-                };
-            });
-
-            return {
-                ...state,
-                allAvailableSlots: updatedAvailableSlots
             };
         }
         case STAFF_FETCHED: {
@@ -46,13 +43,6 @@ export default (state = initialState, action) => {
                 ...state,
                 staffMembers,
                 duration
-            };
-        }
-        case STAFF_SELECTED: {
-            const { staffMember } = action;
-            return {
-                ...state,
-                selectedStaffMember: staffMember
             };
         }
         case DATE_SELECTED: {

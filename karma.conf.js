@@ -42,7 +42,12 @@ module.exports = function karma(config) {
         autoWatch: true,
         browsers: ['PhantomJS'],
         singleRun: true,
-        browserNoActivityTimeout: 60000
+        browserNoActivityTimeout: 60000,
+        browserConsoleLogOptions: {
+            level: 'log',
+            format: '%b %T: %m',
+            terminal: true
+        }
     });
 };
 

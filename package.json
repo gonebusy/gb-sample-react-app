@@ -28,6 +28,7 @@
     "dotenv": "^4.0.0",
     "gonebusy-nodejs-client": "^0.1.0",
     "json-loader": "^0.5.4",
+    "lodash.find": "^4.6.0",
     "moment": "^2.17.1",
     "react": "^15.4.2",
     "react-day-picker": "^5.2.0",
