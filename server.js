@@ -9,17 +9,13 @@ const router = express.Router();
 
 /* Loads variables from .env */
 dotenv.load();
-const { BASEURI, API_KEY, SERVICE_ID, USER_ID, PORT } = process.env;
+const { API_KEY, SERVICE_ID, USER_ID, PORT } = process.env;
 
-gonebusy.configuration.BASEURI = BASEURI;
+gonebusy.Configuration.currentEnvironment = 'sandbox';
 const authorization = `Token ${API_KEY}`;
 const serviceId = SERVICE_ID;
 const userId = USER_ID;
-
-const services = Promise.promisifyAll(gonebusy.ServicesController);
-const resources = Promise.promisifyAll(gonebusy.ResourcesController);
-const bookings = Promise.promisifyAll(gonebusy.BookingsController);
-
+const { ServicesController, ResourcesController, BookingsController } = gonebusy;
 
 const app = express();
 app.use(bodyParser.json());
@@ -31,24 +27,20 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 router.get('/service', (req, res) => {
-    services.getServiceById({id: serviceId, authorization}, (error, success) => {
-        if(error) {
-            console.log(error.errorMessage);
-        } else {
-            res.send(success.service);
-        }
-    });
+    ServicesController.getServiceById(authorization, serviceId).then((success) =>
+        res.send(success.service)
+    ).catch((error) =>
+        console.log(error.errorMessage)
+    );
 });
 
 router.get('/resources/:id', (req, res) => {
-    const id = req.params.id;
-    resources.getResourceById({id, authorization}, (error, success) => {
-        if(error) {
-            console.log(error.errorMessage);
-        } else {
-            res.send(success.resource);
-        }
-    })
+    const { id } = req.params;
+    ResourcesController.getResourceById(authorization, id).then((success) =>
+        res.send(success.resource)
+    ).catch((error) =>
+        console.log(error.errorMessage)
+    );
 });
 
 router.get('/slots', (req, res) => {
@@ -56,13 +48,13 @@ router.get('/slots', (req, res) => {
     const query = url_parts.query;
     const startDate = query.startDate;
     const endDate = query.endDate;
-    services.getServiceAvailableSlotsById({id: serviceId, startDate, endDate, authorization}, (error, success) => {
-        if(error) {
-            console.log(error.errorMessage);
-        } else {
+    ServicesController.getServiceAvailableSlotsById(authorization, serviceId, null, endDate, null, startDate)
+        .then((success) =>
             res.send(success.service.resources)
-        }
-    });
+        )
+        .catch((error) =>
+            console.log(error.errorMessage)
+        );
 });
 
 router.post('/bookings/new', (req, res) => {
@@ -75,13 +67,11 @@ router.post('/bookings/new', (req, res) => {
         service_id: serviceId,
         user_id: userId
     };
-    bookings.createBooking({authorization, createBookingBody}, (error, success) => {
-        if(error) {
-            console.log(error.errorMessage);
-        } else {
-            res.send(success);
-        }
-    });
+    BookingsController.createBooking(authorization, createBookingBody).then((success) =>
+        res.send(success)
+    ).catch((error) =>
+        console.log(error.errorMessage)
+    );
 });
 
 app.listen(PORT, () => {

@@ -5,7 +5,11 @@ import {
 
 export const initialState = {
     staffMembers: [],
-    allAvailableSlots: {}
+    allAvailableSlots: {},
+    selectedStaffMember: {
+        imagePath: '',
+        name: ''
+    }
 };
 export default (state = initialState, action) => {
     const { type } = action;
