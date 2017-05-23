@@ -9,7 +9,9 @@ export const initialState = {
     allAvailableSlots: {},
     selectedStaffMember: {
         imagePath: '',
-        name: ''
+        name: '',
+        id: 0,
+        availableSlots: {}
     }
 };
 export default (state = initialState, action) => {

@@ -11,11 +11,12 @@ import { findWithType, findAllWithType } from 'react-shallow-testutils';
 import Nav from '../components/nav';
 import StaffSlotsConnected, { StaffSlots } from '../components/staff-slots';
 import StaffForm from '../components/staff-form';
+import Slot from '../components/slot';
 
 describe('<StaffSlots>', () => {
     context('when rendered with slots', () => {
         let component;
-
+        const timeClick = () => noop;
         const currentDate = moment();
         const formattedDate = dateFormat(currentDate, 'dddd, d mmm yyyy');
         const slots = ['7:00 AM', '7:15 AM', '7:30 AM', '7:45 AM'];
@@ -38,18 +39,16 @@ describe('<StaffSlots>', () => {
                 <div>
                   <p className="staff-slots-message">Choose your start time</p>
                   <ul className="staff-slots-times">
-                    <li className="staff-slots-time" key={0}>
-                      <button onClick={noop}>{slots[0]}</button>
-                    </li>
-                    <li className="staff-slots-time" key={1}>
-                      <button onClick={noop}>{slots[1]}</button>
-                    </li>
-                    <li className="staff-slots-time" key={2}>
-                      <button onClick={noop}>{slots[2]}</button>
-                    </li>
-                    <li className="staff-slots-time" key={3}>
-                      <button onClick={noop}>{slots[3]}</button>
-                    </li>
+                    {
+                          slots.map((time, index) => (
+                            <Slot
+                                time={time}
+                                key={`slot ${time}`}
+                                index={index}
+                                timeClick={timeClick}
+                            />
+                          ))
+                      }
                   </ul>
                 </div>
               </div>
@@ -98,8 +97,8 @@ describe('<StaffSlots>', () => {
 
         before(() => {
             const component = renderShallow(<StaffSlots {...props} />).output;
-            const firstButton = findAllWithType(component, 'button')[0];
-            firstButton.props.onClick(slots[0]);
+            const firstButton = findAllWithType(component, Slot)[0];
+            firstButton.props.timeClick(slots[0], 0)();
         });
 
         it('calls navigationController.pushView with StaffForm', () => {
@@ -147,6 +146,7 @@ describe('<StaffSlots>', () => {
             slots,
             startTime: '7:00 AM'
         };
+        const timeClick = () => noop;
 
         before(() => {
             component = renderShallow(<StaffSlots {...props} />).output;
@@ -161,18 +161,16 @@ describe('<StaffSlots>', () => {
                 <div>
                   <p className="staff-slots-message">Choose your end time</p>
                   <ul className="staff-slots-times">
-                    <li className="staff-slots-time" key={0}>
-                      <button onClick={noop}>{slots[0]}</button>
-                    </li>
-                    <li className="staff-slots-time" key={1}>
-                      <button onClick={noop}>{slots[1]}</button>
-                    </li>
-                    <li className="staff-slots-time" key={2}>
-                      <button onClick={noop}>{slots[2]}</button>
-                    </li>
-                    <li className="staff-slots-time" key={3}>
-                      <button onClick={noop}>{slots[3]}</button>
-                    </li>
+                    {
+                          slots.map((time, index) => (
+                            <Slot
+                                time={time}
+                                key={`slot ${time}`}
+                                index={index}
+                                timeClick={timeClick}
+                            />
+                          ))
+                      }
                   </ul>
                 </div>
               </div>
@@ -194,8 +192,8 @@ describe('<StaffSlots>', () => {
 
         before(() => {
             const component = renderShallow(<StaffSlots {...props} />).output;
-            const firstButton = findAllWithType(component, 'button')[0];
-            firstButton.props.onClick(slots[0]);
+            const firstButton = findAllWithType(component, Slot)[0];
+            firstButton.props.timeClick(slots[0], 0)();
         });
 
         it('calls navigationController.pushView with StaffForm', () => {
