@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import Nav from './nav';
 import StaffForm from './staff-form';
+import { Slot } from './slot';
 
 export const StaffSlots = (
         { navigationController, date, slots, startTime, duration }
@@ -47,11 +48,6 @@ export const StaffSlots = (
                   endTime={time}
               />);
     };
-    const renderSlot = (time, index) => (
-      <li className="staff-slots-time" key={index}>
-        <button onClick={timeClick(time, index)}>{time}</button>
-      </li>
-    );
     const timeType = startTime ? 'end' : 'start';
     return (
       <div className="staff-slots">
@@ -63,7 +59,16 @@ export const StaffSlots = (
               <div>
                 <p className="staff-slots-message">{ `Choose your ${timeType} time`}</p>
                 <ul className="staff-slots-times">
-                  { slots.map(renderSlot) }
+                  {
+                      slots.map((time, index) => (
+                        <Slot
+                            time={time}
+                            key={`slot ${time}`}
+                            index={index}
+                            timeClick={timeClick}
+                        />
+                      ))
+                  }
                 </ul>
               </div>
               :
