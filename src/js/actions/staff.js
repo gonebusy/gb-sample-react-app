@@ -25,16 +25,17 @@ const keyOffDate = (availableSlots) => {
     return formattedSlots;
 };
 
-export const alreadyFetched = (allAvailableSlots, resourceId, month) => {
+export const alreadyFetched = (allAvailableSlots, resourceId, year, month) => {
     const resourceSlots = allAvailableSlots[resourceId];
-    return resourceSlots && resourceSlots[month];
+    return resourceSlots && resourceSlots[year] && resourceSlots[year][month];
 };
 
 export const fetchSlotsForResource = (startDate, resourceId) => (dispatch, getState) => (
     new Promise((resolve) => {
         const { allAvailableSlots } = getState().staff;
         const month = startDate.month();
-        if (!alreadyFetched(allAvailableSlots, resourceId, month)) {
+        const year = startDate.year();
+        if (!alreadyFetched(allAvailableSlots, resourceId, year, month)) {
             const formattedStartDate = startDate.format('YYYY-MM-DD');
             const formattedEndDate = startDate.endOf('month').format('YYYY-MM-DD');
             request.get(
@@ -46,6 +47,7 @@ export const fetchSlotsForResource = (startDate, resourceId) => (dispatch, getSt
                     type: SLOTS_FETCHED,
                     id: resourceId,
                     month,
+                    year,
                     availableSlots: slots
                 });
                 resolve();

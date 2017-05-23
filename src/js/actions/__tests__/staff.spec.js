@@ -96,6 +96,8 @@ describe('staff action creators', () => {
         const startDate = moment.utc(startFormatted);
         const endFormatted = '2017-03-31';
         const resourceId = 100004;
+        const year = startDate.year();
+        const month = startDate.month();
         const slots = ['6:00 PM', '6:30 PM'];
         const availableSlots = {
             body: [
@@ -113,15 +115,17 @@ describe('staff action creators', () => {
 
         const allAvailableSlots = {
             [resourceId]: { // resourceId
-                2: { // month index
-                    [startFormatted]: slots
+                [year]: {
+                    [month]: { // month index
+                        [startFormatted]: slots
+                    }
                 }
             }
         };
         const slotsUrl = (start, end, id) => (
             `/api/slots?startDate=${start}&endDate=${end}&resourceId=${id}`
         );
-        context('when invoked and slots for that month have not been already fetched', () => {
+        context('when invoked and slots for that month and year have not been fetched', () => {
             const dispatch = spy();
 
             before((done) => {
@@ -151,7 +155,8 @@ describe('staff action creators', () => {
                 expect(dispatch).to.have.been.calledWith({
                     type: SLOTS_FETCHED,
                     id: resourceId,
-                    month: startDate.month(),
+                    month,
+                    year,
                     availableSlots: {
                         [startFormatted]: slots
                     }
@@ -159,7 +164,7 @@ describe('staff action creators', () => {
             });
         });
 
-        context('when invoked and slots for that month have been fetched already', () => {
+        context('when invoked and slots for that year and month have been fetched', () => {
             const dispatch = spy();
 
             before((done) => {

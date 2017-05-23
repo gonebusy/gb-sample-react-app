@@ -147,7 +147,9 @@ describe('staff reducers', () => {
         let state;
         const resourceId = 100004;
         const month = 2;
+        const year = 2017;
         const nextMonth = month + 1;
+        const nextYear = year + 1;
         const staffMembers = [
             {
                 id: 100001, // resourceId
@@ -173,35 +175,48 @@ describe('staff reducers', () => {
         const staffMember = find(staffMembers, staff => (staff.id === resourceId));
         const allAvailableSlots = {
             [resourceId]: { // resourceId
-                [month]: { // month index
-                    '2017-03-30': ['6:00 PM', '6:30 PM']
+                [year]: { // year index
+                    [month]: { // month index
+                        '2017-03-30': ['6:00 PM', '6:30 PM']
+                    }
                 }
             },
             100003: {
-                2: {
-                    '2017-03-31': ['12:00 PM', '12:30 PM']
+                [year]: { // year index
+                    2: {
+                        '2017-03-31': ['12:00 PM', '12:30 PM']
+                    }
                 }
             }
         };
 
         const fetchedAvailableSlots = {
             [resourceId]: { // resourceId
-                [nextMonth]: { // month index
-                    '2017-04-30': ['6:00 PM', '6:30 PM']
+                [year]: { // year index
+                    [nextMonth]: { // month index
+                        '2017-04-30': ['6:00 PM', '6:30 PM']
+                    }
+                },
+                [nextYear]: { // year index
+                    [nextMonth]: { // month index
+                        '2018-04-30': ['6:00 PM', '6:30 PM']
+                    }
                 }
             }
         };
-        const availableSlots = allAvailableSlots[resourceId][month];
+
         context('and there availableSlots do not already exist in the state', () => {
+            const availableSlots = allAvailableSlots[resourceId][year][month];
             before(() => {
 
                 const store = createNew({ staff: { ...initialState, staffMembers } });
                 store.dispatch(
                     {
                         type: SLOTS_FETCHED,
-                        availableSlots: allAvailableSlots[resourceId][month],
+                        availableSlots,
                         id: resourceId,
-                        month
+                        month,
+                        year
                     }
                 );
                 state = store.getState().staff;
@@ -210,16 +225,17 @@ describe('staff reducers', () => {
                 expect(state).to.eql({
                     ...initialState,
                     staffMembers,
-                    allAvailableSlots: { [resourceId]: { [month]: availableSlots } },
+                    allAvailableSlots: { [resourceId]: { [year]: { [month]: availableSlots } } },
                     selectedStaffMember: {
                         ...staffMember,
-                        availableSlots: allAvailableSlots[resourceId][month]
+                        availableSlots
                     }
                 });
             });
         });
 
         context('and there availableSlots already exist in the state', () => {
+            const availableSlots = fetchedAvailableSlots[resourceId][year][nextMonth];
             before(() => {
 
                 const store = createNew(
@@ -228,9 +244,10 @@ describe('staff reducers', () => {
                 store.dispatch(
                     {
                         type: SLOTS_FETCHED,
-                        availableSlots: fetchedAvailableSlots[resourceId][nextMonth],
+                        availableSlots,
                         id: resourceId,
-                        month: nextMonth
+                        month: nextMonth,
+                        year
                     }
                 );
                 state = store.getState().staff;
@@ -241,13 +258,52 @@ describe('staff reducers', () => {
                     staffMembers,
                     selectedStaffMember: {
                         ...staffMember,
-                        availableSlots: fetchedAvailableSlots[resourceId][nextMonth]
+                        availableSlots
+                    },
+                    allAvailableSlots: {
+                        ...allAvailableSlots,
+                        [resourceId]: {
+                            [year]: {
+                                ...allAvailableSlots[resourceId][year],
+                                ...fetchedAvailableSlots[resourceId][year]
+                            }
+                        }
+                    }
+                });
+            });
+        });
+
+        context('and the following year has been fetched', () => {
+            const availableSlots = fetchedAvailableSlots[resourceId][nextYear][nextMonth];
+            before(() => {
+
+                const store = createNew(
+                    { staff: { ...initialState, allAvailableSlots, staffMembers } }
+                );
+                store.dispatch(
+                    {
+                        type: SLOTS_FETCHED,
+                        availableSlots,
+                        id: resourceId,
+                        month: nextMonth,
+                        year: nextYear
+                    }
+                );
+                state = store.getState().staff;
+            });
+            it('merges allAvailableSlots with the following year', () => {
+                expect(state).to.eql({
+                    ...initialState,
+                    staffMembers,
+                    selectedStaffMember: {
+                        ...staffMember,
+                        availableSlots
                     },
                     allAvailableSlots: {
                         ...allAvailableSlots,
                         [resourceId]: {
                             ...allAvailableSlots[resourceId],
-                            ...fetchedAvailableSlots[resourceId]
+                            [nextYear]: fetchedAvailableSlots[resourceId][nextYear]
                         }
                     }
                 });
