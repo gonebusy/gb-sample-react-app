@@ -3,6 +3,7 @@ import {
     STAFF_FETCHED, DATE_SELECTED
 } from 'src/js/action-types';
 import find from 'lodash.find';
+import lodashGet from 'lodash.get';
 
 export const initialState = {
     staffMembers: [],
@@ -21,7 +22,8 @@ export default (state = initialState, action) => {
             const {
                 availableSlots,
                 id,
-                month
+                month,
+                year
             } = action;
             const staffMember = find(state.staffMembers, staff => (staff.id === id));
             return {
@@ -34,7 +36,10 @@ export default (state = initialState, action) => {
                     ...state.allAvailableSlots,
                     [id]: {
                         ...state.allAvailableSlots[id],
-                        [month]: availableSlots
+                        [year]: {
+                            ...lodashGet(state.allAvailableSlots[id], year, {}),
+                            [month]: availableSlots
+                        }
                     }
                 }
             };
