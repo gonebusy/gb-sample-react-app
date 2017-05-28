@@ -4,9 +4,9 @@ import {
     CLEAR_SELECTED_STAFF_MEMBER,
     TIME_SLOT_SELECTED
 } from 'src/js/action-types';
-import find from 'lodash.find';
 import lodashGet from 'lodash.get';
 import find from 'lodash.find';
+import moment from 'moment';
 
 export const initialState = {
     staffMembers: [],
@@ -15,9 +15,10 @@ export const initialState = {
         imagePath: '',
         name: '',
         availableSlots: {},
-        selectedMonth: new Date()
-    },
-    views: []
+        dayPickerMonth: new Date(),
+        slotsForDate: [],
+        slotForm: 'start'
+    }
 };
 export default (state = initialState, action) => {
     const { type } = action;
@@ -27,14 +28,18 @@ export default (state = initialState, action) => {
                 availableSlots,
                 id,
                 month,
-                year
+                year,
+                dayPickerMonth,
+                fetchedDate
             } = action;
             const staffMember = find(state.staffMembers, staff => (staff.id === id));
             return {
                 ...state,
                 selectedStaffMember: {
                     ...staffMember,
-                    availableSlots
+                    availableSlots,
+                    selectedDate: fetchedDate,
+                    dayPickerMonth
                 },
                 allAvailableSlots: {
                     ...state.allAvailableSlots,
@@ -54,18 +59,6 @@ export default (state = initialState, action) => {
                 ...state,
                 staffMembers,
                 duration
-            };
-        }
-        case STAFF_SELECTED: {
-            const { id } = action;
-            const staffMember = find(
-                state.staffMembers,
-                (staffMember) => (staffMember.id === id)
-            );
-            return {
-                ...state,
-                selectedStaffMember: staffMember,
-                views: [...state.views, '/']
             };
         }
         case CLEAR_SELECTED_STAFF_MEMBER: {
@@ -88,8 +81,7 @@ export default (state = initialState, action) => {
                     selectedDate: date,
                     slotsForDate,
                     slotForm: 'start'
-                },
-                views: [...state.views, '/calendar']
+                }
             };
         }
         case TIME_SLOT_SELECTED: {
@@ -121,8 +113,7 @@ export default (state = initialState, action) => {
                     [slotType]: slotTime,
                     slotsForDate: remainingSlots,
                     slotForm: 'end'
-                },
-                views: [...state.views, '/available_slots']
+                }
             };
         }
 

@@ -1,13 +1,13 @@
 import dateFormat from 'dateformat';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Slot } from './slot';
 import {
     TIME_SLOT_SELECTED
 } from 'src/js/action-types';
+import { Slot } from './slot';
 
 export const StaffSlots = (
-        { date, slots, slotForm, router, dispatch }
+        { date, id, slots, slotForm, router, dispatch }
     ) => {
     const formattedDate = dateFormat(date, 'dddd, d mmm yyyy');
 
@@ -20,7 +20,7 @@ export const StaffSlots = (
             }
         );
         if (slotForm !== 'start')
-            router.push('/book');
+            router.push(`/staff/${id}/book`);
     };
     return (
       <div className="staff-slots">
@@ -59,7 +59,8 @@ StaffSlots.propTypes = {
     slots: PropTypes.array.isRequired,
     slotForm: PropTypes.string.isRequired,
     router: PropTypes.object.isRequired,
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
+    id: PropTypes.string.isRequired
 };
 
 
@@ -67,7 +68,7 @@ const mapStateToProps = (
     {
         staff: {
             selectedStaffMember: {
-                selectedDate, slotsForDate, slotForm
+                id, selectedDate, slotsForDate, slotForm
             },
             duration
         }
@@ -75,7 +76,8 @@ const mapStateToProps = (
         date: selectedDate,
         slots: slotsForDate,
         duration,
-        slotForm
+        slotForm,
+        id
     });
 
 export default connect(mapStateToProps)(StaffSlots);

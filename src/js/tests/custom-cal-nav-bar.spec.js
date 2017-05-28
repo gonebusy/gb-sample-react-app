@@ -4,9 +4,9 @@ import renderShallow from 'render-shallow';
 import { spy, stub } from 'sinon';
 import { findAllWithType } from 'react-shallow-testutils';
 import moment from 'moment';
+import * as staffActions from 'src/js/actions/staff';
 import noop from '../../../lib/util/noop';
 import CustomCalNavBar from '../components/custom-cal-nav-bar';
-import StaffCalendar from '../components/staff-calendar';
 
 describe('<CustomCalNavBar>', () => {
     context('when rendered on the current month', () => {
@@ -63,14 +63,17 @@ describe('<CustomCalNavBar>', () => {
         const currentMonth = moment.utc();
         const previousMonth = currentMonth.subtract(1, 'months');
         const nextMonth = currentMonth.add(1, 'months');
+        const id = '10004';
         const props = {
-            dispatch: stub().returns(Promise.resolve({})),
+            dispatch: spy(),
             nextMonth,
             previousMonth,
-            className: 'some-class'
+            className: 'some-class',
+            id
         };
 
         before((done) => {
+            stub(staffActions, 'fetchSlotsForResource').returns(Promise.resolve({}));
             const component = renderShallow(
               <CustomCalNavBar
                   {...props}
@@ -83,12 +86,12 @@ describe('<CustomCalNavBar>', () => {
         });
 
         after(() => {
-            staffActions.fetchSlots.restore();
-            staffActions.selectMonth.restore();
+            staffActions.fetchSlotsForResource.restore();
         });
-        it('calls dispatch with fetchSlots and selectMonth', () => {
-            expect(props.dispatch).to.have.been.calledWith(staffActions.fetchSlots(nextMonth));
-            expect(props.dispatch).to.have.been.calledWith(staffActions.selectMonth(nextMonth));
+        it('calls dispatch with fetchSlotsForResource', () => {
+            expect(props.dispatch).to.have.been.calledWith(
+                staffActions.fetchSlotsForResource(nextMonth, id)
+            );
         });
 
     });
@@ -97,14 +100,17 @@ describe('<CustomCalNavBar>', () => {
         // adding 2 for nextMonth and 1 for previousMonth
         const nextMonth = moment.utc().add(2, 'months');
         const previousMonth = moment.utc().add(1, 'months');
+        const id = '10004';
         const props = {
-            dispatch: stub().returns(Promise.resolve({})),
+            dispatch: spy(),
             nextMonth,
             previousMonth,
-            className: 'some-class'
+            className: 'some-class',
+            id
         };
 
         before((done) => {
+            stub(staffActions, 'fetchSlotsForResource').returns(Promise.resolve({}));
             const component = renderShallow(
               <CustomCalNavBar
                   {...props}
@@ -117,12 +123,10 @@ describe('<CustomCalNavBar>', () => {
         });
 
         after(() => {
-            staffActions.fetchSlots.restore();
-            staffActions.selectMonth.restore();
+            staffActions.fetchSlotsForResource.restore();
         });
-        it('calls dispatch with fetchSlots and selectMonth with previous month', ()=> {
-            expect(staffActions.fetchSlots).to.have.been.calledWith(previousMonth);
-            expect(staffActions.selectMonth).to.have.been.calledWith(previousMonth);
+        it('calls dispatch with fetchSlots and selectMonth with previous month', () => {
+            expect(staffActions.fetchSlotsForResource).to.have.been.calledWith(previousMonth, id);
         });
     });
 });

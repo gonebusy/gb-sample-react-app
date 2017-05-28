@@ -1,25 +1,24 @@
 import { expect } from 'chai';
 import React from 'react';
 import renderShallow from 'render-shallow';
-import { findWithClass, findWithType } from 'react-shallow-testutils';
+import { findWithClass } from 'react-shallow-testutils';
 import { spy, stub } from 'sinon';
 import request from 'superagent-bluebird-promise';
 import moment from 'moment';
 import { createNew } from 'src/js/store';
 import { initialState } from 'src/js/reducers/staff';
 import noop from '../../../lib/util/noop';
-import Nav from '../components/nav';
 import StaffFormConnected, { StaffForm } from '../components/staff-form';
-import BookingConfirmation from '../components/booking-confirmation';
 
 describe('<StaffForm>', () => {
     context('when rendered with required props for StaffForm', () => {
         const today = moment.utc();
         const props = {
-            id: 10001,
+            id: '10001',
             date: today,
             startTime: '10:15 AM',
-            endTime: '11:15 AM'
+            endTime: '11:15 AM',
+            router: {}
         };
 
         let component;
@@ -32,7 +31,6 @@ describe('<StaffForm>', () => {
         it('renders report form with default values', () => {
             expect(component).to.eql(
               <div className="staff-form">
-                <Nav leftClick={noop} />
 
                 <div className="staff-slots-date">
                   <p>{today.format('dddd, do MMM YYYY')}</p>
@@ -59,7 +57,7 @@ describe('<StaffForm>', () => {
         const today = moment.utc();
         const formattedDate = today.format('YYYY-MM-DD');
         const props = {
-            id: 10001,
+            id: '10001',
             date: today,
             startTime: '10:15 AM',
             endTime: '11:15 AM',
@@ -109,9 +107,12 @@ describe('<StaffForm>', () => {
         const startTime = '10:15 AM';
         const endTime = '11:15 AM';
         const selectedStaffMember = {
-            id: 10004,
+            id: '10004',
             imagePath: 'http://i.pravatar.cc/300?img=15',
-            name: 'Phillip Fry'
+            name: 'Phillip Fry',
+            selectedDate: currentDate,
+            startTime,
+            endTime
         };
 
         before(() => {
@@ -120,7 +121,6 @@ describe('<StaffForm>', () => {
               <StaffFormConnected
                   store={store}
                   router={router}
-                  date={currentDate}
                   startTime={startTime}
                   endTime={endTime}
               />

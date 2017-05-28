@@ -42,13 +42,15 @@ export const fetchSlotsForResource = (startDate, resourceId) => (dispatch, getSt
                 urls.slots(formattedStartDate, formattedEndDate, resourceId)
             ).then((response) => {
                 const resource = response.body;
-                const slots = keyOffDate(resource[0].available_slots);
+                const slots = resource.length ? keyOffDate(resource[0].available_slots) : {};
                 dispatch({
                     type: SLOTS_FETCHED,
                     id: resourceId,
                     month,
                     year,
-                    availableSlots: slots
+                    availableSlots: slots,
+                    dayPickerMonth: startDate.toDate(),
+                    fetchedDate: startDate
                 });
                 resolve();
             });
@@ -66,25 +68,26 @@ export const selectDate = selectedDate =>
     );
 
 export const fetchStaff = () =>
-    (dispatch) => {
+    dispatch => new Promise((resolve) => {
         request.get('/api/service').then((response) => {
             const staffMembers = [];
             const resourceIds = response.body.resources;
             const duration = response.body.duration;
             const promises = resourceIds.map(resourceId => (
-                request.get(`/api/resources/${resourceId}`).then((resourcesResponse) => {
-                    const { id, name } = resourcesResponse.body;
-                    staffMembers.push({ id, name, imagePath: images[name] });
-                })
-            ));
+                    request.get(`/api/resources/${resourceId}`).then((resourcesResponse) => {
+                        const { id, name } = resourcesResponse.body;
+                        staffMembers.push({ id: id.toString(), name, imagePath: images[name] });
+                    })
+                ));
             Promise.all(promises).then(() => (
-                dispatch({
-                    type: STAFF_FETCHED,
-                    staffMembers,
-                    duration
-                })
-            ));
+                    dispatch({
+                        type: STAFF_FETCHED,
+                        staffMembers,
+                        duration
+                    })
+                ));
         });
-    };
+        resolve();
+    });
 
 export default fetchStaff;

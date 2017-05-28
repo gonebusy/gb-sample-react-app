@@ -45,7 +45,7 @@ export const StaffForm = ({ startTime, endTime, date, id, router }) => {
 };
 
 StaffForm.propTypes = {
-    id: PropTypes.number.isRequired,
+    id: PropTypes.string.isRequired,
     date: PropTypes.object.isRequired,
     startTime: PropTypes.string.isRequired,
     endTime: PropTypes.string.isRequired,

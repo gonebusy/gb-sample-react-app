@@ -7,12 +7,10 @@ import moment from 'moment';
 import noop from 'lib/util/noop';
 import { createNew } from 'src/js/store';
 import { initialState } from 'src/js/reducers/staff';
-import { findWithType, findAllWithType } from 'react-shallow-testutils';
-import Nav from '../components/nav';
-import StaffSlotsConnected, { StaffSlots } from '../components/staff-slots';
-import StaffForm from '../components/staff-form';
-import Slot from '../components/slot';
+import { findAllWithType } from 'react-shallow-testutils';
 import { TIME_SLOT_SELECTED } from 'src/js/action-types';
+import StaffSlotsConnected, { StaffSlots } from '../components/staff-slots';
+import Slot from '../components/slot';
 
 describe('<StaffSlots>', () => {
     context('when rendered with slots', () => {
@@ -21,12 +19,15 @@ describe('<StaffSlots>', () => {
         const currentDate = moment();
         const formattedDate = dateFormat(currentDate, 'dddd, d mmm yyyy');
         const slots = ['7:00 AM', '7:15 AM', '7:30 AM', '7:45 AM'];
+        const timeClick = () => noop;
+        const id = '10004';
         const props = {
             date: currentDate,
             router: {},
             slots,
             dispatch: noop,
-            slotForm: 'start'
+            slotForm: 'start',
+            id
         };
 
         before(() => {
@@ -64,12 +65,14 @@ describe('<StaffSlots>', () => {
         const currentDate = moment();
         const formattedDate = dateFormat(currentDate, 'dddd, d mmm yyyy');
         const slots = [];
+        const id = '10004';
         const props = {
             date: currentDate,
             router: {},
             slots,
             slotForm: 'start',
-            dispatch: noop
+            dispatch: noop,
+            id
         };
 
         before(() => {
@@ -86,70 +89,20 @@ describe('<StaffSlots>', () => {
         });
     });
 
-    context('when time is clicked and start time is not set', () => {
-        const currentDate = moment();
-        const slots = ['7:00 AM', '7:15 AM', '7:30 AM', '7:45 AM'];
-        const props = {
-            date: currentDate,
-            navigationController: {
-                pushView: spy()
-            },
-            slots,
-            duration: 60
-        };
-
-        before(() => {
-            const component = renderShallow(<StaffSlots {...props} />).output;
-            const firstButton = findAllWithType(component, Slot)[0];
-            firstButton.props.timeClick(slots[0], 0)();
-        });
-
-        it('calls navigationController.pushView with StaffForm', () => {
-            expect(props.navigationController.pushView).to.have.been.calledWith(
-              <StaffSlots
-                  date={props.date}
-                  navigationController={props.navigationController}
-                  startTime={slots[0]}
-                  slots={['8:00 AM', '8:15 AM', '8:30 AM', '8:45 AM']}
-              />
-            );
-        });
-    });
-
-    context('when go back is clicked', () => {
-        const slots = ['7:00 AM', '7:15 AM', '7:30 AM', '7:45 AM'];
-        const props = {
-            date: moment(),
-            navigationController: {
-                popView: spy()
-            },
-            slots
-        };
-
-        before(() => {
-            const component = renderShallow(<StaffSlots {...props} />).output;
-            const nav = findWithType(component, Nav);
-            nav.props.leftClick();
-        });
-
-        it('calls navigationController.popView', () => {
-            expect(props.navigationController.popView).to.have.been.calledOnce();
-        });
-    });
-
-    context('when start time is set', () => {
     context('when slotForm is type start', () => {
         let component;
 
         const currentDate = moment();
         const formattedDate = dateFormat(currentDate, 'dddd, d mmm yyyy');
         const slots = ['8:00 AM', '8:15 AM', '8:30 AM', '8:45 AM'];
+        const id = '10004';
         const props = {
             date: currentDate,
             router: {},
             slots,
             slotForm: 'start',
-            dispatch: noop
+            dispatch: noop,
+            id
         };
         const timeClick = () => noop;
 
@@ -183,6 +136,7 @@ describe('<StaffSlots>', () => {
     context('when time is clicked and start time is chosen', () => {
         const currentDate = moment();
         const slots = ['8:00 AM', '8:15 AM', '8:30 AM', '8:45 AM'];
+        const id = '10004';
         const props = {
             date: currentDate,
             router: {
@@ -191,7 +145,8 @@ describe('<StaffSlots>', () => {
             dispatch: spy(),
             slots,
             duration: 60,
-            slotForm: 'start'
+            slotForm: 'start',
+            id
         };
 
         before(() => {
@@ -214,6 +169,7 @@ describe('<StaffSlots>', () => {
     context('when time is clicked and end time is chosen', () => {
         const currentDate = moment();
         const slots = ['8:00 AM', '8:15 AM', '8:30 AM', '8:45 AM'];
+        const id = '10004';
         const props = {
             date: currentDate,
             router: {
@@ -222,13 +178,14 @@ describe('<StaffSlots>', () => {
             dispatch: spy(),
             slots,
             duration: 60,
-            slotForm: 'end'
+            slotForm: 'end',
+            id
         };
 
         before(() => {
             const component = renderShallow(<StaffSlots {...props} />).output;
-            const firstButton = findAllWithType(component, 'button')[0];
-            firstButton.props.onClick(slots[0]);
+            const firstButton = findAllWithType(component, Slot)[0];
+            firstButton.props.timeClick(slots[0], 0)();
         });
 
         it(`dispatches ${TIME_SLOT_SELECTED}`, () => {
@@ -241,9 +198,9 @@ describe('<StaffSlots>', () => {
             );
         });
 
-        it('calls router to push to /book', () => {
+        it(`calls router to push to /staff/${id}/book`, () => {
             expect(props.router.push).to.have.been.calledWith(
-                '/book'
+                `/staff/${id}/book`
             );
         });
     });
@@ -258,8 +215,9 @@ describe('<StaffSlots>', () => {
         const currentDate = moment();
         const duration = 60;
         const slotForm = 'start';
+        const id = '10004';
         const selectedStaffMember = {
-            id: 4,
+            id,
             imagePath: 'http://i.pravatar.cc/300?img=15',
             name: 'Phillip Fry',
             availableSlots: [
@@ -292,6 +250,7 @@ describe('<StaffSlots>', () => {
                   slotForm={slotForm}
                   date={currentDate}
                   duration={duration}
+                  id={id}
               />
             );
         });

@@ -1,13 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { fetchSlotsForResource } from 'src/js/actions/staff';
 import StaffMember from './staff-member';
 
-export const StaffPicker = ({ staffMembers, dispatch, router }) => {
-    const handleStaffClick = staffMember => () => {
-        dispatch(fetchSlotsForResource(moment.utc(), staffMember.id)).then(() => {
-            router.push(`/staff/${id}`);
-        });
+export const StaffPicker = ({ staffMembers, router }) => {
+    const handleStaffClick = id => () => {
+        router.push(`/staff/${id}`);
     };
 
     return (
@@ -32,7 +29,6 @@ export const StaffPicker = ({ staffMembers, dispatch, router }) => {
 };
 
 StaffPicker.propTypes = {
-    dispatch: PropTypes.func.isRequired,
     staffMembers: PropTypes.array.isRequired,
     router: PropTypes.object.isRequired
 };

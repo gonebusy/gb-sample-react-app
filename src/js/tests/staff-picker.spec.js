@@ -6,9 +6,7 @@ import { spy, stub } from 'sinon';
 import { createNew } from 'src/js/store';
 import noop from '../../../lib/util/noop';
 import StaffPickerConnected, { StaffPicker } from '../components/staff-picker';
-import Nav from '../components/nav';
 import StaffMember from '../components/staff-member';
-import StaffCalendar from '../components/staff-calendar';
 
 describe('<StaffPicker>', () => {
     context('when rendered', () => {
@@ -50,7 +48,6 @@ describe('<StaffPicker>', () => {
         it('renders with staff members', () => {
             expect(component).to.eql(
               <div className="staff-picker">
-                <Nav />
                 <div className="staff">
                   <StaffMember
                       onStaffClick={noop}

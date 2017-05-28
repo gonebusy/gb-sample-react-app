@@ -1,13 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { CLEAR_SELECTED_STAFF_MEMBER } from 'src/js/action-types';
 import StaffMember from './staff-member';
 
-export const Nav = ({ imagePath, name, children, router, dispatch }) => {
+export const Nav = ({ imagePath, name, children, router }) => {
     const { pathname } = router.location;
     const goBack = () => {
-        if (pathname === '/calendar')
-            dispatch({ type: CLEAR_SELECTED_STAFF_MEMBER });
         router.goBack();
     };
     const renderLink = (arrowOrientation) => {
@@ -46,14 +43,13 @@ Nav.propTypes = {
     imagePath: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     children: PropTypes.node,
-    router: PropTypes.object.isRequired,
-    dispatch: PropTypes.func.isRequired
+    router: PropTypes.object.isRequired
 };
 
 export const mapStateToProps = (
-    { staff: { selectedStaffMember: { imagePath, name }, views } }
+    { staff: { selectedStaffMember: { imagePath, name } } }
 ) => ({
-    imagePath, name, views
+    imagePath, name
 });
 
 export default connect(mapStateToProps)(Nav);
