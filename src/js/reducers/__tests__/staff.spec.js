@@ -75,7 +75,7 @@ describe('staff reducers', () => {
             const formattedDate = '2017-04-01';
             const date = moment(formattedDate);
             const selectedStaffMember = {
-                id: 100004, // resourceId
+                id: '10004', // resourceId
                 imagePath: 'http://i.pravatar.cc/300?img=15',
                 name: 'Phillip Fry',
                 availableSlots: {
@@ -204,6 +204,8 @@ describe('staff reducers', () => {
                 }
             }
         };
+        const startDate = moment.utc();
+        const dayPickerMonth = startDate.toDate();
 
         context('and there availableSlots do not already exist in the state', () => {
             const availableSlots = allAvailableSlots[resourceId][year][month];
@@ -216,7 +218,9 @@ describe('staff reducers', () => {
                         availableSlots,
                         id: resourceId,
                         month,
-                        year
+                        year,
+                        fetchedDate: startDate,
+                        dayPickerMonth
                     }
                 );
                 state = store.getState().staff;
@@ -228,7 +232,9 @@ describe('staff reducers', () => {
                     allAvailableSlots: { [resourceId]: { [year]: { [month]: availableSlots } } },
                     selectedStaffMember: {
                         ...staffMember,
-                        availableSlots
+                        availableSlots,
+                        dayPickerMonth,
+                        selectedDate: startDate
                     }
                 });
             });
@@ -247,7 +253,9 @@ describe('staff reducers', () => {
                         availableSlots,
                         id: resourceId,
                         month: nextMonth,
-                        year
+                        year,
+                        fetchedDate: startDate,
+                        dayPickerMonth
                     }
                 );
                 state = store.getState().staff;
@@ -258,7 +266,9 @@ describe('staff reducers', () => {
                     staffMembers,
                     selectedStaffMember: {
                         ...staffMember,
-                        availableSlots
+                        availableSlots,
+                        selectedDate: startDate,
+                        dayPickerMonth
                     },
                     allAvailableSlots: {
                         ...allAvailableSlots,
@@ -286,7 +296,9 @@ describe('staff reducers', () => {
                         availableSlots,
                         id: resourceId,
                         month: nextMonth,
-                        year: nextYear
+                        year: nextYear,
+                        fetchedDate: startDate,
+                        dayPickerMonth
                     }
                 );
                 state = store.getState().staff;
@@ -297,7 +309,9 @@ describe('staff reducers', () => {
                     staffMembers,
                     selectedStaffMember: {
                         ...staffMember,
-                        availableSlots
+                        availableSlots,
+                        selectedDate: startDate,
+                        dayPickerMonth
                     },
                     allAvailableSlots: {
                         ...allAvailableSlots,

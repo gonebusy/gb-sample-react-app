@@ -1,63 +1,34 @@
 import dateFormat from 'dateformat';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import moment from 'moment';
-import Nav from './nav';
-import StaffForm from './staff-form';
+import {
+    TIME_SLOT_SELECTED
+} from 'src/js/action-types';
 import { Slot } from './slot';
 
 export const StaffSlots = (
-        { navigationController, date, slots, startTime, duration }
+        { date, id, slots, slotForm, router, dispatch }
     ) => {
     const formattedDate = dateFormat(date, 'dddd, d mmm yyyy');
 
-    const goBack = () => {
-        navigationController.popView();
-    };
-
-
-    const timeClick = (time, index) => () => {
-        if (!startTime) {
-            let slotsToCalculateEndTimes;
-            if (slots.length > 1)
-                slotsToCalculateEndTimes = slots.slice(index);
-            else
-                slotsToCalculateEndTimes = slots;
-            const endTimes = [];
-            for (let i = 0; i < slotsToCalculateEndTimes.length; i += 1) {
-                const lastStartTime = moment.utc(
-                    `${date.format('YYYY-MM-DD')} ${slotsToCalculateEndTimes[i]}`,
-                    ['YYYY-MM-DD h:mm A']
-                );
-                const endingSlot = lastStartTime.add(duration, 'minutes');
-                endTimes.push(endingSlot.format('h:mm A'));
+    const timeClick = time => () => {
+        dispatch(
+            {
+                type: TIME_SLOT_SELECTED,
+                slotTime: time,
+                slotType: slotForm === 'start' ? 'startTime' : 'endTime'
             }
-            navigationController.pushView(
-              <StaffSlots
-                  date={date}
-                  navigationController={navigationController}
-                  startTime={time}
-                  slots={endTimes}
-              />
-            );
-        } else
-            navigationController.pushView(
-              <StaffForm
-                  date={date}
-                  startTime={startTime}
-                  endTime={time}
-              />);
+        );
+        if (slotForm !== 'start')
+            router.push(`/staff/${id}/book`);
     };
-    const timeType = startTime ? 'end' : 'start';
     return (
       <div className="staff-slots">
-        <Nav leftClick={() => goBack()} />
-
         <div className="staff-slots-date">{formattedDate}</div>
         {
             slots.length ?
               <div>
-                <p className="staff-slots-message">{ `Choose your ${timeType} time`}</p>
+                <p className="staff-slots-message">{ `Choose your ${slotForm} time`}</p>
                 <ul className="staff-slots-times">
                   {
                       slots.map((time, index) => (
@@ -86,9 +57,10 @@ StaffSlots.defaultProps = {
 StaffSlots.propTypes = {
     date: PropTypes.object.isRequired,
     slots: PropTypes.array.isRequired,
-    navigationController: PropTypes.object.isRequired,
-    startTime: PropTypes.string,
-    duration: PropTypes.number
+    slotForm: PropTypes.string.isRequired,
+    router: PropTypes.object.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    id: PropTypes.string.isRequired
 };
 
 
@@ -96,14 +68,16 @@ const mapStateToProps = (
     {
         staff: {
             selectedStaffMember: {
-                selectedDate, slotsForDate
+                id, selectedDate, slotsForDate, slotForm
             },
             duration
         }
     }) => ({
         date: selectedDate,
         slots: slotsForDate,
-        duration
+        duration,
+        slotForm,
+        id
     });
 
 export default connect(mapStateToProps)(StaffSlots);

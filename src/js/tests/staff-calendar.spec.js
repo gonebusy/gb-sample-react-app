@@ -9,25 +9,26 @@ import { createNew } from 'src/js/store';
 import { findWithType } from 'react-shallow-testutils';
 import { DATE_SELECTED } from 'src/js/action-types';
 import { initialState } from 'src/js/reducers/staff';
-import Nav from '../components/nav';
 import StaffCalendarConnected, { StaffCalendar } from '../components/staff-calendar';
-import StaffSlots from '../components/staff-slots';
 import CustomCalNavBar from '../components/custom-cal-nav-bar';
 
 
 describe('<StaffCalendar>', () => {
     context('when rendered with props', () => {
         let component;
+        const startDate = moment.utc('2017-03-31');
+        const startDateFormatted = startDate.format('YYYY-MM-DD');
+        const dayPickerMonth = startDate.toDate();
         const props = {
-            navigationController: {},
+            router: {},
             dispatch: noop,
             availableSlots: {
-                '2017-03-31': [
+                [startDateFormatted]: [
                     '02:00 PM'
                 ]
             },
-            month: moment.utc(),
-            id: 10001
+            dayPickerMonth,
+            id: '10001'
         };
 
         // push every date before 3/31 to disabledDates
@@ -43,8 +44,6 @@ describe('<StaffCalendar>', () => {
         it('renders a staff calendar', () => {
             expect(component).to.eql(
               <div className="staff-calendar">
-                <Nav leftClick={() => noop()} />
-
                 <div className="staff-calendar-picker">
                   <DayPicker
                       onDayClick={noop}
@@ -53,11 +52,9 @@ describe('<StaffCalendar>', () => {
                       navbarElement={
                         <CustomCalNavBar
                             dispatch={props.dispatch}
-                            navigationController={props.navigationController}
-                            id={props.id}
                         />
                       }
-                      month={props.month.toDate()}
+                      month={dayPickerMonth}
                   />
                 </div>
               </div>
@@ -66,19 +63,22 @@ describe('<StaffCalendar>', () => {
     });
 
     context('when a calendar day is clicked', () => {
+        const startDateFormatted = '2017-03-31';
+        const day = moment.utc(startDateFormatted);
+        const id = '10001';
         const props = {
-            navigationController: {
-                pushView: spy()
+            router: {
+                push: spy()
             },
             dispatch: spy(),
             availableSlots: {
-                '2017-03-31': [
+                [startDateFormatted]: [
                     '02:00 PM'
                 ]
             },
-            id: 10001
+            id,
+            dayPickerMonth: day.toDate()
         };
-        const day = moment.utc();
 
         before((done) => {
             const component = renderShallow(<StaffCalendar {...props} />).output;
@@ -95,56 +95,29 @@ describe('<StaffCalendar>', () => {
             );
         });
 
-        it('calls navigationController.pushView with StaffSlots', () => {
-            expect(props.navigationController.pushView).to.have.been.calledWith(
-              <StaffSlots
-                  date={day}
-                  navigationController={props.navigationController}
-              />
+        it(`calls router to push to /staff/${id}/available_slots/${startDateFormatted}`, () => {
+            expect(props.router.push).to.have.been.calledWith(
+                `/staff/${id}/available_slots/${startDateFormatted}`
             );
-        });
-    });
-
-    context('when go back is clicked', () => {
-        const props = {
-            navigationController: {
-                popView: spy()
-            },
-            dispatch: noop,
-            availableSlots: {
-                '2017-03-31': [
-                    '02:00 PM'
-                ]
-            },
-            id: 10001
-        };
-
-        before(() => {
-            const component = renderShallow(<StaffCalendar {...props} />).output;
-            const nav = findWithType(component, Nav);
-            nav.props.leftClick();
-        });
-
-        it('calls navigationController.popView', () => {
-            expect(props.navigationController.popView).to.have.been.calledOnce();
         });
     });
 
     context('when it is connected', () => {
         let store;
         let component;
-        const navigationController = {
-            pushView: noop
-        };
-        const id = 10001;
+        const router = {};
+        const id = '10004';
+        const startDateFormatted = '2017-04-01';
+        const day = moment.utc(startDateFormatted);
         const selectedStaffMember = {
             id,
             imagePath: 'http://i.pravatar.cc/300?img=15',
             name: 'Phillip Fry',
             availableSlots:
             {
-                '2017-04-01': ['7:00 PM', '8:00 PM']
-            }
+                [startDateFormatted]: ['7:00 PM', '8:00 PM']
+            },
+            dayPickerMonth: day.toDate()
         };
 
         before(() => {
@@ -152,7 +125,7 @@ describe('<StaffCalendar>', () => {
             component = renderShallow(
               <StaffCalendarConnected
                   store={store}
-                  navigationController={navigationController}
+                  router={router}
               />
            ).output;
         });
@@ -161,9 +134,10 @@ describe('<StaffCalendar>', () => {
               <StaffCalendar
                   dispatch={noop}
                   store={store}
-                  navigationController={navigationController}
                   availableSlots={selectedStaffMember.availableSlots}
+                  router={router}
                   id={id}
+                  dayPickerMonth={selectedStaffMember.dayPickerMonth}
               />
             );
         });
