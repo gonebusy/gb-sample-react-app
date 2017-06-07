@@ -7,7 +7,7 @@ import {
 import { Slot } from './slot';
 
 export const StaffSlots = (
-        { date, id, slots, slotForm, router, dispatch }
+        { date, id, slots, slotForm, router, dispatch, style }
     ) => {
     const formattedDate = dateFormat(date, 'dddd, d mmm yyyy');
 
@@ -21,9 +21,11 @@ export const StaffSlots = (
         );
         if (slotForm !== 'start')
             router.push(`/staff/${id}/book`);
+        else
+            router.push(`/staff/${id}/available_slots/${date.format('YYYY-MM-DD')}/end`);
     };
     return (
-      <div className="staff-slots">
+      <div className="staff-slots" style={style}>
         <div className="staff-slots-date">{formattedDate}</div>
         {
             slots.length ?
@@ -60,7 +62,8 @@ StaffSlots.propTypes = {
     slotForm: PropTypes.string.isRequired,
     router: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
-    id: PropTypes.string.isRequired
+    id: PropTypes.string.isRequired,
+    style: PropTypes.object.isRequired
 };
 
 

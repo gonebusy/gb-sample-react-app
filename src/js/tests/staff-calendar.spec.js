@@ -28,7 +28,8 @@ describe('<StaffCalendar>', () => {
                 ]
             },
             dayPickerMonth,
-            id: '10001'
+            id: '10001',
+            style: { styleAttr: 'some-style' }
         };
 
         // push every date before 3/31 to disabledDates
@@ -43,7 +44,7 @@ describe('<StaffCalendar>', () => {
 
         it('renders a staff calendar', () => {
             expect(component).to.eql(
-              <div className="staff-calendar">
+              <div className="staff-calendar" style={props.style}>
                 <div className="staff-calendar-picker">
                   <DayPicker
                       onDayClick={noop}
@@ -77,7 +78,8 @@ describe('<StaffCalendar>', () => {
                 ]
             },
             id,
-            dayPickerMonth: day.toDate()
+            dayPickerMonth: day.toDate(),
+            style: { styleAttr: 'some-style' }
         };
 
         before((done) => {
@@ -95,11 +97,12 @@ describe('<StaffCalendar>', () => {
             );
         });
 
-        it(`calls router to push to /staff/${id}/available_slots/${startDateFormatted}`, () => {
-            expect(props.router.push).to.have.been.calledWith(
-                `/staff/${id}/available_slots/${startDateFormatted}`
+        it(
+            `pushes /staff/${id}/available_slots/${startDateFormatted}/start`, () => {
+                expect(props.router.push).to.have.been.calledWith(
+                `/staff/${id}/available_slots/${startDateFormatted}/start`
             );
-        });
+            });
     });
 
     context('when it is connected', () => {
@@ -109,6 +112,7 @@ describe('<StaffCalendar>', () => {
         const id = '10004';
         const startDateFormatted = '2017-04-01';
         const day = moment.utc(startDateFormatted);
+        const style = { styleAttribute: 'some-style' };
         const selectedStaffMember = {
             id,
             imagePath: 'http://i.pravatar.cc/300?img=15',
@@ -126,6 +130,7 @@ describe('<StaffCalendar>', () => {
               <StaffCalendarConnected
                   store={store}
                   router={router}
+                  style={style}
               />
            ).output;
         });
@@ -138,6 +143,7 @@ describe('<StaffCalendar>', () => {
                   router={router}
                   id={id}
                   dayPickerMonth={selectedStaffMember.dayPickerMonth}
+                  style={style}
               />
             );
         });
