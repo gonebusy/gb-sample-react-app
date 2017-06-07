@@ -27,7 +27,8 @@ describe('<StaffSlots>', () => {
             slots,
             dispatch: noop,
             slotForm: 'start',
-            id
+            id,
+            style: { styleAttr: 'some-style' }
         };
 
         before(() => {
@@ -36,7 +37,7 @@ describe('<StaffSlots>', () => {
 
         it('renders staff slots', () => {
             expect(component).to.eql(
-              <div className="staff-slots">
+              <div className="staff-slots" style={props.style}>
 
                 <div className="staff-slots-date">{formattedDate}</div>
                 <div>
@@ -72,7 +73,8 @@ describe('<StaffSlots>', () => {
             slots,
             slotForm: 'start',
             dispatch: noop,
-            id
+            id,
+            style: { styleAttr: 'some-style' }
         };
 
         before(() => {
@@ -81,7 +83,7 @@ describe('<StaffSlots>', () => {
 
         it('renders no slots available message', () => {
             expect(component).to.eql(
-              <div className="staff-slots">
+              <div className="staff-slots" style={props.style}>
                 <div className="staff-slots-date">{formattedDate}</div>
                 <p className="staff-slots-message">No slots available!</p>
               </div>
@@ -102,7 +104,8 @@ describe('<StaffSlots>', () => {
             slots,
             slotForm: 'start',
             dispatch: noop,
-            id
+            id,
+            style: { styleAttr: 'some-style' }
         };
         const timeClick = () => noop;
 
@@ -112,7 +115,7 @@ describe('<StaffSlots>', () => {
 
         it('renders staff slots with start times', () => {
             expect(component).to.eql(
-              <div className="staff-slots">
+              <div className="staff-slots" style={props.style}>
                 <div className="staff-slots-date">{formattedDate}</div>
                 <div>
                   <p className="staff-slots-message">Choose your start time</p>
@@ -146,7 +149,8 @@ describe('<StaffSlots>', () => {
             slots,
             duration: 60,
             slotForm: 'start',
-            id
+            id,
+            style: { styleAttr: 'some-style' }
         };
 
         before(() => {
@@ -179,7 +183,8 @@ describe('<StaffSlots>', () => {
             slots,
             duration: 60,
             slotForm: 'end',
-            id
+            id,
+            style: { styleAttr: 'some-style' }
         };
 
         before(() => {
@@ -216,6 +221,7 @@ describe('<StaffSlots>', () => {
         const duration = 60;
         const slotForm = 'start';
         const id = '10004';
+        const style = { styleAttribute: 'some-style' };
         const selectedStaffMember = {
             id,
             imagePath: 'http://i.pravatar.cc/300?img=15',
@@ -237,6 +243,7 @@ describe('<StaffSlots>', () => {
               <StaffSlotsConnected
                   store={store}
                   router={router}
+                  style={style}
               />
             ).output;
         });
@@ -251,6 +258,7 @@ describe('<StaffSlots>', () => {
                   date={currentDate}
                   duration={duration}
                   id={id}
+                  style={style}
               />
             );
         });

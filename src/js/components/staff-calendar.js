@@ -6,13 +6,13 @@ import { selectDate } from 'src/js/actions/staff';
 import CustomCalNavBar from './custom-cal-nav-bar';
 
 export const StaffCalendar = (
-        { availableSlots, dispatch, dayPickerMonth, router, id }
+        { availableSlots, dispatch, dayPickerMonth, router, id, style }
     ) => {
     const targetMonth = availableSlots ? moment.utc(Object.keys(availableSlots)[0]) : moment.utc();
     const handleDayClick = (day) => {
         const selectedDate = moment.utc(day);
         selectDate(selectedDate)(dispatch).then(() => {
-            router.push(`/staff/${id}/available_slots/${selectedDate.format('YYYY-MM-DD')}`);
+            router.push(`/staff/${id}/available_slots/${selectedDate.format('YYYY-MM-DD')}/start`);
         });
     };
 
@@ -32,7 +32,7 @@ export const StaffCalendar = (
     };
 
     return (
-      <div className="staff-calendar">
+      <div className="staff-calendar" style={style}>
         <div className="staff-calendar-picker">
           <DayPicker
               onDayClick={handleDayClick}
@@ -55,7 +55,8 @@ StaffCalendar.propTypes = {
     availableSlots: PropTypes.object.isRequired,
     dayPickerMonth: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired,
-    id: PropTypes.string.isRequired
+    id: PropTypes.string.isRequired,
+    style: PropTypes.object.isRequired
 };
 
 export const mapStateToProps = (

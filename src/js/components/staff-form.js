@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import request from 'superagent-bluebird-promise';
 
-export const StaffForm = ({ startTime, endTime, date, id, router }) => {
+export const StaffForm = ({ startTime, endTime, date, id, router, style }) => {
     const confirmBooking = () => () => {
         const formattedDate = date.format('YYYY-MM-DD');
         const duration = moment(`${formattedDate} ${endTime}`, ['YYYY-MM-DD h:mm A']).diff(
@@ -20,7 +20,7 @@ export const StaffForm = ({ startTime, endTime, date, id, router }) => {
     };
 
     return (
-      <div className="staff-form">
+      <div className="staff-form" style={style}>
         <div className="staff-slots-date">
           <p>{date.format('dddd, do MMM YYYY')}</p>
           <p>{startTime} - {endTime}</p>
@@ -49,7 +49,8 @@ StaffForm.propTypes = {
     date: PropTypes.object.isRequired,
     startTime: PropTypes.string.isRequired,
     endTime: PropTypes.string.isRequired,
-    router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
+    style: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (

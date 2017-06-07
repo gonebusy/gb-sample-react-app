@@ -18,7 +18,8 @@ describe('<StaffForm>', () => {
             date: today,
             startTime: '10:15 AM',
             endTime: '11:15 AM',
-            router: {}
+            router: {},
+            style: { styleAttr: 'some-style' }
         };
 
         let component;
@@ -30,7 +31,7 @@ describe('<StaffForm>', () => {
 
         it('renders report form with default values', () => {
             expect(component).to.eql(
-              <div className="staff-form">
+              <div className="staff-form" style={props.style}>
 
                 <div className="staff-slots-date">
                   <p>{today.format('dddd, do MMM YYYY')}</p>
@@ -63,7 +64,8 @@ describe('<StaffForm>', () => {
             endTime: '11:15 AM',
             router: {
                 push: spy()
-            }
+            },
+            style: { styleAttr: 'some-style' }
         };
         const body = {
             resourceId: props.id,
@@ -106,6 +108,7 @@ describe('<StaffForm>', () => {
         const currentDate = moment();
         const startTime = '10:15 AM';
         const endTime = '11:15 AM';
+        const style = { styleAttr: 'some-style' };
         const selectedStaffMember = {
             id: '10004',
             imagePath: 'http://i.pravatar.cc/300?img=15',
@@ -123,6 +126,7 @@ describe('<StaffForm>', () => {
                   router={router}
                   startTime={startTime}
                   endTime={endTime}
+                  style={style}
               />
             ).output;
         });
@@ -136,6 +140,7 @@ describe('<StaffForm>', () => {
                   startTime={startTime}
                   endTime={endTime}
                   id={selectedStaffMember.id}
+                  style={style}
               />
             );
         });

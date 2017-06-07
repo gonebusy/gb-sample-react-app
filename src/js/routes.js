@@ -8,36 +8,37 @@ import StaffForm from 'src/js/components/staff-form';
 import BookingConfirmation from 'src/js/components/booking-confirmation';
 import { fetchSlotsForResource } from 'src/js/actions/staff';
 import moment from 'moment';
+import SlideLeft from 'src/js/components/slide-left-route-transition';
 
-const Routes = ({ dispatch, getState }) => (
+const Routes = ({ dispatch }) => (
   <Router history={browserHistory}>
-    <Route component={Nav}>
-      <Route
-          path="/"
-          component={StaffPicker}
-      />
+    <Route path="/" component={Nav}>
+      <IndexRoute component={StaffPicker} />
       <Route
           path="staff/:id"
           onEnter={
                   (nextState) => {
                       const { params: { id } } = nextState;
-                      fetchSlotsForResource(moment.utc(), id)(dispatch, getState);
+                      dispatch(fetchSlotsForResource(moment.utc(), id));
                   }
               }
+          component={SlideLeft}
       >
         <IndexRoute component={StaffCalendar} />
-        <Route path="available_slots/:date" component={StaffSlots} />
+        <Route path="available_slots/:date/start" component={StaffSlots} />
+        <Route path="available_slots/:date/end" component={StaffSlots} />
         <Route path="book" component={StaffForm} />
       </Route>
-      <Route path="confirm" component={BookingConfirmation} />
+      <Route path="confirm" component={SlideLeft}>
+        <IndexRoute component={BookingConfirmation} />
+      </Route>
     </Route>
   </Router>
 
 );
 
 Routes.propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    getState: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired
 };
 
 export default Routes;
