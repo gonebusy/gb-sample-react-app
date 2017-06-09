@@ -2,7 +2,8 @@ import { expect } from 'chai';
 import {
     SLOTS_FETCHED,
     STAFF_FETCHED,
-    DATE_SELECTED
+    DATE_SELECTED,
+    CLEAR_SELECTED_STAFF_MEMBER
 } from 'src/js/action-types';
 import { createNew } from 'src/js/store';
 import { initialState } from 'src/js/reducers/staff';
@@ -325,4 +326,28 @@ describe('staff reducers', () => {
         });
 
     });
+
+    context(`when ${CLEAR_SELECTED_STAFF_MEMBER} is dispatched`, () => {
+        let state;
+        const selectedStaffMember = {
+            id: '10004', // resourceId
+            imagePath: 'http://i.pravatar.cc/300?img=15',
+            name: 'Phillip Fry',
+            availableSlots: {
+                '2017-04-01': ['7:00', '8:00']
+            }
+        };
+        before(() => {
+            const store = createNew({ staff: { ...initialState, selectedStaffMember } });
+            store.dispatch({
+                type: CLEAR_SELECTED_STAFF_MEMBER
+            });
+            state = store.getState().staff;
+        });
+
+        it('has the state cleared out of selectedStaff', () => {
+            expect(state).to.eql(initialState);
+        });
+    });
+
 });
