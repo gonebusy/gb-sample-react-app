@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { browserHistory, Route, Router, IndexRoute } from 'react-router';
+import { CLEAR_SELECTED_STAFF_MEMBER, DATE_SELECTED } from 'src/js/action-types';
 import Nav from 'src/js/components/nav';
 import StaffPicker from 'src/js/components/staff-picker';
 import StaffCalendar from 'src/js/components/staff-calendar';
@@ -7,13 +8,22 @@ import StaffSlots from 'src/js/components/staff-slots';
 import StaffForm from 'src/js/components/staff-form';
 import BookingConfirmation from 'src/js/components/booking-confirmation';
 import { fetchSlotsForResource } from 'src/js/actions/staff';
+import { POP } from 'src/js/constants';
 import moment from 'moment';
-import SlideLeft from 'src/js/components/slide-left-route-transition';
+import Slide from 'src/js/components/slide-route-transition';
 
-const Routes = ({ dispatch }) => (
+const Routes = ({ dispatch, getState }) => (
   <Router history={browserHistory}>
     <Route path="/" component={Nav}>
-      <IndexRoute component={StaffPicker} />
+      <IndexRoute
+          component={StaffPicker} onEnter={
+          () => {
+              dispatch({
+                  type: CLEAR_SELECTED_STAFF_MEMBER
+              });
+          }
+      }
+      />
       <Route
           path="staff/:id"
           onEnter={
@@ -22,14 +32,25 @@ const Routes = ({ dispatch }) => (
                       dispatch(fetchSlotsForResource(moment.utc(), id));
                   }
               }
-          component={SlideLeft}
+          component={Slide}
       >
         <IndexRoute component={StaffCalendar} />
-        <Route path="available_slots/:date/start" component={StaffSlots} />
-        <Route path="available_slots/:date/end" component={StaffSlots} />
+        <Route
+            path="available_slots/:date/start" component={StaffSlots} onEnter={
+            (nextState) => {
+                if (nextState.location.action === POP) {
+                    const { selectedDate } = getState().staff.selectedStaffMember;
+                    dispatch({ type: DATE_SELECTED, date: selectedDate });
+                }
+            }
+        }
+        />
+        <Route
+            path="available_slots/:date/end" component={StaffSlots}
+        />
         <Route path="book" component={StaffForm} />
       </Route>
-      <Route path="confirm" component={SlideLeft}>
+      <Route path="confirm" component={Slide}>
         <IndexRoute component={BookingConfirmation} />
       </Route>
     </Route>
@@ -38,7 +59,8 @@ const Routes = ({ dispatch }) => (
 );
 
 Routes.propTypes = {
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
+    getState: PropTypes.func.isRequired
 };
 
 export default Routes;
