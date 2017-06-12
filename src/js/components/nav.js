@@ -1,11 +1,21 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import StaffMember from './staff-member';
 
-export const Nav = ({ imagePath, name, children, router }) => {
+export const Nav = ({ imagePath, name, children, router, selectedDate }) => {
     const { pathname } = router.location;
     const goBack = () => {
-        router.goBack();
+        // This is to calculate how many months to go back
+        // when navigating within the calendar
+        // and going back to staff-picker.
+        if (pathname.includes('available_slots') &&
+            !(pathname.includes('start') || pathname.includes('end'))
+        ) {
+            const backCount = moment.utc().diff(selectedDate, 'months');
+            router.go(backCount - 1);
+        } else
+            router.goBack();
     };
     const renderLink = (arrowOrientation) => {
         if (pathname !== '/')
@@ -43,13 +53,14 @@ Nav.propTypes = {
     imagePath: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     children: PropTypes.node,
+    selectedDate: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired
 };
 
 export const mapStateToProps = (
-    { staff: { selectedStaffMember: { imagePath, name } } }
+    { staff: { selectedStaffMember: { imagePath, name, selectedDate } } }
 ) => ({
-    imagePath, name
+    imagePath, name, selectedDate
 });
 
 export default connect(mapStateToProps)(Nav);

@@ -54,7 +54,18 @@ export const fetchSlotsForResource = (startDate, resourceId) => (dispatch, getSt
                 });
                 resolve();
             });
-        }
+        } else
+            dispatch({
+                type: SLOTS_FETCHED,
+                id: resourceId,
+                month,
+                year,
+                availableSlots: allAvailableSlots[resourceId][year][month],
+                dayPickerMonth: startDate.endOf('month').toDate(),
+                fetchedDate: startDate
+            });
+
+
         resolve();
     })
 );

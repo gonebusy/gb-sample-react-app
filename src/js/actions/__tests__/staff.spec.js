@@ -191,7 +191,17 @@ describe('staff action creators', () => {
             });
 
             it(`dispatches with ${SLOTS_FETCHED}`, () => {
-                expect(dispatch).to.not.have.been.called();
+                expect(dispatch).to.have.been.calledWith({
+                    type: SLOTS_FETCHED,
+                    id: resourceId,
+                    month,
+                    year,
+                    availableSlots: {
+                        [startFormatted]: slots
+                    },
+                    dayPickerMonth: startDate.toDate(),
+                    fetchedDate: startDate
+                });
             });
         });
     });

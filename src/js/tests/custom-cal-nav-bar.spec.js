@@ -5,6 +5,7 @@ import { spy, stub } from 'sinon';
 import { findAllWithType } from 'react-shallow-testutils';
 import moment from 'moment';
 import * as staffActions from 'src/js/actions/staff';
+import { getYYYYMMPath } from 'src/js/utils/date';
 import noop from '../../../lib/util/noop';
 import CustomCalNavBar from '../components/custom-cal-nav-bar';
 
@@ -12,10 +13,12 @@ describe('<CustomCalNavBar>', () => {
     context('when rendered on the current month', () => {
         let component;
         before(() => {
+            const router = { goBack: noop() };
             component = renderShallow(
               <CustomCalNavBar
                   className="some-class"
                   previousMonth={moment.utc().subtract(1, 'months')}
+                  router={router}
               />
             ).output;
         });
@@ -34,11 +37,14 @@ describe('<CustomCalNavBar>', () => {
 
     context('when rendered on months after the current months', () => {
         let component;
+        const router = { goBack: noop() };
+        const goBackHandler = router.goBack;
         before(() => {
             component = renderShallow(
               <CustomCalNavBar
                   className="some-class"
                   previousMonth={moment.utc().add(1, 'months')}
+                  router={router}
               />
             ).output;
         });
@@ -48,7 +54,7 @@ describe('<CustomCalNavBar>', () => {
               <div className="some-class" style={{ fontSize: '.75em' }}>
                 <span
                     className="DayPicker-NavButton DayPicker-NavButton--prev"
-                    onClick={() => noop}
+                    onClick={goBackHandler}
                 />
                 <span
                     className="DayPicker-NavButton DayPicker-NavButton--next"
@@ -64,33 +70,27 @@ describe('<CustomCalNavBar>', () => {
         const previousMonth = currentMonth.subtract(1, 'months');
         const nextMonth = currentMonth.add(1, 'months');
         const id = '10004';
+        const router = { goBack: noop(), push: spy() };
         const props = {
-            dispatch: spy(),
             nextMonth,
             previousMonth,
             className: 'some-class',
-            id
+            id,
+            router
         };
 
-        before((done) => {
-            stub(staffActions, 'fetchSlotsForResource').returns(Promise.resolve({}));
+        before(() => {
             const component = renderShallow(
               <CustomCalNavBar
                   {...props}
               />).output;
             const nextMonthButton = findAllWithType(component, 'span')[1];
-            setTimeout(() => {
-                nextMonthButton.props.onClick();
-                done();
-            });
+            nextMonthButton.props.onClick();
         });
 
-        after(() => {
-            staffActions.fetchSlotsForResource.restore();
-        });
-        it('calls dispatch with fetchSlotsForResource', () => {
-            expect(props.dispatch).to.have.been.calledWith(
-                staffActions.fetchSlotsForResource(nextMonth, id)
+        it('pushes router with next month as parameter', () => {
+            expect(router.push).to.have.been.calledWith(
+                `/staff/${id}/available_slots/${getYYYYMMPath(nextMonth)}`
             );
         });
 
@@ -101,12 +101,14 @@ describe('<CustomCalNavBar>', () => {
         const nextMonth = moment.utc().add(2, 'months');
         const previousMonth = moment.utc().add(1, 'months');
         const id = '10004';
+        const router = { goBack: spy() };
         const props = {
             dispatch: spy(),
             nextMonth,
             previousMonth,
             className: 'some-class',
-            id
+            id,
+            router
         };
 
         before((done) => {
@@ -126,7 +128,7 @@ describe('<CustomCalNavBar>', () => {
             staffActions.fetchSlotsForResource.restore();
         });
         it('calls dispatch with fetchSlots and selectMonth with previous month', () => {
-            expect(staffActions.fetchSlotsForResource).to.have.been.calledWith(previousMonth, id);
+            expect(router.goBack).to.have.been.called();
         });
     });
 });

@@ -1,10 +1,13 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import moment from 'moment';
+import { getYYYYMMPath } from 'src/js/utils/date';
 import StaffMember from './staff-member';
 
 export const StaffPicker = ({ staffMembers, router }) => {
     const handleStaffClick = id => () => {
-        router.push(`/staff/${id}`);
+        const startDate = moment.utc();
+        router.push(`/staff/${id}/available_slots/${getYYYYMMPath(startDate)}`);
     };
 
     return (

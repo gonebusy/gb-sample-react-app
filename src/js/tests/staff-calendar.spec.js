@@ -9,6 +9,7 @@ import { createNew } from 'src/js/store';
 import { findWithType } from 'react-shallow-testutils';
 import { DATE_SELECTED } from 'src/js/action-types';
 import { initialState } from 'src/js/reducers/staff';
+import { getYYYYMMDDPath } from 'src/js/utils/date';
 import StaffCalendarConnected, { StaffCalendar } from '../components/staff-calendar';
 import CustomCalNavBar from '../components/custom-cal-nav-bar';
 
@@ -19,6 +20,8 @@ describe('<StaffCalendar>', () => {
         const startDate = moment.utc('2017-03-31');
         const startDateFormatted = startDate.format('YYYY-MM-DD');
         const dayPickerMonth = startDate.toDate();
+        const id = '10001';
+        const router = {};
         const props = {
             router: {},
             dispatch: noop,
@@ -28,7 +31,7 @@ describe('<StaffCalendar>', () => {
                 ]
             },
             dayPickerMonth,
-            id: '10001',
+            id,
             style: { styleAttr: 'some-style' }
         };
 
@@ -52,7 +55,8 @@ describe('<StaffCalendar>', () => {
                       disabledDays={disabledDates}
                       navbarElement={
                         <CustomCalNavBar
-                            dispatch={props.dispatch}
+                            router={router}
+                            id={id}
                         />
                       }
                       month={dayPickerMonth}
@@ -98,9 +102,9 @@ describe('<StaffCalendar>', () => {
         });
 
         it(
-            `pushes /staff/${id}/available_slots/${startDateFormatted}/start`, () => {
+            `pushes /staff/${id}/available_slots/${getYYYYMMDDPath(day)}/start`, () => {
                 expect(props.router.push).to.have.been.calledWith(
-                `/staff/${id}/available_slots/${startDateFormatted}/start`
+                `/staff/${id}/available_slots/${getYYYYMMDDPath(day)}/start`
             );
             });
     });

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import {
     TIME_SLOT_SELECTED
 } from 'src/js/action-types';
+import { getYYYYMMDDPath } from 'src/js/utils/date';
 import { Slot } from './slot';
 
 export const StaffSlots = (
@@ -19,10 +20,10 @@ export const StaffSlots = (
                 slotType: slotForm === 'start' ? 'startTime' : 'endTime'
             }
         );
-        if (slotForm !== 'start')
-            router.push(`/staff/${id}/book`);
-        else
-            router.push(`/staff/${id}/available_slots/${date.format('YYYY-MM-DD')}/end`);
+        let action = 'book';
+        if (slotForm === 'start')
+            action = 'end';
+        router.push(`/staff/${id}/available_slots/${getYYYYMMDDPath(date)}/${action}`);
     };
     return (
       <div className="staff-slots" style={style}>
