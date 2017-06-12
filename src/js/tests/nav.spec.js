@@ -5,6 +5,7 @@ import { spy } from 'sinon';
 import { findWithClass } from 'react-shallow-testutils';
 import { initialState } from 'src/js/reducers/staff';
 import { createNew } from 'src/js/store';
+import moment from 'moment';
 import noop from '../../../lib/util/noop';
 import NavConnected, { Nav } from '../components/nav';
 import StaffMember from '../components/staff-member';
@@ -15,7 +16,8 @@ describe('<Nav>', () => {
         const props = {
             imagePath: '',
             name: '',
-            router: { location: { pathname: '/' } }
+            router: { location: { pathname: '/' } },
+            selectedDate: moment.utc()
         };
         before(() => {
             component = renderShallow(
@@ -42,7 +44,8 @@ describe('<Nav>', () => {
         const props = {
             imagePath: 'some/path',
             name: 'Steve Smith',
-            router: { goBack: noop, location: { pathname: 'some/path' } }
+            router: { goBack: noop, location: { pathname: 'some/path' } },
+            selectedDate: moment.utc()
         };
 
         before(() => {
@@ -67,11 +70,12 @@ describe('<Nav>', () => {
         });
     });
 
-    context('when navigation links are clicked', () => {
+    context('when go back is clicked without navigating forward months on the calendar', () => {
         const props = {
             imagePath: 'some/path',
             name: 'Steve Smith',
-            router: { goBack: spy(), location: { pathname: 'some/path' } }
+            router: { goBack: spy(), location: { pathname: 'some/path' } },
+            selectedDate: moment.utc()
         };
 
         before(() => {
@@ -80,18 +84,48 @@ describe('<Nav>', () => {
             previousLink.props.onClick();
         });
 
-        it('calls the click functions', () => {
+        it('calls router.goBack', () => {
             expect(props.router.goBack).to.have.been.calledOnce();
+        });
+    });
+
+    context('when go back is clicked after navigating forward months on the calendar', () => {
+        const today = moment.utc();
+        const addedMonths = 3;
+        const futureDate = today.add(addedMonths, 'months');
+        const futureYear = futureDate.year();
+        const futureMonth = futureDate.month() + 1;
+        const props = {
+            imagePath: 'some/path',
+            name: 'Steve Smith',
+            router: {
+                goBack: noop,
+                location: { pathname: `available_slots/${futureYear}/${futureMonth}` },
+                go: spy()
+            },
+            selectedDate: futureDate
+        };
+
+        before(() => {
+            const component = renderShallow(<Nav {...props} />).output;
+            const previousLink = findWithClass(component, 'nav-header--prev');
+            previousLink.props.onClick();
+        });
+
+        it('calls router.go with the number of backward operations', () => {
+            expect(props.router.go).to.have.been.calledWith(addedMonths * -1);
         });
     });
 
     context('when it is connected', () => {
         let store;
         let component;
+        const selectedDate = moment.utc();
         const selectedStaffMember = {
             id: 10004,
             imagePath: 'http://i.pravatar.cc/300?img=15',
-            name: 'Phillip Fry'
+            name: 'Phillip Fry',
+            selectedDate
         };
 
         before(() => {
@@ -111,6 +145,7 @@ describe('<Nav>', () => {
                   name={selectedStaffMember.name}
                   store={store}
                   router={{ }}
+                  selectedDate={selectedDate}
               />
             );
         });

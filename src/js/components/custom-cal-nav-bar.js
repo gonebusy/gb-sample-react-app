@@ -1,15 +1,16 @@
 import React from 'react';
 import { NavbarPropTypes } from 'react-day-picker';
 import moment from 'moment';
-import { fetchSlotsForResource } from 'src/js/actions/staff';
+import { getYYYYMMPath } from 'src/js/utils/date';
 
 const CustomCalNavBar = (
-        { nextMonth, previousMonth, className, dispatch, id }
+        { nextMonth, previousMonth, className, id, router }
     ) => {
     const monthNavHandler = startOfMonth => () => {
         const startDate = moment(startOfMonth);
-        dispatch(fetchSlotsForResource(startDate, id));
+        router.push(`/staff/${id}/available_slots/${getYYYYMMPath(startDate)}`);
     };
+    const goBackHandler = router.goBack;
     // only enable previous button for months that are after current month
     const enablePrevious = moment(previousMonth).isAfter(moment.utc().subtract(1, 'months'));
     return (
@@ -17,7 +18,7 @@ const CustomCalNavBar = (
         { enablePrevious &&
         <span
             className="DayPicker-NavButton DayPicker-NavButton--prev"
-            onClick={monthNavHandler(previousMonth)}
+            onClick={goBackHandler}
         />
         }
         <span

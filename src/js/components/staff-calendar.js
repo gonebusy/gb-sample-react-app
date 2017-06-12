@@ -3,16 +3,20 @@ import DayPicker from 'react-day-picker';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { selectDate } from 'src/js/actions/staff';
+import { getYYYYMMDDPath } from 'src/js/utils/date';
 import CustomCalNavBar from './custom-cal-nav-bar';
+
 
 export const StaffCalendar = (
         { availableSlots, dispatch, dayPickerMonth, router, id, style }
     ) => {
     const targetMonth = availableSlots ? moment.utc(Object.keys(availableSlots)[0]) : moment.utc();
     const handleDayClick = (day) => {
-        const selectedDate = moment.utc(day);
-        selectDate(selectedDate)(dispatch).then(() => {
-            router.push(`/staff/${id}/available_slots/${selectedDate.format('YYYY-MM-DD')}/start`);
+        const selectedDay = moment.utc(day);
+        selectDate(selectedDay)(dispatch).then(() => {
+            router.push(
+                `/staff/${id}/available_slots/${getYYYYMMDDPath(selectedDay)}/start`
+            );
         });
     };
 
@@ -41,7 +45,8 @@ export const StaffCalendar = (
               disabledDays={getDisabledDates()}
               navbarElement={
                 <CustomCalNavBar
-                    dispatch={dispatch}
+                    router={router}
+                    id={id}
                 />
               }
           />

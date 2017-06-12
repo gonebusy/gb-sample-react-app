@@ -25,18 +25,18 @@ const Routes = ({ dispatch, getState }) => (
       }
       />
       <Route
-          path="staff/:id"
+          path="staff/:id/available_slots/:year/:month"
           onEnter={
                   (nextState) => {
-                      const { params: { id } } = nextState;
-                      dispatch(fetchSlotsForResource(moment.utc(), id));
+                      const { params: { id, year, month } } = nextState;
+                      dispatch(fetchSlotsForResource(moment.utc(`${year}-${month}-01`), id));
                   }
               }
           component={Slide}
       >
         <IndexRoute component={StaffCalendar} />
         <Route
-            path="available_slots/:date/start" component={StaffSlots} onEnter={
+            path=":day/start" component={StaffSlots} onEnter={
             (nextState) => {
                 if (nextState.location.action === POP) {
                     const { selectedDate } = getState().staff.selectedStaffMember;
@@ -46,9 +46,9 @@ const Routes = ({ dispatch, getState }) => (
         }
         />
         <Route
-            path="available_slots/:date/end" component={StaffSlots}
+            path=":day/end" component={StaffSlots}
         />
-        <Route path="book" component={StaffForm} />
+        <Route path=":day/book" component={StaffForm} />
       </Route>
       <Route path="confirm" component={Slide}>
         <IndexRoute component={BookingConfirmation} />

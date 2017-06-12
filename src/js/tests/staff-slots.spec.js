@@ -9,6 +9,7 @@ import { createNew } from 'src/js/store';
 import { initialState } from 'src/js/reducers/staff';
 import { findAllWithType } from 'react-shallow-testutils';
 import { TIME_SLOT_SELECTED } from 'src/js/action-types';
+import { getYYYYMMDDPath } from 'src/js/utils/date';
 import StaffSlotsConnected, { StaffSlots } from '../components/staff-slots';
 import Slot from '../components/slot';
 
@@ -205,7 +206,7 @@ describe('<StaffSlots>', () => {
 
         it(`calls router to push to /staff/${id}/book`, () => {
             expect(props.router.push).to.have.been.calledWith(
-                `/staff/${id}/book`
+                `/staff/${id}/available_slots/${getYYYYMMDDPath(currentDate)}/book`
             );
         });
     });

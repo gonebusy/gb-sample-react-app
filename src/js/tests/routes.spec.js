@@ -30,14 +30,14 @@ describe('<Routes>', () => {
               <Route path="/" component={Nav}>
                 <IndexRoute component={StaffPicker} onEnter={noop} />
                 <Route
-                    path="staff/:id"
+                    path="staff/:id/available_slots/:year/:month"
                     onEnter={noop}
                     component={Slide}
                 >
                   <IndexRoute component={StaffCalendar} />
-                  <Route path="available_slots/:date/start" component={StaffSlots} onEnter={noop} />
-                  <Route path="available_slots/:date/end" component={StaffSlots} />
-                  <Route path="book" component={StaffForm} />
+                  <Route path=":day/start" component={StaffSlots} onEnter={noop} />
+                  <Route path=":day/end" component={StaffSlots} />
+                  <Route path=":day/book" component={StaffForm} />
                 </Route>
                 <Route path="confirm" component={Slide}>
                   <IndexRoute component={BookingConfirmation} />
@@ -48,13 +48,15 @@ describe('<Routes>', () => {
 
     });
 
-    context('on entering staff/:id', () => {
+    context('on entering staff/:id/available_slots/:year/:month', () => {
         const dispatch = spy();
         before(() => {
             stub(staffActions, 'fetchSlotsForResource').returns(Promise.resolve({}));
             const component = renderShallow(<Routes dispatch={dispatch} getState={noop} />).output;
             const staffIdRoute = findAll(
-                component, element => element.props.path === 'staff/:id')[0];
+                component,
+                element => element.props.path === 'staff/:id/available_slots/:year/:month'
+            )[0];
             const nextState = { params: { id: '10004' } };
             staffIdRoute.props.onEnter(nextState);
 
@@ -89,7 +91,7 @@ describe('<Routes>', () => {
     });
 
     context(
-        'on entering staff/:id/available_slots/:date/start from pressing the back button',
+        'on entering :day/start from pressing the back button',
         () => {
             const selectedDate = moment.utc();
             const dispatch = spy();
@@ -105,7 +107,7 @@ describe('<Routes>', () => {
                   <Routes dispatch={dispatch} getState={getState} />
                 ).output;
                 const startRoute = findAll(
-                    component, element => element.props.path === 'available_slots/:date/start')[0];
+                    component, element => element.props.path === ':day/start')[0];
                 const nextState = { location: { action: POP } };
                 startRoute.props.onEnter(nextState);
             });

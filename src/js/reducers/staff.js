@@ -17,7 +17,11 @@ export const initialState = {
         availableSlots: {},
         dayPickerMonth: new Date(),
         slotsForDate: [],
-        slotForm: 'start'
+        slotForm: 'start',
+        selectedDate: moment.utc(),
+        id: '',
+        startTime: '',
+        endTime: ''
     }
 };
 export default (state = initialState, action) => {
