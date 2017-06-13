@@ -10,12 +10,53 @@ import { findWithType } from 'react-shallow-testutils';
 import { DATE_SELECTED } from 'src/js/action-types';
 import { initialState } from 'src/js/reducers/staff';
 import { getYYYYMMDDPath } from 'src/js/utils/date';
+import Loader from 'halogen/ClipLoader';
 import StaffCalendarConnected, { StaffCalendar } from '../components/staff-calendar';
 import CustomCalNavBar from '../components/custom-cal-nav-bar';
 
 
 describe('<StaffCalendar>', () => {
-    context('when rendered with props', () => {
+    context('when rendered with props and it is loading', () => {
+        let component;
+        const startDate = moment.utc('2017-03-31');
+        const startDateFormatted = startDate.format('YYYY-MM-DD');
+        const dayPickerMonth = startDate.toDate();
+        const id = '10001';
+        const props = {
+            router: {},
+            dispatch: noop,
+            availableSlots: {
+                [startDateFormatted]: [
+                    '02:00 PM'
+                ]
+            },
+            dayPickerMonth,
+            id,
+            style: { styleAttr: 'some-style' },
+            loading: true
+        };
+
+        // push every date before 3/31 to disabledDates
+        const disabledDates = [];
+        for (let i = 1; i < 31; i += 1)
+            disabledDates.push(new Date(`2017-03-${i}`));
+
+
+        before(() => {
+            component = renderShallow(<StaffCalendar {...props} />).output;
+        });
+
+        it('renders a staff calendar', () => {
+            expect(component).to.eql(
+              <div className="staff-calendar" style={props.style}>
+                <div className="staff-calendar-picker">
+                  <Loader className="loader" color="#000000" size="50px" margin="4px" />
+                </div>
+              </div>
+            );
+        });
+    });
+    context('when rendered with props and it is not loading', () => {
         let component;
         const startDate = moment.utc('2017-03-31');
         const startDateFormatted = startDate.format('YYYY-MM-DD');
@@ -32,7 +73,8 @@ describe('<StaffCalendar>', () => {
             },
             dayPickerMonth,
             id,
-            style: { styleAttr: 'some-style' }
+            style: { styleAttr: 'some-style' },
+            loading: false
         };
 
         // push every date before 3/31 to disabledDates
@@ -83,7 +125,8 @@ describe('<StaffCalendar>', () => {
             },
             id,
             dayPickerMonth: day.toDate(),
-            style: { styleAttr: 'some-style' }
+            style: { styleAttr: 'some-style' },
+            loading: false
         };
 
         before((done) => {
@@ -148,6 +191,7 @@ describe('<StaffCalendar>', () => {
                   id={id}
                   dayPickerMonth={selectedStaffMember.dayPickerMonth}
                   style={style}
+                  loading
               />
             );
         });

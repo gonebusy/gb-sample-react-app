@@ -11,6 +11,7 @@ import { fetchSlotsForResource } from 'src/js/actions/staff';
 import { POP } from 'src/js/constants';
 import moment from 'moment';
 import Slide from 'src/js/components/slide-route-transition';
+import { formatMonth } from 'src/js/utils/date';
 
 const Routes = ({ dispatch, getState }) => (
   <Router history={browserHistory}>
@@ -29,7 +30,12 @@ const Routes = ({ dispatch, getState }) => (
           onEnter={
                   (nextState) => {
                       const { params: { id, year, month } } = nextState;
-                      dispatch(fetchSlotsForResource(moment.utc(`${year}-${month}-01`), id));
+                      dispatch(
+                          fetchSlotsForResource(
+                              moment.utc(`${year}-${formatMonth(month)}-01`),
+                              id
+                          )
+                      );
                   }
               }
           component={Slide}

@@ -161,7 +161,8 @@ describe('staff action creators', () => {
                         [startFormatted]: slots
                     },
                     dayPickerMonth: startDate.toDate(),
-                    fetchedDate: startDate
+                    fetchedDate: startDate,
+                    loading: false
                 });
             });
         });
@@ -200,7 +201,8 @@ describe('staff action creators', () => {
                         [startFormatted]: slots
                     },
                     dayPickerMonth: startDate.toDate(),
-                    fetchedDate: startDate
+                    fetchedDate: startDate,
+                    loading: false
                 });
             });
         });
