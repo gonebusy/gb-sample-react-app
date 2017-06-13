@@ -2,7 +2,7 @@ import request from 'superagent-bluebird-promise';
 import moment from 'moment';
 import {
     DATE_SELECTED, SLOTS_FETCHED,
-    STAFF_FETCHED
+    STAFF_FETCHED, IS_LOADING
 } from 'src/js/action-types';
 import * as urls from 'src/js/urls';
 
@@ -35,6 +35,7 @@ export const fetchSlotsForResource = (startDate, resourceId) => (dispatch, getSt
         const { allAvailableSlots } = getState().staff;
         const month = startDate.month();
         const year = startDate.year();
+        dispatch({ type: IS_LOADING });
         if (!alreadyFetched(allAvailableSlots, resourceId, year, month)) {
             const formattedStartDate = startDate.format('YYYY-MM-DD');
             const formattedEndDate = startDate.endOf('month').format('YYYY-MM-DD');
@@ -50,7 +51,8 @@ export const fetchSlotsForResource = (startDate, resourceId) => (dispatch, getSt
                     year,
                     availableSlots: slots,
                     dayPickerMonth: startDate.toDate(),
-                    fetchedDate: startDate
+                    fetchedDate: startDate,
+                    loading: false
                 });
                 resolve();
             });
@@ -62,7 +64,8 @@ export const fetchSlotsForResource = (startDate, resourceId) => (dispatch, getSt
                 year,
                 availableSlots: allAvailableSlots[resourceId][year][month],
                 dayPickerMonth: startDate.endOf('month').toDate(),
-                fetchedDate: startDate
+                fetchedDate: startDate,
+                loading: false
             });
 
 

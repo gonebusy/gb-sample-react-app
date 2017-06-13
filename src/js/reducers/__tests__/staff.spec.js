@@ -207,6 +207,7 @@ describe('staff reducers', () => {
         };
         const startDate = moment.utc();
         const dayPickerMonth = startDate.toDate();
+        const loading = false;
 
         context('and there availableSlots do not already exist in the state', () => {
             const availableSlots = allAvailableSlots[resourceId][year][month];
@@ -221,7 +222,8 @@ describe('staff reducers', () => {
                         month,
                         year,
                         fetchedDate: startDate,
-                        dayPickerMonth
+                        dayPickerMonth,
+                        loading
                     }
                 );
                 state = store.getState().staff;
@@ -236,7 +238,8 @@ describe('staff reducers', () => {
                         availableSlots,
                         dayPickerMonth,
                         selectedDate: startDate
-                    }
+                    },
+                    loading
                 });
             });
         });
@@ -256,7 +259,8 @@ describe('staff reducers', () => {
                         month: nextMonth,
                         year,
                         fetchedDate: startDate,
-                        dayPickerMonth
+                        dayPickerMonth,
+                        loading
                     }
                 );
                 state = store.getState().staff;
@@ -279,7 +283,8 @@ describe('staff reducers', () => {
                                 ...fetchedAvailableSlots[resourceId][year]
                             }
                         }
-                    }
+                    },
+                    loading
                 });
             });
         });
@@ -299,7 +304,8 @@ describe('staff reducers', () => {
                         month: nextMonth,
                         year: nextYear,
                         fetchedDate: startDate,
-                        dayPickerMonth
+                        dayPickerMonth,
+                        loading
                     }
                 );
                 state = store.getState().staff;
@@ -320,7 +326,8 @@ describe('staff reducers', () => {
                             ...allAvailableSlots[resourceId],
                             [nextYear]: fetchedAvailableSlots[resourceId][nextYear]
                         }
-                    }
+                    },
+                    loading
                 });
             });
         });

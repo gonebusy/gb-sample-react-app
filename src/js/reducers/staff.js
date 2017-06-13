@@ -2,7 +2,8 @@ import {
     SLOTS_FETCHED,
     STAFF_FETCHED, DATE_SELECTED,
     CLEAR_SELECTED_STAFF_MEMBER,
-    TIME_SLOT_SELECTED
+    TIME_SLOT_SELECTED,
+    IS_LOADING
 } from 'src/js/action-types';
 import lodashGet from 'lodash.get';
 import find from 'lodash.find';
@@ -22,11 +23,18 @@ export const initialState = {
         id: '',
         startTime: '',
         endTime: ''
-    }
+    },
+    loading: true
 };
 export default (state = initialState, action) => {
     const { type } = action;
     switch (type) {
+        case IS_LOADING: {
+            return {
+                ...state,
+                loading: true
+            };
+        }
         case SLOTS_FETCHED: {
             const {
                 availableSlots,
@@ -34,7 +42,8 @@ export default (state = initialState, action) => {
                 month,
                 year,
                 dayPickerMonth,
-                fetchedDate
+                fetchedDate,
+                loading
             } = action;
             const staffMember = find(state.staffMembers, staff => (staff.id === id));
             return {
@@ -54,7 +63,8 @@ export default (state = initialState, action) => {
                             [month]: availableSlots
                         }
                     }
-                }
+                },
+                loading
             };
         }
         case STAFF_FETCHED: {

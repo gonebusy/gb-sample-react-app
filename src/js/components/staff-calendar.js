@@ -4,11 +4,12 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { selectDate } from 'src/js/actions/staff';
 import { getYYYYMMDDPath } from 'src/js/utils/date';
+import Loader from 'halogen/ClipLoader';
 import CustomCalNavBar from './custom-cal-nav-bar';
 
 
 export const StaffCalendar = (
-        { availableSlots, dispatch, dayPickerMonth, router, id, style }
+        { availableSlots, dispatch, dayPickerMonth, router, id, style, loading }
     ) => {
     const targetMonth = availableSlots ? moment.utc(Object.keys(availableSlots)[0]) : moment.utc();
     const handleDayClick = (day) => {
@@ -38,18 +39,24 @@ export const StaffCalendar = (
     return (
       <div className="staff-calendar" style={style}>
         <div className="staff-calendar-picker">
-          <DayPicker
-              onDayClick={handleDayClick}
-              weekdaysShort={['S', 'M', 'T', 'W', 'T', 'F', 'S']}
-              month={dayPickerMonth}
-              disabledDays={getDisabledDates()}
-              navbarElement={
-                <CustomCalNavBar
-                    router={router}
-                    id={id}
-                />
-              }
-          />
+          { loading ?
+            <Loader className="loader" color="#000000" size="50px" margin="4px" />
+            :
+                (
+                  <DayPicker
+                      onDayClick={handleDayClick}
+                      weekdaysShort={['S', 'M', 'T', 'W', 'T', 'F', 'S']}
+                      month={dayPickerMonth}
+                      disabledDays={getDisabledDates()}
+                      navbarElement={
+                        <CustomCalNavBar
+                            router={router}
+                            id={id}
+                        />
+                        }
+                  />
+                )
+            }
         </div>
       </div>
     );
@@ -61,15 +68,17 @@ StaffCalendar.propTypes = {
     dayPickerMonth: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired,
     id: PropTypes.string.isRequired,
-    style: PropTypes.object.isRequired
+    style: PropTypes.object.isRequired,
+    loading: PropTypes.bool.isRequired
 };
 
 export const mapStateToProps = (
-        { staff: { selectedStaffMember: { id, availableSlots, dayPickerMonth } } }
+        { staff: { selectedStaffMember: { id, availableSlots, dayPickerMonth }, loading } }
     ) => ({
         availableSlots,
         dayPickerMonth,
-        id
+        id,
+        loading
     });
 
 export default connect(mapStateToProps)(StaffCalendar);
