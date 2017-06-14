@@ -1,6 +1,4 @@
-export const TRANSITIONS = {
-    PUSH_LEFT: 1,
-    PUSH_RIGHT: 2
-};
+export const PUSH = 'PUSH';
+export const POP = 'POP';
 
-export default TRANSITIONS;
+export default PUSH;

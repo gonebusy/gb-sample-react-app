@@ -19,18 +19,18 @@ describe('staff action creators', () => {
             const duration = 60;
             const service = {
                 body: {
-                    resources: [100001], // resourceId returned from the service
+                    resources: ['100001'], // resourceId returned from the service
                     duration
                 }
             };
             const resource = {
                 body: {
-                    id: 100001, // resourceId returned from resources
+                    id: '100001', // resourceId returned from resources
                     name: 'James Hunter'
                 }
             };
             const staffMembers = [
-                { id: 100001, name: 'James Hunter', imagePath: 'http://i.pravatar.cc/300?img=69' }
+                { id: '100001', name: 'James Hunter', imagePath: 'http://i.pravatar.cc/300?img=69' }
             ];
             const serviceEndpoint = '/api/service';
             const resourcesEndpoint = `/api/resources/${staffMembers[0].id}`;
@@ -95,7 +95,7 @@ describe('staff action creators', () => {
         const startFormatted = '2017-03-01';
         const startDate = moment.utc(startFormatted);
         const endFormatted = '2017-03-31';
-        const resourceId = 100004;
+        const resourceId = '10004';
         const year = startDate.year();
         const month = startDate.month();
         const slots = ['6:00 PM', '6:30 PM'];
@@ -159,7 +159,10 @@ describe('staff action creators', () => {
                     year,
                     availableSlots: {
                         [startFormatted]: slots
-                    }
+                    },
+                    dayPickerMonth: startDate.toDate(),
+                    fetchedDate: startDate,
+                    loading: false
                 });
             });
         });
@@ -189,7 +192,18 @@ describe('staff action creators', () => {
             });
 
             it(`dispatches with ${SLOTS_FETCHED}`, () => {
-                expect(dispatch).to.not.have.been.called();
+                expect(dispatch).to.have.been.calledWith({
+                    type: SLOTS_FETCHED,
+                    id: resourceId,
+                    month,
+                    year,
+                    availableSlots: {
+                        [startFormatted]: slots
+                    },
+                    dayPickerMonth: startDate.toDate(),
+                    fetchedDate: startDate,
+                    loading: false
+                });
             });
         });
     });

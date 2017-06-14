@@ -1,25 +1,25 @@
 import { expect } from 'chai';
 import React from 'react';
 import renderShallow from 'render-shallow';
-import { findWithClass, findWithType } from 'react-shallow-testutils';
+import { findWithClass } from 'react-shallow-testutils';
 import { spy, stub } from 'sinon';
 import request from 'superagent-bluebird-promise';
 import moment from 'moment';
 import { createNew } from 'src/js/store';
 import { initialState } from 'src/js/reducers/staff';
 import noop from '../../../lib/util/noop';
-import Nav from '../components/nav';
 import StaffFormConnected, { StaffForm } from '../components/staff-form';
-import BookingConfirmation from '../components/booking-confirmation';
 
 describe('<StaffForm>', () => {
     context('when rendered with required props for StaffForm', () => {
         const today = moment.utc();
         const props = {
-            id: 10001,
+            id: '10001',
             date: today,
             startTime: '10:15 AM',
-            endTime: '11:15 AM'
+            endTime: '11:15 AM',
+            router: {},
+            style: { styleAttr: 'some-style' }
         };
 
         let component;
@@ -31,8 +31,7 @@ describe('<StaffForm>', () => {
 
         it('renders report form with default values', () => {
             expect(component).to.eql(
-              <div className="staff-form">
-                <Nav leftClick={noop} />
+              <div className="staff-form" style={props.style}>
 
                 <div className="staff-slots-date">
                   <p>{today.format('dddd, do MMM YYYY')}</p>
@@ -55,41 +54,18 @@ describe('<StaffForm>', () => {
         });
     });
 
-    context('when go back button is clicked', () => {
-        const props = {
-            id: 10001,
-            date: moment.utc('2017-02-01'),
-            startTime: '10:15 AM',
-            endTime: '11:15 AM',
-            navigationController: {
-                popView: spy()
-            }
-        };
-
-        before(() => {
-            const component = renderShallow(
-              <StaffForm {...props} />
-            ).output;
-
-            const navElement = findWithType(component, Nav);
-            navElement.props.leftClick();
-        });
-
-        it('calls the popView function of navigationController', () => {
-            expect(props.navigationController.popView).to.have.been.calledOnce();
-        });
-    });
     context('when confirm booking is clicked', () => {
         const today = moment.utc();
         const formattedDate = today.format('YYYY-MM-DD');
         const props = {
-            id: 10001,
+            id: '10001',
             date: today,
             startTime: '10:15 AM',
             endTime: '11:15 AM',
-            navigationController: {
-                pushView: spy()
-            }
+            router: {
+                push: spy()
+            },
+            style: { styleAttr: 'some-style' }
         };
         const body = {
             resourceId: props.id,
@@ -118,27 +94,28 @@ describe('<StaffForm>', () => {
         });
 
         it('calls the pushView function of navigationController', () => {
-            expect(props.navigationController.pushView).to.have.been.calledWith(
-              <BookingConfirmation
-                  startTime={props.startTime} endTime={props.endTime}
-                  date={formattedDate}
-              />, { transition: 0 }
+            expect(props.router.push).to.have.been.calledWith(
+                '/confirm'
             );
         });
     });
     context('when it is connected', () => {
         let store;
         let component;
-        const navigationController = {
-            pushView: noop
+        const router = {
+            push: noop
         };
         const currentDate = moment();
         const startTime = '10:15 AM';
         const endTime = '11:15 AM';
+        const style = { styleAttr: 'some-style' };
         const selectedStaffMember = {
-            id: 10004,
+            id: '10004',
             imagePath: 'http://i.pravatar.cc/300?img=15',
-            name: 'Phillip Fry'
+            name: 'Phillip Fry',
+            selectedDate: currentDate,
+            startTime,
+            endTime
         };
 
         before(() => {
@@ -146,10 +123,10 @@ describe('<StaffForm>', () => {
             component = renderShallow(
               <StaffFormConnected
                   store={store}
-                  navigationController={navigationController}
-                  date={currentDate}
+                  router={router}
                   startTime={startTime}
                   endTime={endTime}
+                  style={style}
               />
             ).output;
         });
@@ -158,11 +135,12 @@ describe('<StaffForm>', () => {
               <StaffForm
                   dispatch={noop}
                   store={store}
-                  navigationController={navigationController}
+                  router={router}
                   date={currentDate}
                   startTime={startTime}
                   endTime={endTime}
                   id={selectedStaffMember.id}
+                  style={style}
               />
             );
         });

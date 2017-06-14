@@ -2,7 +2,8 @@ import { expect } from 'chai';
 import {
     SLOTS_FETCHED,
     STAFF_FETCHED,
-    DATE_SELECTED
+    DATE_SELECTED,
+    CLEAR_SELECTED_STAFF_MEMBER
 } from 'src/js/action-types';
 import { createNew } from 'src/js/store';
 import { initialState } from 'src/js/reducers/staff';
@@ -75,7 +76,7 @@ describe('staff reducers', () => {
             const formattedDate = '2017-04-01';
             const date = moment(formattedDate);
             const selectedStaffMember = {
-                id: 100004, // resourceId
+                id: '10004', // resourceId
                 imagePath: 'http://i.pravatar.cc/300?img=15',
                 name: 'Phillip Fry',
                 availableSlots: {
@@ -204,6 +205,9 @@ describe('staff reducers', () => {
                 }
             }
         };
+        const startDate = moment.utc();
+        const dayPickerMonth = startDate.toDate();
+        const loading = false;
 
         context('and there availableSlots do not already exist in the state', () => {
             const availableSlots = allAvailableSlots[resourceId][year][month];
@@ -216,7 +220,10 @@ describe('staff reducers', () => {
                         availableSlots,
                         id: resourceId,
                         month,
-                        year
+                        year,
+                        fetchedDate: startDate,
+                        dayPickerMonth,
+                        loading
                     }
                 );
                 state = store.getState().staff;
@@ -228,8 +235,11 @@ describe('staff reducers', () => {
                     allAvailableSlots: { [resourceId]: { [year]: { [month]: availableSlots } } },
                     selectedStaffMember: {
                         ...staffMember,
-                        availableSlots
-                    }
+                        availableSlots,
+                        dayPickerMonth,
+                        selectedDate: startDate
+                    },
+                    loading
                 });
             });
         });
@@ -247,7 +257,10 @@ describe('staff reducers', () => {
                         availableSlots,
                         id: resourceId,
                         month: nextMonth,
-                        year
+                        year,
+                        fetchedDate: startDate,
+                        dayPickerMonth,
+                        loading
                     }
                 );
                 state = store.getState().staff;
@@ -258,7 +271,9 @@ describe('staff reducers', () => {
                     staffMembers,
                     selectedStaffMember: {
                         ...staffMember,
-                        availableSlots
+                        availableSlots,
+                        selectedDate: startDate,
+                        dayPickerMonth
                     },
                     allAvailableSlots: {
                         ...allAvailableSlots,
@@ -268,7 +283,8 @@ describe('staff reducers', () => {
                                 ...fetchedAvailableSlots[resourceId][year]
                             }
                         }
-                    }
+                    },
+                    loading
                 });
             });
         });
@@ -286,7 +302,10 @@ describe('staff reducers', () => {
                         availableSlots,
                         id: resourceId,
                         month: nextMonth,
-                        year: nextYear
+                        year: nextYear,
+                        fetchedDate: startDate,
+                        dayPickerMonth,
+                        loading
                     }
                 );
                 state = store.getState().staff;
@@ -297,7 +316,9 @@ describe('staff reducers', () => {
                     staffMembers,
                     selectedStaffMember: {
                         ...staffMember,
-                        availableSlots
+                        availableSlots,
+                        selectedDate: startDate,
+                        dayPickerMonth
                     },
                     allAvailableSlots: {
                         ...allAvailableSlots,
@@ -305,10 +326,35 @@ describe('staff reducers', () => {
                             ...allAvailableSlots[resourceId],
                             [nextYear]: fetchedAvailableSlots[resourceId][nextYear]
                         }
-                    }
+                    },
+                    loading
                 });
             });
         });
 
     });
+
+    context(`when ${CLEAR_SELECTED_STAFF_MEMBER} is dispatched`, () => {
+        let state;
+        const selectedStaffMember = {
+            id: '10004', // resourceId
+            imagePath: 'http://i.pravatar.cc/300?img=15',
+            name: 'Phillip Fry',
+            availableSlots: {
+                '2017-04-01': ['7:00', '8:00']
+            }
+        };
+        before(() => {
+            const store = createNew({ staff: { ...initialState, selectedStaffMember } });
+            store.dispatch({
+                type: CLEAR_SELECTED_STAFF_MEMBER
+            });
+            state = store.getState().staff;
+        });
+
+        it('has the state cleared out of selectedStaff', () => {
+            expect(state).to.eql(initialState);
+        });
+    });
+
 });

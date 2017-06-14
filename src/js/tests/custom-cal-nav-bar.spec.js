@@ -4,19 +4,21 @@ import renderShallow from 'render-shallow';
 import { spy, stub } from 'sinon';
 import { findAllWithType } from 'react-shallow-testutils';
 import moment from 'moment';
-import { TRANSITIONS } from 'src/js/constants';
+import * as staffActions from 'src/js/actions/staff';
+import { getYYYYMMPath } from 'src/js/utils/date';
 import noop from '../../../lib/util/noop';
 import CustomCalNavBar from '../components/custom-cal-nav-bar';
-import StaffCalendar from '../components/staff-calendar';
 
 describe('<CustomCalNavBar>', () => {
     context('when rendered on the current month', () => {
         let component;
         before(() => {
+            const router = { goBack: noop() };
             component = renderShallow(
               <CustomCalNavBar
                   className="some-class"
                   previousMonth={moment.utc().subtract(1, 'months')}
+                  router={router}
               />
             ).output;
         });
@@ -35,11 +37,14 @@ describe('<CustomCalNavBar>', () => {
 
     context('when rendered on months after the current months', () => {
         let component;
+        const router = { goBack: noop() };
+        const goBackHandler = router.goBack;
         before(() => {
             component = renderShallow(
               <CustomCalNavBar
                   className="some-class"
                   previousMonth={moment.utc().add(1, 'months')}
+                  router={router}
               />
             ).output;
         });
@@ -49,7 +54,7 @@ describe('<CustomCalNavBar>', () => {
               <div className="some-class" style={{ fontSize: '.75em' }}>
                 <span
                     className="DayPicker-NavButton DayPicker-NavButton--prev"
-                    onClick={() => noop}
+                    onClick={goBackHandler}
                 />
                 <span
                     className="DayPicker-NavButton DayPicker-NavButton--next"
@@ -61,50 +66,53 @@ describe('<CustomCalNavBar>', () => {
     });
 
     context('when next month navigator is clicked', () => {
-        const navigationController = { pushView: spy() };
         const currentMonth = moment.utc();
         const previousMonth = currentMonth.subtract(1, 'months');
         const nextMonth = currentMonth.add(1, 'months');
+        const id = '10004';
+        const router = { goBack: noop(), push: spy() };
         const props = {
-            dispatch: stub().returns(Promise.resolve({})),
-            navigationController,
             nextMonth,
             previousMonth,
-            className: 'some-class'
+            className: 'some-class',
+            id,
+            router
         };
 
-        before((done) => {
+        before(() => {
             const component = renderShallow(
               <CustomCalNavBar
                   {...props}
               />).output;
             const nextMonthButton = findAllWithType(component, 'span')[1];
-            setTimeout(() => {
-                nextMonthButton.props.onClick();
-                done();
-            });
+            nextMonthButton.props.onClick();
         });
 
-        it('pushes the view to <StaffCalendar>', () => {
-            expect(navigationController.pushView).to.have.been.calledWith(
-              <StaffCalendar month={nextMonth} />, { transition: TRANSITIONS.PUSH_LEFT }
+        it('pushes router with next month as parameter', () => {
+            expect(router.push).to.have.been.calledWith(
+                `/staff/${id}/available_slots/${getYYYYMMPath(nextMonth)}`
             );
         });
+
     });
     context('when previous month navigator is clicked', () => {
-        const navigationController = { pushView: spy() };
-        const currentMonth = moment.utc();
-        const previousMonth = currentMonth.subtract(1, 'months');
-        const nextMonth = currentMonth.add(1, 'months');
+        // since previousMonth is only enabled after going past the current month,
+        // adding 2 for nextMonth and 1 for previousMonth
+        const nextMonth = moment.utc().add(2, 'months');
+        const previousMonth = moment.utc().add(1, 'months');
+        const id = '10004';
+        const router = { goBack: spy() };
         const props = {
-            dispatch: stub().returns(Promise.resolve({})),
-            navigationController,
+            dispatch: spy(),
             nextMonth,
             previousMonth,
-            className: 'some-class'
+            className: 'some-class',
+            id,
+            router
         };
 
         before((done) => {
+            stub(staffActions, 'fetchSlotsForResource').returns(Promise.resolve({}));
             const component = renderShallow(
               <CustomCalNavBar
                   {...props}
@@ -116,10 +124,11 @@ describe('<CustomCalNavBar>', () => {
             });
         });
 
-        it('pushes the view to <StaffCalendar>', () => {
-            expect(navigationController.pushView).to.have.been.calledWith(
-              <StaffCalendar month={nextMonth} />, { transition: TRANSITIONS.PUSH_RIGHT }
-            );
+        after(() => {
+            staffActions.fetchSlotsForResource.restore();
+        });
+        it('calls dispatch with fetchSlots and selectMonth with previous month', () => {
+            expect(router.goBack).to.have.been.called();
         });
     });
 });
