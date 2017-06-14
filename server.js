@@ -1,7 +1,6 @@
 const express = require('express');
 const path = require('path');
 const gonebusy = require('gonebusy-nodejs-client');
-const Promise = require('bluebird').Promise;
 const url = require('url');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
@@ -73,6 +72,15 @@ router.post('/bookings/new', (req, res) => {
     ).catch((error) =>
         console.log(error.errorMessage)
     );
+});
+
+router.get('/bookings/:userId', (req, res) => {
+   const { userId } = req.params;
+   BookingsController.getBookings(authorization, userId).then((success) => {
+       res.send(success.bookings)
+   }).catch((error) => {
+       console.log(error.errorMessage, ' errors retrieving booking');
+   })
 });
 
 app.listen(PORT, () => {
