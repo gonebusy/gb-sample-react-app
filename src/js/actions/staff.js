@@ -2,9 +2,11 @@ import request from 'superagent-bluebird-promise';
 import moment from 'moment';
 import {
     DATE_SELECTED, SLOTS_FETCHED,
-    STAFF_FETCHED, IS_LOADING
+    STAFF_FETCHED, IS_LOADING,
+    BOOKINGS_FETCHED
 } from 'src/js/action-types';
 import * as urls from 'src/js/urls';
+import { fromMilitaryTime } from 'src/js/utils/time';
 
 const images = {
     'James Hunter': 'http://i.pravatar.cc/300?img=69',
@@ -102,6 +104,40 @@ export const fetchStaff = () =>
                 ));
         });
         resolve();
+    });
+
+const keyOffResourceId = (bookings) => {
+    const bookingsByResource = {};
+    bookings.forEach((booking) => {
+        const { resource_id } = booking;
+        const { start_date, start_time, end_time } = booking.time_window;
+        const start = fromMilitaryTime(start_time);
+        const end = fromMilitaryTime(end_time);
+        if (bookingsByResource[resource_id] && bookingsByResource[resource_id][start_date])
+            bookingsByResource[resource_id][start_date].push({
+                startTime: start,
+                endTime: end
+            });
+        else
+            bookingsByResource[resource_id] = {
+                [start_date]: [{
+                    startTime: start,
+                    endTime: end
+                }]
+            };
+
+    });
+    return bookingsByResource;
+};
+
+export const fetchBookings = () =>
+    dispatch => request.get('/api/bookings').then((response) => {
+        const bookings = response.body;
+        const bookingsByResource = keyOffResourceId(bookings);
+        dispatch({
+            type: BOOKINGS_FETCHED,
+            bookingsByResource
+        });
     });
 
 export default fetchStaff;

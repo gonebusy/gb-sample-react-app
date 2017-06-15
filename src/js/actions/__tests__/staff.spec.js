@@ -2,16 +2,17 @@ import { expect } from 'chai';
 import { spy, stub } from 'sinon';
 import {
     fetchStaff, fetchSlotsForResource,
-    selectDate
+    selectDate, fetchBookings
 } from 'src/js/actions/staff';
 import request from 'superagent-bluebird-promise';
 import {
-    DATE_SELECTED,
+    DATE_SELECTED, BOOKINGS_FETCHED,
     SLOTS_FETCHED, STAFF_FETCHED
 } from 'src/js/action-types';
 import store from 'src/js/store';
 import moment from 'moment';
 import * as urls from 'src/js/urls';
+import { fromMilitaryTime } from 'src/js/utils/time';
 
 describe('staff action creators', () => {
     describe('fetchStaff', () => {
@@ -203,6 +204,71 @@ describe('staff action creators', () => {
                     dayPickerMonth: startDate.toDate(),
                     fetchedDate: startDate,
                     loading: false
+                });
+            });
+        });
+    });
+
+    describe('fetchBookings', () => {
+        context('when it is invoked', () => {
+            const dispatch = spy();
+            const firstResourceId = '10001';
+            const secondResourceId = '10002';
+            const firstStartDate = '2017-07-13';
+            const secondStartDate = '2017-07-14';
+            const firstStartTime = '11:00';
+            const secondStartTime = '21:00';
+            const firstEndTime = '12:00';
+            const secondEndTime = '22:00';
+            const bookings = [
+                {
+                    resource_id: firstResourceId,
+                    time_window: {
+                        start_date: firstStartDate,
+                        start_time: firstStartTime,
+                        end_time: firstEndTime
+                    }
+                },
+                {
+                    resource_id: secondResourceId,
+                    time_window: {
+                        start_date: secondStartDate,
+                        start_time: secondStartTime,
+                        end_time: secondEndTime
+                    }
+                }
+            ];
+            const bookingsByResource = {
+                [firstResourceId]: {
+                    [firstStartDate]: [{
+                        startTime: fromMilitaryTime(firstStartTime),
+                        endTime: fromMilitaryTime(firstEndTime)
+                    }]
+                },
+                [secondResourceId]: {
+                    [secondStartDate]: [{
+                        startTime: fromMilitaryTime(secondStartTime),
+                        endTime: fromMilitaryTime(secondEndTime)
+                    }]
+                }
+            };
+            before(() => {
+                stub(request, 'get').returns(Promise.resolve({ body: bookings }));
+                return fetchBookings()(dispatch);
+            });
+
+            after(() => {
+                request.get.restore();
+            });
+
+            it('calls GET with /api/bookings', () => {
+                expect(request.get).to.have.been.calledWith('/api/bookings');
+            });
+
+            it(`dispatches with ${BOOKINGS_FETCHED}`, () => {
+                expect(dispatch).to.have.been.calledWith({
+                    type: BOOKINGS_FETCHED,
+                    bookingsByResource
                 });
             });
         });

@@ -3,7 +3,8 @@ import {
     SLOTS_FETCHED,
     STAFF_FETCHED,
     DATE_SELECTED,
-    CLEAR_SELECTED_STAFF_MEMBER
+    CLEAR_SELECTED_STAFF_MEMBER,
+    BOOKINGS_FETCHED
 } from 'src/js/action-types';
 import { createNew } from 'src/js/store';
 import { initialState } from 'src/js/reducers/staff';
@@ -81,10 +82,15 @@ describe('staff reducers', () => {
                 name: 'Phillip Fry',
                 availableSlots: {
                     '2017-04-01': ['7:00', '8:00']
-                }
+                },
+            };
+            const bookingsByResource = {
+
             };
             before(() => {
-                const store = createNew({ staff: { ...initialState, selectedStaffMember } });
+                const store = createNew(
+                    { staff: { ...initialState, selectedStaffMember, bookingsByResource } }
+                );
                 store.dispatch(
                     {
                         type: DATE_SELECTED,
@@ -101,7 +107,58 @@ describe('staff reducers', () => {
                         ...state.selectedStaffMember,
                         selectedDate: date,
                         slotsForDate: selectedStaffMember.availableSlots[formattedDate]
+                    },
+                    bookingsByResource
+                });
+            });
+
+        });
+        context('and there are available slots for that date with bookings', () => {
+            let state;
+            const formattedDate = '2017-04-01';
+            const date = moment(formattedDate);
+            const resourceId = '10004';
+            const startTime = '7:00';
+            const endTime = '8:00';
+            const selectedStaffMember = {
+                id: resourceId, // resourceId
+                imagePath: 'http://i.pravatar.cc/300?img=15',
+                name: 'Phillip Fry',
+                availableSlots: {
+                    [formattedDate]: ['7:00', '8:00']
+                },
+            };
+            const bookingsByResource = {
+                [resourceId]: {
+                    [formattedDate]: [{
+                        startTime,
+                        endTime
+                    }]
+                }
+            };
+            before(() => {
+                const store = createNew(
+                    { staff: { ...initialState, selectedStaffMember, bookingsByResource } }
+                );
+                store.dispatch(
+                    {
+                        type: DATE_SELECTED,
+                        date
                     }
+                );
+                state = store.getState().staff;
+            });
+
+            it('picks out time slots that are booked for the resource with selected date', () => {
+                expect(state).to.eql({
+                    ...initialState,
+                    selectedStaffMember: {
+                        ...state.selectedStaffMember,
+                        selectedDate: date,
+                        slotsForDate: selectedStaffMember.availableSlots[formattedDate],
+                        bookingsForDate: [{ startTime, endTime }]
+                    },
+                    bookingsByResource
                 });
             });
 
@@ -110,6 +167,7 @@ describe('staff reducers', () => {
         context('and there are NO available slots for that date', () => {
             let state;
             const oldDate = moment('1970-10-15');
+            const bookingsByResource = {};
             before(() => {
                 const selectedStaffMember = {
                     id: 100004, // resourceId
@@ -119,7 +177,9 @@ describe('staff reducers', () => {
                         '2017-04-01': ['7:00', '8:00']
                     }
                 };
-                const store = createNew({ staff: { ...initialState, selectedStaffMember } });
+                const store = createNew(
+                    { staff: { ...initialState, selectedStaffMember, bookingsByResource } }
+                );
                 store.dispatch(
                     {
                         type: DATE_SELECTED,
@@ -136,7 +196,8 @@ describe('staff reducers', () => {
                         ...state.selectedStaffMember,
                         selectedDate: oldDate,
                         slotsForDate: []
-                    }
+                    },
+                    bookingsByResource
                 });
             });
 
@@ -357,4 +418,36 @@ describe('staff reducers', () => {
         });
     });
 
+    context(`when ${BOOKINGS_FETCHED} is dispatched`, () => {
+        let state;
+        const bookingsByResource = {
+            10001: {
+                '2017-06-01': [{
+                    startTime: '8:00 PM',
+                    endTime: '9:00 PM'
+                }]
+            },
+            10002: {
+                '2017-06-01': [{
+                    startTime: '2:00 AM',
+                    endTime: '3:00 AM'
+                }]
+            }
+        };
+        before(() => {
+            const store = createNew();
+            store.dispatch({
+                type: BOOKINGS_FETCHED,
+                bookingsByResource
+            });
+            state = store.getState().staff;
+        });
+
+        it('has the state cleared out of selectedStaff', () => {
+            expect(state).to.eql({
+                ...initialState,
+                bookingsByResource
+            });
+        });
+    });
 });

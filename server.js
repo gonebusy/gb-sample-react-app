@@ -74,9 +74,8 @@ router.post('/bookings/new', (req, res) => {
     );
 });
 
-router.get('/bookings/:userId', (req, res) => {
-   const { userId } = req.params;
-   BookingsController.getBookings(authorization, userId).then((success) => {
+router.get('/bookings', (req, res) => {
+   BookingsController.getBookings(authorization, USER_ID).then((success) => {
        res.send(success.bookings)
    }).catch((error) => {
        console.log(error.errorMessage, ' errors retrieving booking');
