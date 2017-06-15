@@ -12,8 +12,6 @@ const { API_KEY, SERVICE_ID, USER_ID, PORT } = process.env;
 
 gonebusy.Configuration.currentEnvironment = 'sandbox';
 const authorization = `Token ${API_KEY}`;
-const serviceId = SERVICE_ID;
-const userId = USER_ID;
 const { ServicesController, ResourcesController, BookingsController } = gonebusy;
 
 const app = express();
@@ -26,7 +24,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 router.get('/service', (req, res) => {
-    ServicesController.getServiceById(authorization, serviceId).then((success) =>
+    ServicesController.getServiceById(authorization, SERVICE_ID).then((success) =>
         res.send(success.service)
     ).catch((error) =>
         console.log(error.errorMessage)
@@ -48,7 +46,7 @@ router.get('/slots', (req, res) => {
     const startDate = query.startDate;
     const endDate = query.endDate;
     const resourceId = query.resourceId;
-    ServicesController.getServiceAvailableSlotsById(authorization, serviceId, null, startDate, endDate, resourceId)
+    ServicesController.getServiceAvailableSlotsById(authorization, SERVICE_ID, null, startDate, endDate, resourceId)
         .then((success) =>
             res.send(success.service.resources)
         )
@@ -64,8 +62,8 @@ router.post('/bookings/new', (req, res) => {
         time,
         duration,
         resource_id: resourceId,
-        service_id: serviceId,
-        user_id: userId
+        service_id: SERVICE_ID,
+        user_id: USER_ID
     };
     BookingsController.createBooking(authorization, createBookingBody).then((success) =>
         res.send(success)
