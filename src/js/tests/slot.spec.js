@@ -11,7 +11,9 @@ describe('<Slot>', () => {
         let component;
         const time = '8:00 PM';
         before(() => {
-            component = renderShallow(<Slot time={time} timeClick={() => noop} index={1} disabled={false} />).output;
+            component = renderShallow(
+              <Slot time={time} timeClick={() => noop} index={1} disabled={false} />
+            ).output;
         });
 
         it('renders <Slot>', () => {
@@ -28,14 +30,16 @@ describe('<Slot>', () => {
         let component;
         const time = '8:00 PM';
         before(() => {
-            component = renderShallow(<Slot time={time} timeClick={() => noop} index={1} disabled={true} />).output;
+            component = renderShallow(
+              <Slot time={time} timeClick={() => noop} index={1} disabled />
+            ).output;
         });
 
         it('renders <Slot>', () => {
             expect(component).to.eql(
-                <li className="staff-slots-time" >
-                    <button onClick={noop} disabled={true}>{time}</button>
-                </li>
+              <li className="staff-slots-time" >
+                <button onClick={noop} disabled>{time}</button>
+              </li>
             );
         });
 

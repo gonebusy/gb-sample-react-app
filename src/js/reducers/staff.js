@@ -3,7 +3,7 @@ import {
     STAFF_FETCHED, DATE_SELECTED,
     CLEAR_SELECTED_STAFF_MEMBER,
     TIME_SLOT_SELECTED,
-    IS_LOADING
+    IS_LOADING, BOOKINGS_FETCHED
 } from 'src/js/action-types';
 import lodashGet from 'lodash.get';
 import find from 'lodash.find';
@@ -75,6 +75,13 @@ export default (state = initialState, action) => {
                 duration
             };
         }
+        case BOOKINGS_FETCHED: {
+            const { bookingsByResource } = action;
+            return {
+                ...state,
+                bookingsByResource
+            };
+        }
         case CLEAR_SELECTED_STAFF_MEMBER: {
             const { selectedStaffMember } = initialState;
             return {
@@ -84,17 +91,21 @@ export default (state = initialState, action) => {
         }
         case DATE_SELECTED: {
             const { date } = action;
-            const { availableSlots } = state.selectedStaffMember;
+            const { availableSlots, id } = state.selectedStaffMember;
             const formattedDate = date.format('YYYY-MM-DD');
             const slotsForDate = formattedDate in availableSlots ?
                 availableSlots[formattedDate] : [];
+            let bookingsForDate = [];
+            if (state.bookingsByResource[id] && state.bookingsByResource[id][formattedDate])
+                bookingsForDate = state.bookingsByResource[id][formattedDate];
             return {
                 ...state,
                 selectedStaffMember: {
                     ...state.selectedStaffMember,
                     selectedDate: date,
                     slotsForDate,
-                    slotForm: 'start'
+                    slotForm: 'start',
+                    bookingsForDate
                 }
             };
         }

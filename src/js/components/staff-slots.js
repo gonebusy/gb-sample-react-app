@@ -8,7 +8,7 @@ import { getYYYYMMDDPath } from 'src/js/utils/date';
 import { Slot } from './slot';
 
 export const StaffSlots = (
-        { date, id, slots, slotForm, router, dispatch, style }
+        { date, id, slots, slotForm, router, dispatch, style, bookingsForDate }
     ) => {
     const formattedDate = dateFormat(date, 'dddd, d mmm yyyy');
 
@@ -25,6 +25,16 @@ export const StaffSlots = (
             action = 'end';
         router.push(`/staff/${id}/available_slots/${getYYYYMMDDPath(date)}/${action}`);
     };
+
+    const shouldDisable = (time) => {
+        for (let i = 0; i < bookingsForDate.length; i += 1) {
+            if (slotForm === 'start')
+                return bookingsForDate[i].startTime === time;
+            return bookingsForDate[i].endTime === time;
+        }
+        return false;
+    };
+
     return (
       <div className="staff-slots" style={style}>
         <div className="staff-slots-date">{formattedDate}</div>
@@ -40,6 +50,7 @@ export const StaffSlots = (
                             key={`slot ${time}`}
                             index={index}
                             timeClick={timeClick}
+                            disabled={shouldDisable(time)}
                         />
                       ))
                   }
@@ -64,7 +75,8 @@ StaffSlots.propTypes = {
     router: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
     id: PropTypes.string.isRequired,
-    style: PropTypes.object.isRequired
+    style: PropTypes.object.isRequired,
+    bookingsForDate: PropTypes.array.isRequired
 };
 
 
@@ -72,7 +84,7 @@ const mapStateToProps = (
     {
         staff: {
             selectedStaffMember: {
-                id, selectedDate, slotsForDate, slotForm
+                id, selectedDate, slotsForDate, slotForm, bookingsForDate
             },
             duration
         }
@@ -81,7 +93,8 @@ const mapStateToProps = (
         slots: slotsForDate,
         duration,
         slotForm,
-        id
+        id,
+        bookingsForDate
     });
 
 export default connect(mapStateToProps)(StaffSlots);

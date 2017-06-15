@@ -29,7 +29,8 @@ describe('<StaffSlots>', () => {
             dispatch: noop,
             slotForm: 'start',
             id,
-            style: { styleAttr: 'some-style' }
+            style: { styleAttr: 'some-style' },
+            bookingsForDate: []
         };
 
         before(() => {
@@ -51,9 +52,182 @@ describe('<StaffSlots>', () => {
                                 key={`slot ${time}`}
                                 index={index}
                                 timeClick={timeClick}
+                                disabled={false}
                             />
                           ))
                       }
+                  </ul>
+                </div>
+              </div>
+            );
+        });
+    });
+
+    context('when rendered with slots with colliding bookings for start time selection', () => {
+        let component;
+
+        const currentDate = moment();
+        const formattedDate = dateFormat(currentDate, 'dddd, d mmm yyyy');
+        const collidingSlot = '7:00 AM';
+        const slots = [collidingSlot, '7:15 AM', '7:30 AM', '7:45 AM'];
+        const timeClick = () => noop;
+        const id = '10004';
+        const props = {
+            date: currentDate,
+            router: {},
+            slots,
+            dispatch: noop,
+            slotForm: 'start',
+            id,
+            style: { styleAttr: 'some-style' },
+            bookingsForDate: [{
+                startTime: collidingSlot,
+                endTime: '8:00 AM'
+            }]
+        };
+
+        before(() => {
+            component = renderShallow(<StaffSlots {...props} />).output;
+        });
+
+        it('renders staff slots without anything disabled', () => {
+            expect(component).to.eql(
+              <div className="staff-slots" style={props.style}>
+
+                <div className="staff-slots-date">{formattedDate}</div>
+                <div>
+                  <p className="staff-slots-message">Choose your start time</p>
+                  <ul className="staff-slots-times">
+                    <Slot
+                        time={collidingSlot}
+                        key={`slot ${collidingSlot}`}
+                        index={0}
+                        timeClick={timeClick}
+                        disabled
+                    />
+                    {
+                                slots.slice(1).map((time, index) => (
+                                  <Slot
+                                      time={time}
+                                      key={`slot ${time}`}
+                                      index={index + 1}
+                                      timeClick={timeClick}
+                                      disabled={false}
+                                  />
+                                ))
+                            }
+                  </ul>
+                </div>
+              </div>
+            );
+        });
+    });
+
+    context('when rendered with slots with colliding bookings for end time selection', () => {
+        let component;
+
+        const currentDate = moment();
+        const formattedDate = dateFormat(currentDate, 'dddd, d mmm yyyy');
+        const collidingSlot = '7:00 AM';
+        const slots = [collidingSlot, '7:15 AM', '7:30 AM', '7:45 AM'];
+        const timeClick = () => noop;
+        const id = '10004';
+        const props = {
+            date: currentDate,
+            router: {},
+            slots,
+            dispatch: noop,
+            slotForm: 'end',
+            id,
+            style: { styleAttr: 'some-style' },
+            bookingsForDate: [{
+                startTime: '6:00 AM',
+                endTime: collidingSlot
+            }]
+        };
+
+        before(() => {
+            component = renderShallow(<StaffSlots {...props} />).output;
+        });
+
+        it('renders staff slots without anything disabled', () => {
+            expect(component).to.eql(
+              <div className="staff-slots" style={props.style}>
+
+                <div className="staff-slots-date">{formattedDate}</div>
+                <div>
+                  <p className="staff-slots-message">Choose your end time</p>
+                  <ul className="staff-slots-times">
+                    <Slot
+                        time={collidingSlot}
+                        key={`slot ${collidingSlot}`}
+                        index={0}
+                        timeClick={timeClick}
+                        disabled
+                    />
+                    {
+                                slots.slice(1).map((time, index) => (
+                                  <Slot
+                                      time={time}
+                                      key={`slot ${time}`}
+                                      index={index + 1}
+                                      timeClick={timeClick}
+                                      disabled={false}
+                                  />
+                                ))
+                            }
+                  </ul>
+                </div>
+              </div>
+            );
+        });
+    });
+
+    context('when rendered with slots without colliding bookings', () => {
+        let component;
+
+        const currentDate = moment();
+        const formattedDate = dateFormat(currentDate, 'dddd, d mmm yyyy');
+        const slots = ['7:00 AM', '7:15 AM', '7:30 AM', '7:45 AM'];
+        const timeClick = () => noop;
+        const id = '10004';
+        const props = {
+            date: currentDate,
+            router: {},
+            slots,
+            dispatch: noop,
+            slotForm: 'start',
+            id,
+            style: { styleAttr: 'some-style' },
+            bookingsForDate: [{
+                startTime: '6:00 AM',
+                endTime: '7:00 AM'
+            }]
+        };
+
+        before(() => {
+            component = renderShallow(<StaffSlots {...props} />).output;
+        });
+
+        it('renders staff slots without anything disabled', () => {
+            expect(component).to.eql(
+              <div className="staff-slots" style={props.style}>
+
+                <div className="staff-slots-date">{formattedDate}</div>
+                <div>
+                  <p className="staff-slots-message">Choose your start time</p>
+                  <ul className="staff-slots-times">
+                    {
+                                slots.map((time, index) => (
+                                  <Slot
+                                      time={time}
+                                      key={`slot ${time}`}
+                                      index={index}
+                                      timeClick={timeClick}
+                                      disabled={false}
+                                  />
+                                ))
+                            }
                   </ul>
                 </div>
               </div>
@@ -75,7 +249,8 @@ describe('<StaffSlots>', () => {
             slotForm: 'start',
             dispatch: noop,
             id,
-            style: { styleAttr: 'some-style' }
+            style: { styleAttr: 'some-style' },
+            bookingsForDate: []
         };
 
         before(() => {
@@ -106,7 +281,8 @@ describe('<StaffSlots>', () => {
             slotForm: 'start',
             dispatch: noop,
             id,
-            style: { styleAttr: 'some-style' }
+            style: { styleAttr: 'some-style' },
+            bookingsForDate: []
         };
         const timeClick = () => noop;
 
@@ -128,6 +304,7 @@ describe('<StaffSlots>', () => {
                                 key={`slot ${time}`}
                                 index={index}
                                 timeClick={timeClick}
+                                disabled={false}
                             />
                           ))
                       }
@@ -151,7 +328,8 @@ describe('<StaffSlots>', () => {
             duration: 60,
             slotForm: 'start',
             id,
-            style: { styleAttr: 'some-style' }
+            style: { styleAttr: 'some-style' },
+            bookingsForDate: []
         };
 
         before(() => {
@@ -185,7 +363,8 @@ describe('<StaffSlots>', () => {
             duration: 60,
             slotForm: 'end',
             id,
-            style: { styleAttr: 'some-style' }
+            style: { styleAttr: 'some-style' },
+            bookingsForDate: []
         };
 
         before(() => {
@@ -235,7 +414,8 @@ describe('<StaffSlots>', () => {
             ],
             selectedDate: currentDate,
             slotsForDate: slots,
-            slotForm
+            slotForm,
+            bookingsForDate: []
         };
 
         before(() => {
@@ -260,6 +440,7 @@ describe('<StaffSlots>', () => {
                   duration={duration}
                   id={id}
                   style={style}
+                  bookingsForDate={[]}
               />
             );
         });
