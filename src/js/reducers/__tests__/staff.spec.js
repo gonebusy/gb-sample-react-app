@@ -4,7 +4,8 @@ import {
     STAFF_FETCHED,
     DATE_SELECTED,
     CLEAR_SELECTED_STAFF_MEMBER,
-    BOOKINGS_FETCHED
+    BOOKINGS_FETCHED,
+    STAFF_SELECTED
 } from 'src/js/action-types';
 import { createNew } from 'src/js/store';
 import { initialState } from 'src/js/reducers/staff';
@@ -234,7 +235,6 @@ describe('staff reducers', () => {
                 name: 'Phillip Fry'
             }
         ];
-        const staffMember = find(staffMembers, staff => (staff.id === resourceId));
         const allAvailableSlots = {
             [resourceId]: { // resourceId
                 [year]: { // year index
@@ -295,7 +295,7 @@ describe('staff reducers', () => {
                     staffMembers,
                     allAvailableSlots: { [resourceId]: { [year]: { [month]: availableSlots } } },
                     selectedStaffMember: {
-                        ...staffMember,
+                        ...initialState.selectedStaffMember,
                         availableSlots,
                         dayPickerMonth,
                         selectedDate: startDate
@@ -331,7 +331,7 @@ describe('staff reducers', () => {
                     ...initialState,
                     staffMembers,
                     selectedStaffMember: {
-                        ...staffMember,
+                        ...initialState.selectedStaffMember,
                         availableSlots,
                         selectedDate: startDate,
                         dayPickerMonth
@@ -376,7 +376,7 @@ describe('staff reducers', () => {
                     ...initialState,
                     staffMembers,
                     selectedStaffMember: {
-                        ...staffMember,
+                        ...initialState.selectedStaffMember,
                         availableSlots,
                         selectedDate: startDate,
                         dayPickerMonth
@@ -447,6 +447,53 @@ describe('staff reducers', () => {
             expect(state).to.eql({
                 ...initialState,
                 bookingsByResource
+            });
+        });
+    });
+
+    context(`when ${STAFF_SELECTED} is dispatched`, () => {
+        let state;
+        const resourceId = 10004;
+        const staffMembers = [
+            {
+                id: 100001, // resourceId
+                imagePath: 'http://i.pravatar.cc/300?img=69',
+                name: 'James Hunter'
+            },
+            {
+                id: 100002,
+                imagePath: 'http://i.pravatar.cc/300?img=25',
+                name: 'Selena Yamada'
+            },
+            {
+                id: 100003,
+                imagePath: 'http://i.pravatar.cc/300?img=32',
+                name: 'Sarah Belmoris'
+            },
+            {
+                id: resourceId,
+                imagePath: 'http://i.pravatar.cc/300?img=15',
+                name: 'Phillip Fry'
+            }
+        ];
+        const staffMember = find(staffMembers, staff => (staff.id === resourceId));
+        before(() => {
+            const store = createNew({ staff: { ...initialState, staffMembers } });
+            store.dispatch({
+                type: STAFF_SELECTED,
+                id: resourceId
+            });
+            state = store.getState().staff;
+        });
+
+        it('sets the chosen staff member in the store', () => {
+            expect(state).to.eql({
+                ...initialState,
+                staffMembers,
+                selectedStaffMember: {
+                    ...initialState.selectedStaffMember,
+                    ...staffMember
+                }
             });
         });
     });

@@ -1,6 +1,10 @@
 import React, { PropTypes } from 'react';
 import { browserHistory, Route, Router, IndexRoute } from 'react-router';
-import { CLEAR_SELECTED_STAFF_MEMBER, DATE_SELECTED } from 'src/js/action-types';
+import {
+    CLEAR_SELECTED_STAFF_MEMBER,
+    DATE_SELECTED,
+    STAFF_SELECTED
+} from 'src/js/action-types';
 import Nav from 'src/js/components/nav';
 import StaffPicker from 'src/js/components/staff-picker';
 import StaffCalendar from 'src/js/components/staff-calendar';
@@ -30,6 +34,7 @@ const Routes = ({ dispatch, getState }) => (
           onEnter={
                   (nextState) => {
                       const { params: { id, year, month } } = nextState;
+                      dispatch({ type: STAFF_SELECTED, id });
                       dispatch(
                           fetchSlotsForResource(
                               moment.utc(`${year}-${formatMonth(month)}-01`),
