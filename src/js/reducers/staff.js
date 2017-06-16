@@ -3,7 +3,8 @@ import {
     STAFF_FETCHED, DATE_SELECTED,
     CLEAR_SELECTED_STAFF_MEMBER,
     TIME_SLOT_SELECTED,
-    IS_LOADING, BOOKINGS_FETCHED
+    IS_LOADING, BOOKINGS_FETCHED,
+    STAFF_SELECTED
 } from 'src/js/action-types';
 import lodashGet from 'lodash.get';
 import find from 'lodash.find';
@@ -35,6 +36,17 @@ export default (state = initialState, action) => {
                 loading: true
             };
         }
+        case STAFF_SELECTED: {
+            const { id } = action;
+            const staffMember = find(state.staffMembers, staff => (staff.id === id));
+            return {
+                ...state,
+                selectedStaffMember: {
+                    ...state.selectedStaffMember,
+                    ...staffMember
+                }
+            };
+        }
         case SLOTS_FETCHED: {
             const {
                 availableSlots,
@@ -45,11 +57,10 @@ export default (state = initialState, action) => {
                 fetchedDate,
                 loading
             } = action;
-            const staffMember = find(state.staffMembers, staff => (staff.id === id));
             return {
                 ...state,
                 selectedStaffMember: {
-                    ...staffMember,
+                    ...state.selectedStaffMember,
                     availableSlots,
                     selectedDate: fetchedDate,
                     dayPickerMonth

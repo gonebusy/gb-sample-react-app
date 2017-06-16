@@ -5,7 +5,10 @@ import { Route, IndexRoute } from 'react-router';
 import { spy, stub } from 'sinon';
 import { findAll, findAllWithType } from 'react-shallow-testutils';
 import * as staffActions from 'src/js/actions/staff';
-import { CLEAR_SELECTED_STAFF_MEMBER, DATE_SELECTED } from 'src/js/action-types';
+import {
+    CLEAR_SELECTED_STAFF_MEMBER, DATE_SELECTED,
+    STAFF_SELECTED, SLOTS_FETCHED }
+from 'src/js/action-types';
 import moment from 'moment';
 import { POP } from 'src/js/constants';
 import noop from '../../../lib/util/noop';
@@ -50,14 +53,15 @@ describe('<Routes>', () => {
 
     context('on entering staff/:id/available_slots/:year/:month', () => {
         const dispatch = spy();
+        const resourceId = '10004';
         before(() => {
-            stub(staffActions, 'fetchSlotsForResource').returns(Promise.resolve({}));
+            stub(staffActions, 'fetchSlotsForResource').returns({ type: SLOTS_FETCHED });
             const component = renderShallow(<Routes dispatch={dispatch} getState={noop} />).output;
             const staffIdRoute = findAll(
                 component,
                 element => element.props.path === 'staff/:id/available_slots/:year/:month'
             )[0];
-            const nextState = { params: { id: '10004' } };
+            const nextState = { params: { id: resourceId } };
             staffIdRoute.props.onEnter(nextState);
 
         });
@@ -71,7 +75,11 @@ describe('<Routes>', () => {
         });
 
         it('dispatches result of fetchSlotsForResource', () => {
-            expect(dispatch).to.have.been.called();
+            expect(dispatch).to.have.been.calledWith({ type: SLOTS_FETCHED });
+        });
+
+        it(`dispatches ${STAFF_SELECTED}`, () => {
+            expect(dispatch).to.have.been.calledWith({ type: STAFF_SELECTED, id: resourceId });
         });
     });
 
