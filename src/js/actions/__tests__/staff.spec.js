@@ -7,7 +7,8 @@ import {
 import request from 'superagent-bluebird-promise';
 import {
     DATE_SELECTED, BOOKINGS_FETCHED,
-    SLOTS_FETCHED, STAFF_FETCHED
+    SLOTS_FETCHED, STAFF_FETCHED,
+    IS_LOADING
 } from 'src/js/action-types';
 import store from 'src/js/store';
 import moment from 'moment';
@@ -190,6 +191,13 @@ describe('staff action creators', () => {
 
             it(`does not call GET with ${slotsUrl}`, () => {
                 expect(request.get).to.not.have.been.called();
+            });
+
+            it(`dispatches with ${IS_LOADING} with true`, () => {
+                expect(dispatch).to.have.been.calledWith({
+                    type: IS_LOADING,
+                    loading: true
+                });
             });
 
             it(`dispatches with ${SLOTS_FETCHED}`, () => {

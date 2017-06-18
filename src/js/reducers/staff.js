@@ -31,9 +31,10 @@ export default (state = initialState, action) => {
     const { type } = action;
     switch (type) {
         case IS_LOADING: {
+            const { loading } = action;
             return {
                 ...state,
-                loading: true
+                loading
             };
         }
         case STAFF_SELECTED: {

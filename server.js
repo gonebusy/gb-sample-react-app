@@ -67,9 +67,10 @@ router.post('/bookings/new', (req, res) => {
     };
     BookingsController.createBooking(authorization, createBookingBody).then((success) =>
         res.send(success)
-    ).catch((error) =>
-        console.log(error.errorMessage)
-    );
+    ).catch((error) => {
+        console.log(error.errorResponse);
+        res.status(error.errorCode).send(error.errorResponse);
+    });
 });
 
 router.get('/bookings', (req, res) => {

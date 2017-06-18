@@ -5,7 +5,8 @@ import {
     DATE_SELECTED,
     CLEAR_SELECTED_STAFF_MEMBER,
     BOOKINGS_FETCHED,
-    STAFF_SELECTED
+    STAFF_SELECTED,
+    IS_LOADING
 } from 'src/js/action-types';
 import { createNew } from 'src/js/store';
 import { initialState } from 'src/js/reducers/staff';
@@ -494,6 +495,25 @@ describe('staff reducers', () => {
                     ...initialState.selectedStaffMember,
                     ...staffMember
                 }
+            });
+        });
+    });
+
+    context(`when ${IS_LOADING} is dispatched with true`, () => {
+        let state;
+        before(() => {
+            const store = createNew();
+            store.dispatch({
+                type: IS_LOADING,
+                loading: true
+            });
+            state = store.getState().staff;
+        });
+
+        it('sets loading to true', () => {
+            expect(state).to.eql({
+                ...initialState,
+                loading: true
             });
         });
     });
