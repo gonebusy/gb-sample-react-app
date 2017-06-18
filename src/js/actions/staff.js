@@ -37,7 +37,7 @@ export const fetchSlotsForResource = (startDate, resourceId) => (dispatch, getSt
         const { allAvailableSlots } = getState().staff;
         const month = startDate.month();
         const year = startDate.year();
-        dispatch({ type: IS_LOADING });
+        dispatch({ type: IS_LOADING, loading: true });
         if (!alreadyFetched(allAvailableSlots, resourceId, year, month)) {
             const formattedStartDate = startDate.format('YYYY-MM-DD');
             const formattedEndDate = startDate.endOf('month').format('YYYY-MM-DD');

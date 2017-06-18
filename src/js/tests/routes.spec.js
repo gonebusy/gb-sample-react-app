@@ -7,7 +7,8 @@ import { findAll, findAllWithType } from 'react-shallow-testutils';
 import * as staffActions from 'src/js/actions/staff';
 import {
     CLEAR_SELECTED_STAFF_MEMBER, DATE_SELECTED,
-    STAFF_SELECTED, SLOTS_FETCHED }
+    STAFF_SELECTED, SLOTS_FETCHED, IS_LOADING
+}
 from 'src/js/action-types';
 import moment from 'moment';
 import { POP } from 'src/js/constants';
@@ -42,7 +43,7 @@ describe('<Routes>', () => {
                   <Route path=":day/end" component={StaffSlots} />
                   <Route path=":day/book" component={StaffForm} />
                 </Route>
-                <Route path="confirm" component={Slide}>
+                <Route path="confirm" component={Slide} onEnter={noop}>
                   <IndexRoute component={BookingConfirmation} />
                 </Route>
               </Route>
@@ -124,6 +125,35 @@ describe('<Routes>', () => {
                 expect(dispatch).to.have.been.calledWith({
                     type: DATE_SELECTED,
                     date: selectedDate
+                });
+            });
+        });
+
+    context(
+        'on entering /confirm',
+        () => {
+            const selectedDate = moment.utc();
+            const dispatch = spy();
+            const getState = () => ({
+                staff: {
+                    selectedStaffMember: {
+                        selectedDate
+                    }
+                }
+            });
+            before(() => {
+                const component = renderShallow(
+                  <Routes dispatch={dispatch} getState={getState} />
+                ).output;
+                const confirmRoute = findAll(
+                    component, element => element.props.path === 'confirm')[0];
+                confirmRoute.props.onEnter();
+            });
+
+            it(`dispatches ${IS_LOADING} with false`, () => {
+                expect(dispatch).to.have.been.calledWith({
+                    type: IS_LOADING,
+                    loading: false
                 });
             });
         });
