@@ -8,7 +8,8 @@ import moment from 'moment';
 import { createNew } from 'src/js/store';
 import { initialState } from 'src/js/reducers/staff';
 import Loader from 'halogen/ClipLoader';
-import { IS_LOADING } from 'src/js/action-types';
+import { IS_LOADING, CLEAR_AVAILABLE_SLOTS } from 'src/js/action-types';
+import * as staffActions from 'src/js/actions/staff';
 import Promise from 'bluebird';
 import noop from '../../../lib/util/noop';
 import StaffFormConnected, { StaffForm } from '../components/staff-form';
@@ -115,6 +116,7 @@ describe('<StaffForm>', () => {
 
         before((done) => {
             stub(request, 'post').returns(Promise.resolve({}));
+            stub(staffActions, 'fetchBookings').returns({});
             const component = renderShallow(
               <StaffForm {...props} />
             ).output;
@@ -139,6 +141,18 @@ describe('<StaffForm>', () => {
         it('calls the pushView function of navigationController', () => {
             expect(props.router.push).to.have.been.calledWith(
                 '/confirm'
+            );
+        });
+
+        it(`dispatches ${CLEAR_AVAILABLE_SLOTS}`, () => {
+            expect(props.dispatch).to.have.been.calledWith(
+                { type: CLEAR_AVAILABLE_SLOTS, id: props.id }
+            );
+        });
+
+        it('dispatches fetchBookings', () => {
+            expect(props.dispatch).to.have.been.calledWith(
+                staffActions.fetchBookings()
             );
         });
 

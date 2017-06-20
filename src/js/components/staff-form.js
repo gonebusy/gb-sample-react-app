@@ -2,8 +2,9 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import request from 'superagent-bluebird-promise';
-import { IS_LOADING } from 'src/js/action-types';
+import { IS_LOADING, CLEAR_AVAILABLE_SLOTS } from 'src/js/action-types';
 import Loader from 'halogen/ClipLoader';
+import { fetchBookings } from 'src/js/actions/staff';
 
 export const StaffForm = ({ startTime, endTime, date, id, router, style, dispatch, loading }) => {
     const confirmBooking = () => () => {
@@ -18,6 +19,8 @@ export const StaffForm = ({ startTime, endTime, date, id, router, style, dispatc
         };
         dispatch({ type: IS_LOADING, loading: true });
         request.post('/api/bookings/new', body).then(() => {
+            dispatch({ type: CLEAR_AVAILABLE_SLOTS, id });
+            dispatch(fetchBookings());
             router.push('/confirm');
         }).catch(() => {
             dispatch({ type: IS_LOADING, loading: false });

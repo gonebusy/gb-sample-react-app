@@ -4,7 +4,7 @@ import {
     CLEAR_SELECTED_STAFF_MEMBER,
     TIME_SLOT_SELECTED,
     IS_LOADING, BOOKINGS_FETCHED,
-    STAFF_SELECTED
+    STAFF_SELECTED, CLEAR_AVAILABLE_SLOTS
 } from 'src/js/action-types';
 import lodashGet from 'lodash.get';
 import find from 'lodash.find';
@@ -92,6 +92,15 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 bookingsByResource
+            };
+        }
+        case CLEAR_AVAILABLE_SLOTS: {
+            const { id } = action;
+            const updatedSlots = state.allAvailableSlots;
+            delete updatedSlots[id];
+            return {
+                ...state,
+                allAvailableSlots: updatedSlots
             };
         }
         case CLEAR_SELECTED_STAFF_MEMBER: {
