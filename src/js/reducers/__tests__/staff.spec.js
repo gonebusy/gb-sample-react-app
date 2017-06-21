@@ -6,7 +6,8 @@ import {
     CLEAR_SELECTED_STAFF_MEMBER,
     BOOKINGS_FETCHED,
     STAFF_SELECTED,
-    IS_LOADING
+    IS_LOADING,
+    CLEAR_AVAILABLE_SLOTS
 } from 'src/js/action-types';
 import { createNew } from 'src/js/store';
 import { initialState } from 'src/js/reducers/staff';
@@ -514,6 +515,50 @@ describe('staff reducers', () => {
             expect(state).to.eql({
                 ...initialState,
                 loading: true
+            });
+        });
+    });
+
+    context(`when ${CLEAR_AVAILABLE_SLOTS} is dispatched`, () => {
+        let state;
+        const resourceId = 100002;
+        const allAvailableSlots = {
+            [resourceId]: { // resourceId
+                2017: { // year index
+                    2: { // month index
+                        '2017-03-30': ['6:00 PM', '6:30 PM']
+                    }
+                }
+            },
+            100003: {
+                2017: { // year index
+                    2: {
+                        '2017-03-31': ['12:00 PM', '12:30 PM']
+                    }
+                }
+            }
+        };
+        before(() => {
+            const store = createNew({ staff: { ...initialState, allAvailableSlots } });
+            store.dispatch({
+                type: CLEAR_AVAILABLE_SLOTS,
+                id: resourceId
+            });
+            state = store.getState().staff;
+        });
+
+        it('sets loading to true', () => {
+            expect(state).to.eql({
+                ...initialState,
+                allAvailableSlots: {
+                    100003: {
+                        2017: { // year index
+                            2: {
+                                '2017-03-31': ['12:00 PM', '12:30 PM']
+                            }
+                        }
+                    }
+                }
             });
         });
     });
