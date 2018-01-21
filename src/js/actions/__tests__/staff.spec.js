@@ -20,11 +20,13 @@ describe('staff action creators', () => {
     describe('fetchStaff', () => {
         context('when invoked', () => {
             const duration = 60;
+            const maxDuration = 90;
             const resourceId = uuidv1();
             const service = {
                 body: {
                     resources: [resourceId], // resourceId returned from the service
-                    duration
+                    duration,
+                    max_duration: maxDuration
                 }
             };
             const resource = {
@@ -77,7 +79,8 @@ describe('staff action creators', () => {
                 expect(store.dispatch).to.have.been.calledWith({
                     type: STAFF_FETCHED,
                     staffMembers,
-                    duration
+                    duration,
+                    maxDuration
                 });
             });
         });

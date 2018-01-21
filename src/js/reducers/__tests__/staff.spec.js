@@ -7,7 +7,8 @@ import {
     BOOKINGS_FETCHED,
     STAFF_SELECTED,
     IS_LOADING,
-    CLEAR_AVAILABLE_SLOTS
+    CLEAR_AVAILABLE_SLOTS,
+    TIME_SLOT_SELECTED
 } from 'src/js/action-types';
 import { createNew } from 'src/js/store';
 import { initialState } from 'src/js/reducers/staff';
@@ -52,14 +53,15 @@ describe('staff reducers', () => {
     context(`${STAFF_FETCHED} is dispatched`, () => {
         let state;
         const duration = 60;
-
+        const maxDuration = 90;
         before(() => {
             const store = createNew();
             store.dispatch(
                 {
                     type: STAFF_FETCHED,
                     staffMembers,
-                    duration
+                    duration,
+                    maxDuration
                 }
             );
             state = store.getState().staff;
@@ -69,7 +71,8 @@ describe('staff reducers', () => {
             expect(state).to.eql({
                 ...initialState,
                 staffMembers,
-                duration
+                duration,
+                maxDuration
             });
         });
 
@@ -518,6 +521,104 @@ describe('staff reducers', () => {
                     }
                 }
             });
+        });
+    });
+
+    context(`when ${TIME_SLOT_SELECTED} is dispatched with startTime as slotType`, () => {
+        let state;
+        const formattedDate = '2017-04-01';
+        const selectedDate = moment(formattedDate);
+        const slotType = 'startTime';
+        const timeSlots = [
+            '7:00 AM', '7:15 AM', '7:30 AM',
+            '7:45 AM', '8:00 AM', '8:15 AM',
+            '8:30 AM', '8:45 AM', '9:00 AM'];
+        const slotTime = timeSlots[0];
+        const selectedStaffMember = {
+            id: '1b358118-fef1-11e7-8be5-0ed5f89f718b', // resourceId
+            imagePath: 'http://i.pravatar.cc/300?img=15',
+            name: 'Phillip Fry',
+            availableSlots: {
+                [formattedDate]: timeSlots
+            },
+            slotsForDate: timeSlots,
+            selectedDate
+        };
+        before(() => {
+            const store = createNew(
+                {
+                    staff: {
+                        ...initialState,
+                        selectedStaffMember
+                    }
+                }
+            );
+            store.dispatch({
+                type: TIME_SLOT_SELECTED,
+                slotTime,
+                slotType
+            });
+            state = store.getState().staff.selectedStaffMember;
+        });
+
+        it('has an updated slotsForDate with endTimes', () => {
+            expect(state).to.eql(
+                {
+                    ...selectedStaffMember,
+                    [slotType]: slotTime,
+                    slotsForDate: ['8:00 AM', '8:15 AM', '8:30 AM'],
+                    slotForm: 'end'
+                }
+            );
+        });
+    });
+
+    context(`when ${TIME_SLOT_SELECTED} is dispatched with endTime as slotType`, () => {
+        let state;
+        const formattedDate = '2017-04-01';
+        const selectedDate = moment(formattedDate);
+        const slotType = 'endTime';
+        const timeSlots = [
+            '8:00 AM', '8:15 AM', '8:30 AM'];
+        const slotTime = timeSlots[0];
+        const selectedStaffMember = {
+            id: '1b358118-fef1-11e7-8be5-0ed5f89f718b', // resourceId
+            imagePath: 'http://i.pravatar.cc/300?img=15',
+            name: 'Phillip Fry',
+            availableSlots: {
+                [formattedDate]: timeSlots
+            },
+            slotsForDate: timeSlots,
+            selectedDate,
+            startTime: '7:00 AM',
+            slotForm: 'end'
+        };
+        before(() => {
+            const store = createNew(
+                {
+                    staff: {
+                        ...initialState,
+                        selectedStaffMember
+                    }
+                }
+            );
+            store.dispatch({
+                type: TIME_SLOT_SELECTED,
+                slotTime,
+                slotType
+            });
+            state = store.getState().staff.selectedStaffMember;
+        });
+
+        it('has an updated slotType as endTime with the selected slot', () => {
+            expect(state).to.eql(
+                {
+                    ...selectedStaffMember,
+                    [slotType]: slotTime,
+                    slotsForDate: ['8:00 AM', '8:15 AM', '8:30 AM'],
+                    slotForm: 'end'
+                }
+            );
         });
     });
 });
