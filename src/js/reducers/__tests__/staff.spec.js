@@ -15,7 +15,28 @@ import moment from 'moment';
 import find from 'lodash.find';
 
 describe('staff reducers', () => {
-
+    const staffMembers = [
+        {
+            id: '0be53230-fef1-11e7-8be5-0ed5f89f718b', // resourceId
+            imagePath: 'http://i.pravatar.cc/300?img=69',
+            name: 'James Hunter'
+        },
+        {
+            id: '147d30aa-fef1-11e7-8be5-0ed5f89f718b',
+            imagePath: 'http://i.pravatar.cc/300?img=25',
+            name: 'Selena Yamada'
+        },
+        {
+            id: '1814c926-fef1-11e7-8be5-0ed5f89f718b',
+            imagePath: 'http://i.pravatar.cc/300?img=32',
+            name: 'Sarah Belmoris'
+        },
+        {
+            id: '1b358118-fef1-11e7-8be5-0ed5f89f718b',
+            imagePath: 'http://i.pravatar.cc/300?img=15',
+            name: 'Phillip Fry'
+        }
+    ];
     context('when store is initiated', () => {
         let state;
         before(() => {
@@ -30,28 +51,7 @@ describe('staff reducers', () => {
     context(`${STAFF_FETCHED} is dispatched`, () => {
         let state;
         const duration = 60;
-        const staffMembers = [
-            {
-                id: 100001, // resourceId
-                imagePath: 'http://i.pravatar.cc/300?img=69',
-                name: 'James Hunter'
-            },
-            {
-                id: 100002,
-                imagePath: 'http://i.pravatar.cc/300?img=25',
-                name: 'Selena Yamada'
-            },
-            {
-                id: 100003,
-                imagePath: 'http://i.pravatar.cc/300?img=32',
-                name: 'Sarah Belmoris'
-            },
-            {
-                id: 100004,
-                imagePath: 'http://i.pravatar.cc/300?img=15',
-                name: 'Phillip Fry'
-            }
-        ];
+
         before(() => {
             const store = createNew();
             store.dispatch(
@@ -80,7 +80,7 @@ describe('staff reducers', () => {
             const formattedDate = '2017-04-01';
             const date = moment(formattedDate);
             const selectedStaffMember = {
-                id: '10004', // resourceId
+                id: '1b358118-fef1-11e7-8be5-0ed5f89f718b', // resourceId
                 imagePath: 'http://i.pravatar.cc/300?img=15',
                 name: 'Phillip Fry',
                 availableSlots: {
@@ -120,7 +120,7 @@ describe('staff reducers', () => {
             let state;
             const formattedDate = '2017-04-01';
             const date = moment(formattedDate);
-            const resourceId = '10004';
+            const resourceId = '1b358118-fef1-11e7-8be5-0ed5f89f718b';
             const startTime = '7:00';
             const endTime = '8:00';
             const selectedStaffMember = {
@@ -173,7 +173,7 @@ describe('staff reducers', () => {
             const bookingsByResource = {};
             before(() => {
                 const selectedStaffMember = {
-                    id: 100004, // resourceId
+                    id: '1b358118-fef1-11e7-8be5-0ed5f89f718b', // resourceId
                     imagePath: 'http://i.pravatar.cc/300?img=15',
                     name: 'Phillip Fry',
                     availableSlots: {
@@ -210,33 +210,11 @@ describe('staff reducers', () => {
 
     context(`when ${SLOTS_FETCHED} is dispatched`, () => {
         let state;
-        const resourceId = 100004;
+        const resourceId = staffMembers[3].id;
         const month = 2;
         const year = 2017;
         const nextMonth = month + 1;
         const nextYear = year + 1;
-        const staffMembers = [
-            {
-                id: 100001, // resourceId
-                imagePath: 'http://i.pravatar.cc/300?img=69',
-                name: 'James Hunter'
-            },
-            {
-                id: 100002,
-                imagePath: 'http://i.pravatar.cc/300?img=25',
-                name: 'Selena Yamada'
-            },
-            {
-                id: 100003,
-                imagePath: 'http://i.pravatar.cc/300?img=32',
-                name: 'Sarah Belmoris'
-            },
-            {
-                id: resourceId,
-                imagePath: 'http://i.pravatar.cc/300?img=15',
-                name: 'Phillip Fry'
-            }
-        ];
         const allAvailableSlots = {
             [resourceId]: { // resourceId
                 [year]: { // year index
@@ -245,7 +223,7 @@ describe('staff reducers', () => {
                     }
                 }
             },
-            100003: {
+            [staffMembers[2].id]: {
                 [year]: { // year index
                     2: {
                         '2017-03-31': ['12:00 PM', '12:30 PM']
@@ -400,7 +378,7 @@ describe('staff reducers', () => {
     context(`when ${CLEAR_SELECTED_STAFF_MEMBER} is dispatched`, () => {
         let state;
         const selectedStaffMember = {
-            id: '10004', // resourceId
+            id: '28156f82-fef2-11e7-8be5-0ed5f89f718b', // resourceId
             imagePath: 'http://i.pravatar.cc/300?img=15',
             name: 'Phillip Fry',
             availableSlots: {
@@ -423,13 +401,13 @@ describe('staff reducers', () => {
     context(`when ${BOOKINGS_FETCHED} is dispatched`, () => {
         let state;
         const bookingsByResource = {
-            10001: {
+            '2d0ca6ea-fef2-11e7-8be5-0ed5f89f718b': {
                 '2017-06-01': [{
                     startTime: '8:00 PM',
                     endTime: '9:00 PM'
                 }]
             },
-            10002: {
+            '30e9491c-fef2-11e7-8be5-0ed5f89f718b': {
                 '2017-06-01': [{
                     startTime: '2:00 AM',
                     endTime: '3:00 AM'
@@ -455,29 +433,7 @@ describe('staff reducers', () => {
 
     context(`when ${STAFF_SELECTED} is dispatched`, () => {
         let state;
-        const resourceId = 10004;
-        const staffMembers = [
-            {
-                id: 100001, // resourceId
-                imagePath: 'http://i.pravatar.cc/300?img=69',
-                name: 'James Hunter'
-            },
-            {
-                id: 100002,
-                imagePath: 'http://i.pravatar.cc/300?img=25',
-                name: 'Selena Yamada'
-            },
-            {
-                id: 100003,
-                imagePath: 'http://i.pravatar.cc/300?img=32',
-                name: 'Sarah Belmoris'
-            },
-            {
-                id: resourceId,
-                imagePath: 'http://i.pravatar.cc/300?img=15',
-                name: 'Phillip Fry'
-            }
-        ];
+        const resourceId = staffMembers[3].id;
         const staffMember = find(staffMembers, staff => (staff.id === resourceId));
         before(() => {
             const store = createNew({ staff: { ...initialState, staffMembers } });
@@ -521,16 +477,17 @@ describe('staff reducers', () => {
 
     context(`when ${CLEAR_AVAILABLE_SLOTS} is dispatched`, () => {
         let state;
-        const resourceId = 100002;
+        const firstResourceId = '51f81666-fef1-11e7-8be5-0ed5f89f718b';
+        const secondResourceId = '5682b538-fef1-11e7-8be5-0ed5f89f718b';
         const allAvailableSlots = {
-            [resourceId]: { // resourceId
+            [firstResourceId]: { // resourceId
                 2017: { // year index
                     2: { // month index
                         '2017-03-30': ['6:00 PM', '6:30 PM']
                     }
                 }
             },
-            100003: {
+            [secondResourceId]: {
                 2017: { // year index
                     2: {
                         '2017-03-31': ['12:00 PM', '12:30 PM']
@@ -542,7 +499,7 @@ describe('staff reducers', () => {
             const store = createNew({ staff: { ...initialState, allAvailableSlots } });
             store.dispatch({
                 type: CLEAR_AVAILABLE_SLOTS,
-                id: resourceId
+                id: firstResourceId
             });
             state = store.getState().staff;
         });
@@ -551,7 +508,7 @@ describe('staff reducers', () => {
             expect(state).to.eql({
                 ...initialState,
                 allAvailableSlots: {
-                    100003: {
+                    [secondResourceId]: {
                         2017: { // year index
                             2: {
                                 '2017-03-31': ['12:00 PM', '12:30 PM']
