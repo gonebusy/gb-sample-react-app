@@ -54,7 +54,7 @@ describe('<Routes>', () => {
 
     context('on entering staff/:id/available_slots/:year/:month', () => {
         const dispatch = spy();
-        const resourceId = '10004';
+        const resourceId = 'fbb21aa4-fed7-11e7-8be5-0ed5f89f718b';
         before(() => {
             stub(staffActions, 'fetchSlotsForResource').returns({ type: SLOTS_FETCHED });
             const component = renderShallow(<Routes dispatch={dispatch} getState={noop} />).output;

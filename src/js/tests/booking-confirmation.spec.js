@@ -80,7 +80,7 @@ describe('<BookingConfirmation>', () => {
         let store;
         let component;
         const selectedStaffMember = {
-            id: 10004,
+            id: 'a699a6a4-fed7-11e7-8be5-0ed5f89f718b',
             imagePath: 'http://i.pravatar.cc/300?img=15',
             name: 'Phillip Fry',
             startTime: '10:15 AM',

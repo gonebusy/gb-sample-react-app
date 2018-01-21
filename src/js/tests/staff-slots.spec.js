@@ -21,7 +21,7 @@ describe('<StaffSlots>', () => {
         const formattedDate = dateFormat(currentDate, 'dddd, d mmm yyyy');
         const slots = ['7:00 AM', '7:15 AM', '7:30 AM', '7:45 AM'];
         const timeClick = () => noop;
-        const id = '10004';
+        const id = 'c278c21e-fed8-11e7-8be5-0ed5f89f718b';
         const props = {
             date: currentDate,
             router: {},
@@ -71,7 +71,7 @@ describe('<StaffSlots>', () => {
         const collidingSlot = '7:00 AM';
         const slots = [collidingSlot, '7:15 AM', '7:30 AM', '7:45 AM'];
         const timeClick = () => noop;
-        const id = '10004';
+        const id = 'c81e5346-fed8-11e7-8be5-0ed5f89f718b';
         const props = {
             date: currentDate,
             router: {},
@@ -131,7 +131,7 @@ describe('<StaffSlots>', () => {
         const collidingSlot = '7:00 AM';
         const slots = [collidingSlot, '7:15 AM', '7:30 AM', '7:45 AM'];
         const timeClick = () => noop;
-        const id = '10004';
+        const id = 'ce8726ae-fed8-11e7-8be5-0ed5f89f718b';
         const props = {
             date: currentDate,
             router: {},
@@ -190,7 +190,7 @@ describe('<StaffSlots>', () => {
         const formattedDate = dateFormat(currentDate, 'dddd, d mmm yyyy');
         const slots = ['7:00 AM', '7:15 AM', '7:30 AM', '7:45 AM'];
         const timeClick = () => noop;
-        const id = '10004';
+        const id = 'd35a6f2e-fed8-11e7-8be5-0ed5f89f718b';
         const props = {
             date: currentDate,
             router: {},
@@ -241,7 +241,7 @@ describe('<StaffSlots>', () => {
         const currentDate = moment();
         const formattedDate = dateFormat(currentDate, 'dddd, d mmm yyyy');
         const slots = [];
-        const id = '10004';
+        const id = 'd78655b8-fed8-11e7-8be5-0ed5f89f718b';
         const props = {
             date: currentDate,
             router: {},
@@ -273,7 +273,7 @@ describe('<StaffSlots>', () => {
         const currentDate = moment();
         const formattedDate = dateFormat(currentDate, 'dddd, d mmm yyyy');
         const slots = ['8:00 AM', '8:15 AM', '8:30 AM', '8:45 AM'];
-        const id = '10004';
+        const id = 'db624a7a-fed8-11e7-8be5-0ed5f89f718b';
         const props = {
             date: currentDate,
             router: {},
@@ -317,7 +317,7 @@ describe('<StaffSlots>', () => {
     context('when time is clicked and start time is chosen', () => {
         const currentDate = moment();
         const slots = ['8:00 AM', '8:15 AM', '8:30 AM', '8:45 AM'];
-        const id = '10004';
+        const id = 'dfc342ea-fed8-11e7-8be5-0ed5f89f718b';
         const props = {
             date: currentDate,
             router: {
@@ -352,7 +352,7 @@ describe('<StaffSlots>', () => {
     context('when time is clicked and end time is chosen', () => {
         const currentDate = moment();
         const slots = ['8:00 AM', '8:15 AM', '8:30 AM', '8:45 AM'];
-        const id = '10004';
+        const id = 'e428c7b0-fed8-11e7-8be5-0ed5f89f718b';
         const props = {
             date: currentDate,
             router: {
@@ -400,7 +400,7 @@ describe('<StaffSlots>', () => {
         const currentDate = moment();
         const duration = 60;
         const slotForm = 'start';
-        const id = '10004';
+        const id = 'e9210d0e-fed8-11e7-8be5-0ed5f89f718b';
         const style = { styleAttribute: 'some-style' };
         const selectedStaffMember = {
             id,

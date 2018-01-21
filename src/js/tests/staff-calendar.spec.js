@@ -21,7 +21,7 @@ describe('<StaffCalendar>', () => {
         const startDate = moment.utc('2017-03-31');
         const startDateFormatted = startDate.format('YYYY-MM-DD');
         const dayPickerMonth = startDate.toDate();
-        const id = '10001';
+        const id = '1176baca-fed8-11e7-8be5-0ed5f89f718b\n';
         const props = {
             router: {},
             dispatch: noop,
@@ -61,7 +61,7 @@ describe('<StaffCalendar>', () => {
         const startDate = moment.utc('2017-03-31');
         const startDateFormatted = startDate.format('YYYY-MM-DD');
         const dayPickerMonth = startDate.toDate();
-        const id = '10001';
+        const id = '1814ea5a-fed8-11e7-8be5-0ed5f89f718b';
         const router = {};
         const props = {
             router: {},
@@ -112,7 +112,7 @@ describe('<StaffCalendar>', () => {
     context('when a calendar day is clicked', () => {
         const startDateFormatted = '2017-03-31';
         const day = moment.utc(startDateFormatted);
-        const id = '10001';
+        const id = '1d914280-fed8-11e7-8be5-0ed5f89f718b';
         const props = {
             router: {
                 push: spy()
@@ -156,7 +156,7 @@ describe('<StaffCalendar>', () => {
         let store;
         let component;
         const router = {};
-        const id = '10004';
+        const id = '23ac7662-fed8-11e7-8be5-0ed5f89f718b';
         const startDateFormatted = '2017-04-01';
         const day = moment.utc(startDateFormatted);
         const style = { styleAttribute: 'some-style' };

@@ -122,7 +122,7 @@ describe('<Nav>', () => {
         let component;
         const selectedDate = moment.utc();
         const selectedStaffMember = {
-            id: 10004,
+            id: 'd7665070-fed7-11e7-8be5-0ed5f89f718b\n',
             imagePath: 'http://i.pravatar.cc/300?img=15',
             name: 'Phillip Fry',
             selectedDate

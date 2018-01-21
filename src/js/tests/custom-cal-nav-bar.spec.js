@@ -69,7 +69,7 @@ describe('<CustomCalNavBar>', () => {
         const currentMonth = moment.utc();
         const previousMonth = currentMonth.subtract(1, 'months');
         const nextMonth = currentMonth.add(1, 'months');
-        const id = '10004';
+        const id = 'bafd0c76-fed7-11e7-8be5-0ed5f89f718b';
         const router = { goBack: noop(), push: spy() };
         const props = {
             nextMonth,
@@ -100,7 +100,7 @@ describe('<CustomCalNavBar>', () => {
         // adding 2 for nextMonth and 1 for previousMonth
         const nextMonth = moment.utc().add(2, 'months');
         const previousMonth = moment.utc().add(1, 'months');
-        const id = '10004';
+        const id = 'c5f6e336-fed7-11e7-8be5-0ed5f89f718b';
         const router = { goBack: spy() };
         const props = {
             dispatch: spy(),

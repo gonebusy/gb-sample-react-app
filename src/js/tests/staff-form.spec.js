@@ -18,7 +18,7 @@ describe('<StaffForm>', () => {
     context('when rendered with required props for StaffForm', () => {
         const today = moment.utc();
         const props = {
-            id: '10001',
+            id: '2b58f296-fed8-11e7-8be5-0ed5f89f718b',
             date: today,
             startTime: '10:15 AM',
             endTime: '11:15 AM',
@@ -66,7 +66,7 @@ describe('<StaffForm>', () => {
     context('when it is loading', () => {
         const today = moment.utc();
         const props = {
-            id: '10001',
+            id: '313bf2d0-fed8-11e7-8be5-0ed5f89f718b',
             date: today,
             startTime: '10:15 AM',
             endTime: '11:15 AM',
@@ -96,7 +96,7 @@ describe('<StaffForm>', () => {
         const today = moment.utc();
         const formattedDate = today.format('YYYY-MM-DD');
         const props = {
-            id: '10001',
+            id: '3686786e-fed8-11e7-8be5-0ed5f89f718b\n',
             date: today,
             startTime: '10:15 AM',
             endTime: '11:15 AM',
@@ -167,7 +167,7 @@ describe('<StaffForm>', () => {
         const today = moment.utc();
         const formattedDate = today.format('YYYY-MM-DD');
         const props = {
-            id: '10001',
+            id: '3e232e46-fed8-11e7-8be5-0ed5f89f718b',
             date: today,
             startTime: '10:15 AM',
             endTime: '11:15 AM',
@@ -234,7 +234,7 @@ describe('<StaffForm>', () => {
         const endTime = '11:15 AM';
         const style = { styleAttr: 'some-style' };
         const selectedStaffMember = {
-            id: '10004',
+            id: '448b2a40-fed8-11e7-8be5-0ed5f89f718b\n',
             imagePath: 'http://i.pravatar.cc/300?img=15',
             name: 'Phillip Fry',
             selectedDate: currentDate,
