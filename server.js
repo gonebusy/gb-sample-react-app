@@ -5,6 +5,7 @@ const url = require('url');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const router = express.Router();
+const moment = require('moment');
 
 /* Loads variables from .env */
 dotenv.load();
@@ -41,13 +42,14 @@ router.get('/resources/:id', (req, res) => {
 });
 
 router.get('/slots', (req, res) => {
-    const url_parts = url.parse(req.url, true);
-    const query = url_parts.query;
-    const startDate = query.startDate;
-    const endDate = query.endDate;
+    const urlParts = url.parse(req.url, true);
+    const query = urlParts.query;
+    const startDate = moment(query.startDate);
+    const endDate = moment(query.endDate);
     const resourceId = query.resourceId;
-    ServicesController.getServiceAvailableSlotsById(authorization, SERVICE_ID, null, startDate, endDate, resourceId)
-        .then((success) =>
+    ServicesController.getServiceAvailableSlotsById(
+        authorization, SERVICE_ID, null, startDate, endDate, resourceId)
+        .then(success =>
             res.send(success.service.resources)
         )
         .catch((error) =>
