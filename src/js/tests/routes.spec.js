@@ -12,6 +12,7 @@ import {
 from 'src/js/action-types';
 import moment from 'moment';
 import { POP } from 'src/js/constants';
+import uuidv1 from 'uuid/v1';
 import noop from '../../../lib/util/noop';
 import Routes from '../routes';
 import BookingConfirmation from '../components/booking-confirmation';
@@ -54,7 +55,7 @@ describe('<Routes>', () => {
 
     context('on entering staff/:id/available_slots/:year/:month', () => {
         const dispatch = spy();
-        const resourceId = 'fbb21aa4-fed7-11e7-8be5-0ed5f89f718b';
+        const resourceId = uuidv1();
         before(() => {
             stub(staffActions, 'fetchSlotsForResource').returns({ type: SLOTS_FETCHED });
             const component = renderShallow(<Routes dispatch={dispatch} getState={noop} />).output;

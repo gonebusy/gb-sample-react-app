@@ -13,26 +13,27 @@ import { createNew } from 'src/js/store';
 import { initialState } from 'src/js/reducers/staff';
 import moment from 'moment';
 import find from 'lodash.find';
+import uuidv1 from 'uuid/v1';
 
 describe('staff reducers', () => {
     const staffMembers = [
         {
-            id: '0be53230-fef1-11e7-8be5-0ed5f89f718b', // resourceId
+            id: uuidv1(), // resourceId
             imagePath: 'http://i.pravatar.cc/300?img=69',
             name: 'James Hunter'
         },
         {
-            id: '147d30aa-fef1-11e7-8be5-0ed5f89f718b',
+            id: uuidv1(),
             imagePath: 'http://i.pravatar.cc/300?img=25',
             name: 'Selena Yamada'
         },
         {
-            id: '1814c926-fef1-11e7-8be5-0ed5f89f718b',
+            id: uuidv1(),
             imagePath: 'http://i.pravatar.cc/300?img=32',
             name: 'Sarah Belmoris'
         },
         {
-            id: '1b358118-fef1-11e7-8be5-0ed5f89f718b',
+            id: uuidv1(),
             imagePath: 'http://i.pravatar.cc/300?img=15',
             name: 'Phillip Fry'
         }
@@ -80,7 +81,7 @@ describe('staff reducers', () => {
             const formattedDate = '2017-04-01';
             const date = moment(formattedDate);
             const selectedStaffMember = {
-                id: '1b358118-fef1-11e7-8be5-0ed5f89f718b', // resourceId
+                id: uuidv1(), // resourceId
                 imagePath: 'http://i.pravatar.cc/300?img=15',
                 name: 'Phillip Fry',
                 availableSlots: {
@@ -120,7 +121,7 @@ describe('staff reducers', () => {
             let state;
             const formattedDate = '2017-04-01';
             const date = moment(formattedDate);
-            const resourceId = '1b358118-fef1-11e7-8be5-0ed5f89f718b';
+            const resourceId = uuidv1();
             const startTime = '7:00';
             const endTime = '8:00';
             const selectedStaffMember = {
@@ -173,7 +174,7 @@ describe('staff reducers', () => {
             const bookingsByResource = {};
             before(() => {
                 const selectedStaffMember = {
-                    id: '1b358118-fef1-11e7-8be5-0ed5f89f718b', // resourceId
+                    id: uuidv1(), // resourceId
                     imagePath: 'http://i.pravatar.cc/300?img=15',
                     name: 'Phillip Fry',
                     availableSlots: {
@@ -378,7 +379,7 @@ describe('staff reducers', () => {
     context(`when ${CLEAR_SELECTED_STAFF_MEMBER} is dispatched`, () => {
         let state;
         const selectedStaffMember = {
-            id: '28156f82-fef2-11e7-8be5-0ed5f89f718b', // resourceId
+            id: uuidv1(), // resourceId
             imagePath: 'http://i.pravatar.cc/300?img=15',
             name: 'Phillip Fry',
             availableSlots: {
@@ -401,13 +402,13 @@ describe('staff reducers', () => {
     context(`when ${BOOKINGS_FETCHED} is dispatched`, () => {
         let state;
         const bookingsByResource = {
-            '2d0ca6ea-fef2-11e7-8be5-0ed5f89f718b': {
+            [uuidv1()]: {
                 '2017-06-01': [{
                     startTime: '8:00 PM',
                     endTime: '9:00 PM'
                 }]
             },
-            '30e9491c-fef2-11e7-8be5-0ed5f89f718b': {
+            [uuidv1()]: {
                 '2017-06-01': [{
                     startTime: '2:00 AM',
                     endTime: '3:00 AM'
@@ -477,8 +478,8 @@ describe('staff reducers', () => {
 
     context(`when ${CLEAR_AVAILABLE_SLOTS} is dispatched`, () => {
         let state;
-        const firstResourceId = '51f81666-fef1-11e7-8be5-0ed5f89f718b';
-        const secondResourceId = '5682b538-fef1-11e7-8be5-0ed5f89f718b';
+        const firstResourceId = uuidv1();
+        const secondResourceId = uuidv1();
         const allAvailableSlots = {
             [firstResourceId]: { // resourceId
                 2017: { // year index

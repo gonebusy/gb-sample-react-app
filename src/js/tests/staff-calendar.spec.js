@@ -11,6 +11,7 @@ import { DATE_SELECTED } from 'src/js/action-types';
 import { initialState } from 'src/js/reducers/staff';
 import { getYYYYMMDDPath } from 'src/js/utils/date';
 import Loader from 'halogen/ClipLoader';
+import uuidv1 from 'uuid/v1';
 import StaffCalendarConnected, { StaffCalendar } from '../components/staff-calendar';
 import CustomCalNavBar from '../components/custom-cal-nav-bar';
 
@@ -21,7 +22,7 @@ describe('<StaffCalendar>', () => {
         const startDate = moment.utc('2017-03-31');
         const startDateFormatted = startDate.format('YYYY-MM-DD');
         const dayPickerMonth = startDate.toDate();
-        const id = '1176baca-fed8-11e7-8be5-0ed5f89f718b\n';
+        const id = uuidv1();
         const props = {
             router: {},
             dispatch: noop,
@@ -61,7 +62,7 @@ describe('<StaffCalendar>', () => {
         const startDate = moment.utc('2017-03-31');
         const startDateFormatted = startDate.format('YYYY-MM-DD');
         const dayPickerMonth = startDate.toDate();
-        const id = '1814ea5a-fed8-11e7-8be5-0ed5f89f718b';
+        const id = uuidv1();
         const router = {};
         const props = {
             router: {},
@@ -112,7 +113,7 @@ describe('<StaffCalendar>', () => {
     context('when a calendar day is clicked', () => {
         const startDateFormatted = '2017-03-31';
         const day = moment.utc(startDateFormatted);
-        const id = '1d914280-fed8-11e7-8be5-0ed5f89f718b';
+        const id = uuidv1();
         const props = {
             router: {
                 push: spy()
@@ -156,7 +157,7 @@ describe('<StaffCalendar>', () => {
         let store;
         let component;
         const router = {};
-        const id = '23ac7662-fed8-11e7-8be5-0ed5f89f718b';
+        const id = uuidv1();
         const startDateFormatted = '2017-04-01';
         const day = moment.utc(startDateFormatted);
         const style = { styleAttribute: 'some-style' };
