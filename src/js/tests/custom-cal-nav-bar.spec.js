@@ -6,6 +6,7 @@ import { findAllWithType } from 'react-shallow-testutils';
 import moment from 'moment';
 import * as staffActions from 'src/js/actions/staff';
 import { getYYYYMMPath } from 'src/js/utils/date';
+import uuidv1 from 'uuid/v1';
 import noop from '../../../lib/util/noop';
 import CustomCalNavBar from '../components/custom-cal-nav-bar';
 
@@ -69,7 +70,7 @@ describe('<CustomCalNavBar>', () => {
         const currentMonth = moment.utc();
         const previousMonth = currentMonth.subtract(1, 'months');
         const nextMonth = currentMonth.add(1, 'months');
-        const id = '10004';
+        const id = uuidv1();
         const router = { goBack: noop(), push: spy() };
         const props = {
             nextMonth,
@@ -100,7 +101,7 @@ describe('<CustomCalNavBar>', () => {
         // adding 2 for nextMonth and 1 for previousMonth
         const nextMonth = moment.utc().add(2, 'months');
         const previousMonth = moment.utc().add(1, 'months');
-        const id = '10004';
+        const id = uuidv1();
         const router = { goBack: spy() };
         const props = {
             dispatch: spy(),

@@ -11,6 +11,7 @@ import Loader from 'halogen/ClipLoader';
 import { IS_LOADING, CLEAR_AVAILABLE_SLOTS } from 'src/js/action-types';
 import * as staffActions from 'src/js/actions/staff';
 import Promise from 'bluebird';
+import uuidv1 from 'uuid/v1';
 import noop from '../../../lib/util/noop';
 import StaffFormConnected, { StaffForm } from '../components/staff-form';
 
@@ -18,7 +19,7 @@ describe('<StaffForm>', () => {
     context('when rendered with required props for StaffForm', () => {
         const today = moment.utc();
         const props = {
-            id: '10001',
+            id: uuidv1(),
             date: today,
             startTime: '10:15 AM',
             endTime: '11:15 AM',
@@ -66,7 +67,7 @@ describe('<StaffForm>', () => {
     context('when it is loading', () => {
         const today = moment.utc();
         const props = {
-            id: '10001',
+            id: uuidv1(),
             date: today,
             startTime: '10:15 AM',
             endTime: '11:15 AM',
@@ -96,7 +97,7 @@ describe('<StaffForm>', () => {
         const today = moment.utc();
         const formattedDate = today.format('YYYY-MM-DD');
         const props = {
-            id: '10001',
+            id: uuidv1(),
             date: today,
             startTime: '10:15 AM',
             endTime: '11:15 AM',
@@ -167,7 +168,7 @@ describe('<StaffForm>', () => {
         const today = moment.utc();
         const formattedDate = today.format('YYYY-MM-DD');
         const props = {
-            id: '10001',
+            id: uuidv1(),
             date: today,
             startTime: '10:15 AM',
             endTime: '11:15 AM',
@@ -234,7 +235,7 @@ describe('<StaffForm>', () => {
         const endTime = '11:15 AM';
         const style = { styleAttr: 'some-style' };
         const selectedStaffMember = {
-            id: '10004',
+            id: uuidv1(),
             imagePath: 'http://i.pravatar.cc/300?img=15',
             name: 'Phillip Fry',
             selectedDate: currentDate,

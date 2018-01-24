@@ -6,39 +6,41 @@ import { spy, stub } from 'sinon';
 import { createNew } from 'src/js/store';
 import { getYYYYMMPath } from 'src/js/utils/date';
 import moment from 'moment';
+import uuidv1 from 'uuid/v1';
 import noop from '../../../lib/util/noop';
 import StaffPickerConnected, { StaffPicker } from '../components/staff-picker';
 import StaffMember from '../components/staff-member';
 
 describe('<StaffPicker>', () => {
+    const staffMembers = [
+        {
+            id: uuidv1(),
+            imagePath: 'http://i.pravatar.cc/300?img=69',
+            name: 'James Hunter'
+        },
+        {
+            id: uuidv1(),
+            imagePath: 'http://i.pravatar.cc/300?img=25',
+            name: 'Selena Yamada'
+        },
+        {
+            id: uuidv1(),
+            imagePath: 'http://i.pravatar.cc/300?img=32',
+            name: 'Sarah Belmoris'
+        },
+        {
+            id: uuidv1(),
+            imagePath: 'http://i.pravatar.cc/300?img=15',
+            name: 'Phillip Fry'
+        }
+    ];
     context('when rendered', () => {
         let component;
         const props = {
             router: {
                 push: noop
             },
-            staffMembers: [
-                {
-                    id: 1,
-                    imagePath: 'http://i.pravatar.cc/300?img=69',
-                    name: 'James Hunter'
-                },
-                {
-                    id: 2,
-                    imagePath: 'http://i.pravatar.cc/300?img=25',
-                    name: 'Selena Yamada'
-                },
-                {
-                    id: 3,
-                    imagePath: 'http://i.pravatar.cc/300?img=32',
-                    name: 'Sarah Belmoris'
-                },
-                {
-                    id: 4,
-                    imagePath: 'http://i.pravatar.cc/300?img=15',
-                    name: 'Phillip Fry'
-                }
-            ],
+            staffMembers,
             dispatch: noop
         };
 
@@ -78,33 +80,12 @@ describe('<StaffPicker>', () => {
     });
 
     context('when staff member is clicked', () => {
-        const id = 1;
+        const id = staffMembers[0].id;
         const props = {
             router: {
                 push: spy()
             },
-            staffMembers: [
-                {
-                    id,
-                    imagePath: 'http://i.pravatar.cc/300?img=69',
-                    name: 'James Hunter'
-                },
-                {
-                    id: 2,
-                    imagePath: 'http://i.pravatar.cc/300?img=25',
-                    name: 'Selena Yamada'
-                },
-                {
-                    id: 3,
-                    imagePath: 'http://i.pravatar.cc/300?img=32',
-                    name: 'Sarah Belmoris'
-                },
-                {
-                    id: 4,
-                    imagePath: 'http://i.pravatar.cc/300?img=15',
-                    name: 'Phillip Fry'
-                }
-            ],
+            staffMembers,
             dispatch: stub().returns(Promise.resolve({}))
         };
 
@@ -133,28 +114,6 @@ describe('<StaffPicker>', () => {
         const router = {
             push: noop
         };
-        const staffMembers = [
-            {
-                id: 1,
-                imagePath: 'http://i.pravatar.cc/300?img=69',
-                name: 'James Hunter'
-            },
-            {
-                id: 2,
-                imagePath: 'http://i.pravatar.cc/300?img=25',
-                name: 'Selena Yamada'
-            },
-            {
-                id: 3,
-                imagePath: 'http://i.pravatar.cc/300?img=32',
-                name: 'Sarah Belmoris'
-            },
-            {
-                id: 4,
-                imagePath: 'http://i.pravatar.cc/300?img=15',
-                name: 'Phillip Fry'
-            }
-        ];
 
         before(() => {
             store = createNew({ staff: { staffMembers } });

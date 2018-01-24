@@ -5,11 +5,13 @@ import { initialState } from 'src/js/reducers/staff';
 import { createNew } from 'src/js/store';
 import moment from 'moment';
 import Loader from 'halogen/ClipLoader';
+import uuidv1 from 'uuid/v1';
 import noop from '../../../lib/util/noop';
 import
     BookingConfirmationConnected,
     { BookingConfirmation }
 from '../components/booking-confirmation';
+
 
 describe('<BookingConfirmation>', () => {
     context('when rendered with required props for BookingConfirmation', () => {
@@ -80,7 +82,7 @@ describe('<BookingConfirmation>', () => {
         let store;
         let component;
         const selectedStaffMember = {
-            id: 10004,
+            id: uuidv1(),
             imagePath: 'http://i.pravatar.cc/300?img=15',
             name: 'Phillip Fry',
             startTime: '10:15 AM',

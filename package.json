@@ -26,7 +26,7 @@
     "css-raw-loader": "^0.1.1",
     "dateformat": "^2.0.0",
     "dotenv": "^4.0.0",
-    "gonebusy-nodejs-client": "0.1.2",
+    "gonebusy-nodejs-client": "0.2.0",
     "halogen": "^0.2.0",
     "json-loader": "^0.5.4",
     "lodash.find": "^4.6.0",
@@ -95,6 +95,7 @@
     "sinon-chai": "^2.8.0",
     "style-loader": "0.13.1",
     "url-loader": "0.5.7",
+    "uuid": "^3.2.1",
     "webpack": "^1.13.1",
     "webpack-cleanup-plugin": "^0.4.1",
     "webpack-dev-server": "^1.12.1"

@@ -14,25 +14,31 @@ import store from 'src/js/store';
 import moment from 'moment';
 import * as urls from 'src/js/urls';
 import { fromMilitaryTime } from 'src/js/utils/time';
+import uuidv1 from 'uuid/v1';
 
 describe('staff action creators', () => {
     describe('fetchStaff', () => {
         context('when invoked', () => {
             const duration = 60;
+            const resourceId = uuidv1();
             const service = {
                 body: {
-                    resources: ['100001'], // resourceId returned from the service
+                    resources: [resourceId], // resourceId returned from the service
                     duration
                 }
             };
             const resource = {
                 body: {
-                    id: '100001', // resourceId returned from resources
+                    id: resourceId, // resourceId returned from resources
                     name: 'James Hunter'
                 }
             };
             const staffMembers = [
-                { id: '100001', name: 'James Hunter', imagePath: 'http://i.pravatar.cc/300?img=69' }
+                {
+                    id: resourceId,
+                    name: 'James Hunter',
+                    imagePath: 'http://i.pravatar.cc/300?img=69'
+                }
             ];
             const serviceEndpoint = '/api/service';
             const resourcesEndpoint = `/api/resources/${staffMembers[0].id}`;
@@ -97,7 +103,7 @@ describe('staff action creators', () => {
         const startFormatted = '2017-03-01';
         const startDate = moment.utc(startFormatted);
         const endFormatted = '2017-03-31';
-        const resourceId = '10004';
+        const resourceId = uuidv1();
         const year = startDate.year();
         const month = startDate.month();
         const slots = ['6:00 PM', '6:30 PM'];
@@ -220,8 +226,8 @@ describe('staff action creators', () => {
     describe('fetchBookings', () => {
         context('when it is invoked', () => {
             const dispatch = spy();
-            const firstResourceId = '10001';
-            const secondResourceId = '10002';
+            const firstResourceId = uuidv1();
+            const secondResourceId = uuidv1();
             const firstStartDate = '2017-07-13';
             const secondStartDate = '2017-07-14';
             const firstStartTime = '11:00';

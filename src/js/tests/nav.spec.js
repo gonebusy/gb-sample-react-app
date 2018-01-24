@@ -6,6 +6,7 @@ import { findWithClass } from 'react-shallow-testutils';
 import { initialState } from 'src/js/reducers/staff';
 import { createNew } from 'src/js/store';
 import moment from 'moment';
+import uuidv1 from 'uuid/v1';
 import noop from '../../../lib/util/noop';
 import NavConnected, { Nav } from '../components/nav';
 import StaffMember from '../components/staff-member';
@@ -122,7 +123,7 @@ describe('<Nav>', () => {
         let component;
         const selectedDate = moment.utc();
         const selectedStaffMember = {
-            id: 10004,
+            id: uuidv1(),
             imagePath: 'http://i.pravatar.cc/300?img=15',
             name: 'Phillip Fry',
             selectedDate
