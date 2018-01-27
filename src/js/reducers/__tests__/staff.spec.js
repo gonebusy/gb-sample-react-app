@@ -535,7 +535,7 @@ describe('staff reducers', () => {
             '8:30 AM', '8:45 AM', '9:00 AM'];
         const slotTime = timeSlots[0];
         const selectedStaffMember = {
-            id: '1b358118-fef1-11e7-8be5-0ed5f89f718b', // resourceId
+            id: uuidv1(), // resourceId
             imagePath: 'http://i.pravatar.cc/300?img=15',
             name: 'Phillip Fry',
             availableSlots: {
@@ -582,7 +582,7 @@ describe('staff reducers', () => {
             '8:00 AM', '8:15 AM', '8:30 AM'];
         const slotTime = timeSlots[0];
         const selectedStaffMember = {
-            id: '1b358118-fef1-11e7-8be5-0ed5f89f718b', // resourceId
+            id: uuidv1(), // resourceId
             imagePath: 'http://i.pravatar.cc/300?img=15',
             name: 'Phillip Fry',
             availableSlots: {
