@@ -89,6 +89,7 @@ export const fetchStaff = () =>
             const staffMembers = [];
             const resourceIds = response.body.resources;
             const duration = response.body.duration;
+            const maxDuration = response.body.max_duration;
             const promises = resourceIds.map(resourceId => (
                     request.get(`/api/resources/${resourceId}`).then((resourcesResponse) => {
                         const { id, name } = resourcesResponse.body;
@@ -99,7 +100,8 @@ export const fetchStaff = () =>
                     dispatch({
                         type: STAFF_FETCHED,
                         staffMembers,
-                        duration
+                        duration,
+                        maxDuration
                     })
                 ));
         });

@@ -25,7 +25,9 @@ export const initialState = {
         startTime: '',
         endTime: ''
     },
-    loading: true
+    loading: true,
+    duration: 60,
+    maxDuration: 90
 };
 export default (state = initialState, action) => {
     const { type } = action;
@@ -80,11 +82,12 @@ export default (state = initialState, action) => {
             };
         }
         case STAFF_FETCHED: {
-            const { staffMembers, duration } = action;
+            const { staffMembers, duration, maxDuration } = action;
             return {
                 ...state,
                 staffMembers,
-                duration
+                duration,
+                maxDuration
             };
         }
         case BOOKINGS_FETCHED: {
@@ -135,23 +138,33 @@ export default (state = initialState, action) => {
             let remainingSlots = state.selectedStaffMember.slotsForDate;
             if (slotType === 'startTime') {
                 const { slotsForDate, selectedDate } = state.selectedStaffMember;
-                const index = slotsForDate.indexOf(slotTime);
-                let slotsToCalculateEndTimes;
-                if (slotsForDate.length > 1)
-                    slotsToCalculateEndTimes = slotsForDate.slice(index);
-                else
-                    slotsToCalculateEndTimes = slotsForDate;
+                const startTimeIndex = slotsForDate.indexOf(slotTime);
+                const slotsToCalculateEndTimes = slotsForDate.length > 1
+                    ? slotsForDate.slice(startTimeIndex) : slotsForDate;
+                const startTime = moment.utc(
+                    `${selectedDate.format('YYYY-MM-DD')} ${slotsToCalculateEndTimes[0]}`,
+                    ['YYYY-MM-DD h:mm A']
+                );
+                const lastPossibleSlotWithMaxDuration = moment.utc(
+                    `${selectedDate.format('YYYY-MM-DD')} ${slotsToCalculateEndTimes[0]}`,
+                    ['YYYY-MM-DD h:mm A']
+                ).add(state.maxDuration, 'minutes');
+
                 const endTimes = [];
-                for (let i = 0; i < slotsToCalculateEndTimes.length; i += 1) {
-                    const lastStartTime = moment.utc(
+                let endingSlot = startTime;
+                let i = 0;
+                while (endingSlot.isBefore(lastPossibleSlotWithMaxDuration)) {
+                    const startSlot = moment.utc(
                         `${selectedDate.format('YYYY-MM-DD')} ${slotsToCalculateEndTimes[i]}`,
                         ['YYYY-MM-DD h:mm A']
                     );
-                    const endingSlot = lastStartTime.add(state.duration, 'minutes');
+                    endingSlot = startSlot.add(state.duration, 'minutes');
                     endTimes.push(endingSlot.format('h:mm A'));
+                    i += 1;
                 }
                 remainingSlots = endTimes;
             }
+
             return {
                 ...state,
                 selectedStaffMember: {

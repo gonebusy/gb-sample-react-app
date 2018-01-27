@@ -47,6 +47,7 @@ const createService = (resourceIds) => {
         name: 'LSAT Tutoring',
         description: 'LSAT Tutoring service',
         duration: 60,
+        max_duration: 90,
         resources: resourceIds.join(',')
     };
     return new Promise((resolve, reject) => {
